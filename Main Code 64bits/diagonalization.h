@@ -8,6 +8,7 @@ using namespace Eigen;
 using namespace std;
 
 // diagonalized the Hamiltionian for B field and v velocity (orthogonal to B) and give the eigenvectors and eigenvalues and  update all Level[n].Energy_cm
+// Need to be improve with the proper v axis
 void Diagonalization_Energy(vector <Internal_state> &Level, double B, double v, SelfAdjointEigenSolver<MatrixXd> &es);
 
 // diagonalized the Hamiltionian for B field and v velocity (orthogonal to B) and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm

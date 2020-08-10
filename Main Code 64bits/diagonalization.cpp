@@ -3,6 +3,7 @@
 #include  <iostream>                       // to include cout, cin
 
 // diagonalized the Hamiltionian for B field and v velocity (orthogonal to B) and give the eigenvectors and eigenvalues and  update all Level[n].Energy_cm
+// Need to be improve with the proper v axis
 void Diagonalization_Energy(vector <Internal_state> &Level, double B, double v, SelfAdjointEigenSolver<MatrixXd> &es)
 {
     // Manifold 2M Sym #=1..21
