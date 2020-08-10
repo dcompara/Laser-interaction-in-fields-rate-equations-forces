@@ -46,7 +46,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @offset_z[0]	0
 // Initial velocity added to the random one
 @v0_x[0]	0.
-@v0_y[0]	0.
+@v0_y[0]	1e5
 @v0_z[0]    0.
 #
 #2nd type of particle
