@@ -10,7 +10,7 @@ interactions).
 
 It has been developed under Code::Blocks and Windows. The inputs are 2 external files describing the levels (with information about their energy + linear or quadratic Stark, Zeeman effect) and the transitions lines (dipole transitions, photodetachement or photoionization cross sections).
 
-A file named Liste Param.h contains parameters to run the simulation such as:
+A file named Liste Param.h contains parameters (nad lots of useful comments on them) to run the simulation such as:
 sample size, temperature, magnetic fields and for the laser beams (waist size and position, polarisation, power, linewidth, wavelength, ...). 
 
 A Kinetic Monte Carlo algorithm  evolves in motion (forces under extranal fields + optical dipole forces) and event (absorption or emission) 
