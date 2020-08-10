@@ -171,14 +171,8 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 
         MatrixXd d[3] ;
         SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-        Vecteur3D v;
-        v = Mol[i].get_vel();
+        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
 
-        Vecteur3D Bfield;
-        Bfield= fieldB.get_Field(Mol[i].get_pos());
-        double B = Bfield.mag();
-        double v_perp= (v.cross(Bfield)).mag()/B;
-        Diagonalization_Energy_dipole(Level, B,  v_perp, es, d);
         for (int j=0; j< Level.size(); j++) //  we scan over the levels to calculate the parameter
         {
             double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
@@ -194,6 +188,14 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             }
             // file_out << endl;
             // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
+
+        Vecteur3D v;
+        v = Mol[i].get_vel();
+        Vecteur3D Bfield;
+        Bfield= fieldB.get_Field(Mol[i].get_pos());
+        double B = Bfield.mag();
+        double v_perp= (v.cross(Bfield)).mag()/B;
+
             file_out << B << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
         }
     }
@@ -490,8 +492,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
                     MatrixXd d[3] ;
                     SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
 
-                    double v_perp= (v.cross(Bfield)).mag()/B;
-                    Diagonalization_Energy_dipole(Level, B, v_perp, es, d);
+                    Diagonalization(Level, Mol[i], fieldB, fieldE, params,es, d)
 
 
         //            for (int i=0; i<Level.size(); i++)
@@ -532,12 +533,6 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     }
 
 
-
-
-
-    MatrixXd d[3] ;
-    SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-    Diagonalization_Energy_dipole(Level, B,  v.mag(), es, d);
     for (int i = 0; i <Level.size() ; i++)
     {
 

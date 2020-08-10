@@ -292,8 +292,9 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
     {
         MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(1)|j> in  field
         SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-        double v_perp = (v.cross(Bfield)).mag()/B;
-        Diagonalization_Energy_dipole(Level, B, v_perp, es,  d);
+          Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);
+
+
         // diagonalized the Hamiltionian for B field and v velocity and give the eigenvectors and eigenvalues and  update all Level[n].Energy_cm
 
         int i = my_mol.deg_number; // The molecules is in the Level number n_level_in.// so Level[ # = deg_number] shall be the Level itself// So in the Level file the deg_number is the Level number (START FROM 0)
@@ -500,8 +501,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
     {
         MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(-1)|j> in  field
         SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-        double v_perp = (v.cross(Bfield)).mag()/B;
-        Diagonalization_Energy_dipole(Level, B, v_perp, es, d); // calcul of the new dipole transition for the new levels.
+        Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d); // calcul of the new dipole transition for the new levels.
 
         int n_level_in = my_mol.deg_number; //The molecules is in the Level number n_level_in.// so Level[ # = deg_number] shall be the Level itself// So in the Level file the deg_number is the Level number (START FROM 0)
         Internal_state Internal_state_in = Level[n_level_in]; // Internal_state_in = my_mol ; //  état interne de la molecule
@@ -513,16 +513,20 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
             Vecteur3D k;
             k = my_laser.wave_vector();
             double m=my_mol.get_mass();
-            double v_perp_recoil ;
+
 
             /*** We assume that there is no level crossing with the initial level so that absorption and emission are well define by the energy ordering . But the upper or lower level ordering may change due to hbar k modification  ****/
 
             /***** Stimulated emission: v--> v-HBAR*k/m *****/
 
-            v_perp_recoil = ((v-HBAR*k/m).cross(Bfield)).mag()/B;
-// TODO (Daniel#9#): this test works only if the loweslt level is a dead level. May be remove this part (which is here only for speed reasons
+
+// TODO (Daniel#9#): this test works only if the lowest level is a dead level. May be remove this part (which is here only for speed reasons
             if (n_level_in>0) // 0 is the dead level so it can not change
-                Diagonalization_Energy_dipole(Level, B, v_perp_recoil, es, d); // calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+               {
+                   my_mol.set_vel(v-HBAR*k/m); // new volocity for the diagonalization
+                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                   my_mol.set_vel(v); // put back as normal value
+               }
             for( int n_level_out = 0; n_level_out < n_level_in; n_level_out++ )  // Emission so we scan only on level below
             {
                 rates_single_molecule_laser_level( n_las, dipole_debye, delta[n_las], eps_pol,  Gamma_spon_tot, sqrt_intensity_loc, Level, Internal_state_in, Internal_state_out,
@@ -532,9 +536,13 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
             /***** Absorption: v--> v+HBAR*k/m *****/
 
-            v_perp_recoil = ((v+HBAR*k/m).cross(Bfield)).mag()/B;
+
             if (n_level_in< Level.size()) // to make the loop over all levels
-                Diagonalization_Energy_dipole(Level, B, v_perp_recoil, es, d); // calcul of the new dipole transition for the new levels (after the  absorption of photons). The energy levels order may have changed
+                 {
+                   my_mol.set_vel(v+HBAR*k/m); // new volocity for the diagonalization
+                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                   my_mol.set_vel(v); // put back as normal value
+               }
             for( int n_level_out = n_level_in+1; n_level_out < Level.size(); n_level_out++ ) // Absorption  so we scan only on level above
             {
                 is_bound_transition = abs(Level[n_level_out].Sym);

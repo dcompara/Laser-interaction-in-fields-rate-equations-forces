@@ -60,7 +60,7 @@ public:                // Forme canonique d'une classe
     friend Atome operator +(const Atome , const Atome);    // surcharge de l'opérateur +
 
     // Get components
-    Vecteur3D  get_pos()  const
+     Vecteur3D  get_pos()  const
     {
         return pos;
     }

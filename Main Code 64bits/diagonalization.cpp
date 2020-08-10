@@ -30,7 +30,7 @@ void Diagonalization_Energy(vector <Internal_state> &Level, double B, double v, 
     correspond:  1            2       3      5        4         6       13      14      15       16      10       11      12      17      18       19      20      21        7       8      9
     in C++ [i]   0            1       2      4        3         5       12      13      14       15      9        10      11      16      17       18      19      20        6       7      8
 
-new number C++[i]0            1       2      3         4        5        6       7       8       9       10       11      12      13      14      15       16       17      18      19      20
+    new number C++[i]0            1       2      3         4        5        6       7       8       9       10       11      12      13      14      15       16       17      18      19      20
 
 
     Indeed the block ordered in energy are:
@@ -172,7 +172,6 @@ new number C++[i]0            1       2      3         4        5        6      
     }
 }
 
-
 // diagonalized the Hamiltionian for B field and v velocity (orthogonal to B) and give the eigenvectors and eigenvalues and dipoles (in Debye)update all Level[n].Energy_cm
 void Diagonalization_Energy_dipole(vector <Internal_state> &Level, double B, double v,  SelfAdjointEigenSolver<MatrixXd> &es,  MatrixXd d[])
 {
@@ -200,7 +199,7 @@ void Diagonalization_Energy_dipole(vector <Internal_state> &Level, double B, dou
 // For (spontaneous or) stimulated emission with the same laser, that is j-->i for E_j> E_i,  the transition is <i|d.E'^dag|j> = (<j|d.E'|i>)*
 // that is <i|d.E'|j> if the dipoles (in Debye)are REAL (THAT IS OUR CASE).
 
-/***  <i|d_q|j> is coded here as d[q+1][i][j] (real), i = line, j = column ; that is for a i<-->j transition (with E_i> E_j) ****/
+    /***  <i|d_q|j> is coded here as d[q+1][i][j] (real), i = line, j = column ; that is for a i<-->j transition (with E_i> E_j) ****/
 
     double dipole[3][nb_levels][nb_levels]=
     {
@@ -317,88 +316,19 @@ void Diagonalization_Energy_dipole(vector <Internal_state> &Level, double B, dou
 }
 
 
-// A partir de la matrice des dipole qui contient en première ligne les M_in et dernière colonne les M_out
-int Create_dipole_Lines_from_Matrices(const char *nom_file)
+// diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm
+void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, const Field &fieldB, const Field &fieldE,
+                     FitParams &params,  SelfAdjointEigenSolver<MatrixXd> &es,  MatrixXd d[])
 {
-    int nb_levels=21;
+    Vecteur3D r,v,Bfield;
+    r = my_mol.get_pos();
+    v = my_mol.get_vel();
+    Bfield = fieldB.get_Field(r);
 
-    double matrice[nb_levels+1][nb_levels+1];
-    double dipole[3][nb_levels][nb_levels];
+    double B=Bfield.mag();
+    double v_perp = (v.cross(Bfield)).mag()/B;
 
-    string filename = "Data/matrice_dipole.dat";
-    // ifstream file(nom_file);
-    ifstream file(filename.c_str());
-    if ( !file )
-    {
-        cerr << "Erreur d'ouverture fichier Level"  << nom_file << endl;
-        return 0;
-    }
-
-    for (int i=0; i<nb_levels+1; i++)
-        for (int j=0; j<nb_levels+1; j++)
-        {
-            matrice[i][j] =0.;
-        }
-
-    for (int i=0; i<nb_levels; i++)
-        for (int j=0; j<nb_levels; j++)
-        {
-            for(int n_polar = -1; n_polar <= 1; n_polar++)
-            {
-                dipole[n_polar+1][i][j]= 0.; // d0[q+1]_ij = 0_<i | d^(q) | j>_0
-            }
-        }
-
-
-    while (!file.eof())
-    {
-        for (int i=0; i<nb_levels+1; i++)
-            for (int j=0; j<nb_levels+1; j++)
-            {
-                file >> matrice[i][j] ;
-            }
-    }
-
-    for (int i=0; i<nb_levels+1; i++)
-        for (int j=0; j<nb_levels+1; j++)
-        {
-            cout  << " i  =" << i << " j = " << j   << "    "  << matrice[i][j] << endl;
-        }
-
-
-    ofstream dipole_file("Data/dipoles_diagonalization.dat");
-    for (int i=1; i<nb_levels+1; i++)
-        for (int j=0; j<nb_levels; j++)
-        {
-            for(int n_polar = -1; n_polar <= 1; n_polar++)
-            {
-                if(matrice[i][nb_levels] == matrice[0][j] + n_polar) // M_up = m_low -1
-                    dipole[n_polar+1][i-1][j]= matrice[i][j]; // d0[q+1]_ij = 0_<i | d^(q) | j>_0
-            }
-        }
-
-    for(int n_polar = -1; n_polar <= 1; n_polar++)
-    {
-        dipole_file << "{";
-        for (int i=0; i<nb_levels; i++)
-        {
-            dipole_file << "{";
-            for (int j=0; j<nb_levels; j++)
-            {
-
-                dipole_file   << dipole[n_polar+1][i][j] << ",";
-            }
-            dipole_file << "}," << endl;
-        }
-        dipole_file << "}," << endl;
-    }
-    dipole_file << ",}" << endl;
-
-    cout  << " dans le fichier final il faudra juste remplacer le ',}' par des '}' " << endl;
-    file.close();
-
-    exit(1);
-    return 0;
+    Diagonalization_Energy_dipole(Level, B, v_perp,  es,  d);
 }
 
 

@@ -1,6 +1,10 @@
+2020/08/10
+Put on github the new version. 
+Imporve the diagonalization to be more general in the futur
+
 2020/08/07
 Full 64bit compilation using msys2 mingw64 and package manager. All installation of gsl, Eigen and freeflut is simpler.
-The code is modify to acoomodate for this.
+The code is modified to accomodate for this (freeglut especially)
 
 2020/08/05
 For 64bits compilation. Modify some stream and char comparaison (that are not supported aymore). 
