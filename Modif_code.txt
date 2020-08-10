@@ -1,0 +1,88 @@
+2020/08/07
+Full 64bit compilation using msys2 mingw64 and package manager. All installation of gsl, Eigen and freeflut is simpler.
+The code is modify to acoomodate for this.
+
+2020/08/05
+For 64bits compilation. Modify some stream and char comparaison (that are not supported aymore). 
+
+2020/05/23
+Modification of the definition of the dipole and laser parameters. Clarification of all notation in a new user Guide
+
+2020/05/11
+Some C++ part of the code are compilor dependant (Ask Pauline Yzombard)
+
+2020/05/11
+Test Ps diagonalization and put correct new levels, lines and matrix files 
+
+
+2019/06/26
+Imporved spontaneous emission in diagonalizaiton (using the proper photon energy k_spon)
+
+
+2019/06/04
+
+   Body &my_bod = bod[i]; in one_body (if not the position are not really apply to bod!)
+   
+   
+   
+   
+   2019/01/04
+
+test diagonalizaiton and polarization seems OK. Small modification and todo added
+
+
+2018/11/11
+ADD linear polarization adn new angle (psi) in the Laser definition. 
+Thus more general laser deal or emission angle with (almost because still real numbers) arbitrary polarization is possible.
+So in the case of Diagonalization fo  the hamiltonian the spontaneous emission is correct even for non pure circular emission
+
+
+
+2018/09/17
+In compiler -Wl,--allow-multiple-definition is required (for glut.h that is probably called multiple times ?)
+The Eigen (better than GSL) library still create bugs !
+
+
+2018/08/16
+Adding possibility of diagonalization of the Energy of the states (so adding so matrix in Internal_State)
+Big modification of the User Guide
+SMALL_NUMBER_RATE_EXCITATION ~ 1 is added to control the rates that shall not be considered
+
+2018/04/28
+Add Hydrogen
+Add anti-Helmholtz coils
+ERREUR 3/2en 3 on brhosurrho= ERROR IN GRADIENT (when z goes to zeor the gradient (accceleartion) change signe)
+
+2018/04/24
+Add option Procedure_init_y (4) : perfect ordered gaussian in velocity (random in position)
+
+
+2018/04/03
+Add sigmaSB in Siconstantes
+Add cross section
+
+2017/08/28
+Pseudo_BBR calcul of intensity = energy density/c
+
+2017/08/21
+Modify the factor 3 in E_tot=3 kB T for the Affichage_Mol
+
+
+2017/07/08
+Modify Draw Molecules for color and size (taille) to allow for Manifold >3 (100 max)
+
+
+2017/06/30
+Add a pseudo BBR laser.
+The Power is like the integrated power (Stefan-Boltzmann's law sigma T^4 per surface: 1W/m^2 at 65K) emmited by a real BBR of a circular surface of diameter waist
+The central energy has no meaning in this case even if the Wien's displacement law  states that the max frequency scales with temperature (Emax_cm-1 ~2 T).
+So for simplicity 
+
+2017/06/26
+Possibility to initialise the thermal position in a harmonic trap for charged particles
+
+2017/06/14
+Verif Pgopher S Spol and A and (minor) correction in UserGuide
+
+2016/07/23
+Put the correct recoil (probability distrbution for the spontaneous emission depending on the polarization of the transition) 

@@ -1,0 +1,180 @@
+ Nb card 177
+DATA 
+@Nb_type_of_Mol 1 
+@Nom_Mol[0] Ps 
+ @N_Mol[0] 21 
+@Temp_ini_x[0] 1e-10 
+@Temp_ini_y[0] 1e-10 
+@Temp_ini_z[0] 1e-10 
+@Procedure_init_x[0] 0 
+@Procedure_init_y[0] 0 
+@Procedure_init_z[0] 0 
+@size_x[0] 0.1e-6 
+@size_y[0] 0.1e-6 
+@size_z[0] 0.1e-6 
+@offset_x[0] 0 
+@offset_y[0] 0 
+@offset_z[0] 0 
+  @v0_x[0] 0. 
+  @v0_y[0] 0. 
+  @v0_z[0] 0. 
+@Nom_Mol[1] P_bar 
+ @N_Mol[1] 10 
+@Temp_ini_x[1] 4 
+@Temp_ini_y[1] 4 
+@Temp_ini_z[1] 4 
+@Procedure_init_x[1] 0 
+@Procedure_init_y[1] 0 
+@Procedure_init_z[1] 0 
+@size_x[1] 1e-4 
+@size_y[1] 1e-4 
+@size_z[1] 6e-4 
+@offset_x[1] 0. 
+@offset_y[1] 0. 
+@offset_z[1] 0. 
+  @v0_x[1] 0. 
+  @v0_y[1] 0. 
+  @v0_z[1] 0. 
+@dt_dyn_epsilon_param 1e-10 
+    @t_fin 0.1e-9 
+   @dt_dia 5e-9 
+   @dt_out 2e-9 
+@SIZE_affichage 7e-3 
+@t_wait_affichage 1e-1 
+ @Graphics 1 
+@rot_axe_x 1 
+@rot_axe_y 0 
+@rot_axe_z 0 
+@is_velocity_scaling false 
+@time_max_vel_scaling 2e-7 
+  @dt_scal 1e-7 
+@coupling_efficiency 0.2 
+@num_manifold_not_studied -3 
+@num_niveau_etudie -1 
+@is_Levels_Lines_Diagonalized 1 
+@type_of_default_field 0 
+@type_of_field_for_internal_state_shift 0 
+@type_field_read_E 0 
+@type_field_read_B 0 
+@Nb_bobines 1 
+@is_Helmholtz -1 
+@gap_bobines 25e-3 
+@courant_bobines 1 
+@rayon_bobines 25e-3 
+      @B_x 0.0000000001 
+      @B_y 0. 
+      @B_z 0. 
+ @grad_B_x 0. 
+ @grad_B_y 0. 
+ @grad_B_z 0. 
+@grad_grad_B_x 0. 
+@grad_grad_B_y 0. 
+@grad_grad_B_z 0. 
+@n_value_B 3 
+     @Bn_x 0. 
+     @Bn_y 0. 
+     @Bn_z 0 
+      @E_x 0. 
+      @E_y 0. 
+      @E_z 0. 
+ @grad_E_x 0. 
+ @grad_E_y 0. 
+ @grad_E_z 0. 
+@grad_grad_E_x 0. 
+@grad_grad_E_y 0. 
+@grad_grad_E_z 0. 
+@n_value_E 3 
+     @En_x 0. 
+     @En_y 0. 
+     @En_z 0 
+@scale_Power 1 
+@Offset_Detuning_cm 0 
+@scale_Gamma 1 
+ @Nb_laser 0 
+@Is_Laser_Switched 0 
+@dt_switch_1 3e-8 
+@dt_switch_2 1e-8 
+@waist_pos_x[0] 0. 
+@waist_pos_y[0] 0. 
+@waist_pos_z[0] 0 
+@direction_x[0] 0. 
+@direction_y[0] 1. 
+@direction_z[0] 0. 
+ @waist[0] 5e-3 
+@Energie_cm[0] 41148.3848 
+@Gamma_L_MHz[0] 1e-3 
+ @Power[0] 200 
+@Pol_circulaire_left_sp[0] 1 
+@Pol_circulaire_right_sm[0] 0. 
+@polar_angle_degree[0] 0. 
+@type_laser[0] 5 
+@nu_offset_MHz[0] 0 
+@nu_repetition_MHz[0] 80 
+@nu_individual_comb_line_MHz[0] 80 
+@coherent_avec_laser_num[0] -1 
+@is_pompage[0] 0 
+@is_rep[0] 0 
+@waist_pos_x[1] 0. 
+@waist_pos_y[1] 0. 
+@waist_pos_z[1] 0 
+@direction_x[1] 0. 
+@direction_y[1] 0. 
+@direction_z[1] -1. 
+ @waist[1] 10e-3 
+@Energie_cm[1] 41148.3848 
+@Gamma_L_MHz[1] 1e5 
+ @Power[1] 1 
+@Pol_circulaire_left_sp[1] 0.7071067812 
+@Pol_circulaire_right_sm[1] -0.7071067812 
+@polar_angle_degree[1] 45 
+@type_laser[1] 5 
+@coherent_avec_laser_num[1] -1 
+@is_pompage[1] 0 
+@is_rep[1] 0 
+@num_niveau_first 1 
+@num_niveau_second 6 
+@num_niveau_exc 3 
+@repompage_force 0 
+@Pompage_optique_force 0 
+@rate_repompe 1e7 
+@E0_coupure_repompe_cm 33.37 
+@scale_temp_pompage 3 
+@scale_temp_rep 0.4 
+ @nb_repet 0 
+  @t_repet 1000000 
+@is_DataCard_out 2 
+@is_param_scanned_out 1 
+@is_File_FC false 
+@nom_file_FC_vAvX Data/BaF/FC_vA_0_15Lignes_vX_0_14Colonnes.dat 
+@nom_file_E_vA Data/Ps/Ps_Levels_0B_photo.dat 
+@nom_file_E_vX Data/Ps/Ps_Lines_0B_photo.dat 
+    @NXmax 15 
+    @NAmax 16 
+   @NX_out 8 
+   @NA_out 4 
+@N_Two_JX_out_max 10; 
+@N_Two_JA_out_max 10; 
+@if_fixed_lifetime 0 
+@duree_vie 15e9 
+@nom_file_Levels Data/Ps/Ps_Levels_21.dat 
+@nom_file_Lines Data/Ps/Ps_Lines_21.dat 
+@nom_file_Laser_Spectrum Data/Ps/Laser_Spectrum.dat 
+@nom_sortie_donnees Data/donnee_Mol.dat 
+@nom_sortie_pulse Data/sortie_pulse.dat 
+@nom_sortie_rate Data/sortie_rate.dat 
+@nom_sortie_donnees_Data Data/data_card.dat 
+@nom_sortie_temp Data/sortie_temp.dat 
+@nom_sortie_scal Data/sortie_scal.dat 
+@nom_fichier_random_gen Data/random_gen.txt 
+@Choix_algorithme_Monte_Carlo 0 
+@Choix_algorithme_N_corps 1 
+@choix_epsilon 1e-8 
+@Seed_Init_Random_Number_Generator 2 
+@Tau_Modif 1e-3 
+@is_Scan_Random false 
+@SCAN_scale_Power 5 40 4 false false 
+@SCAN_Offset_Detuning_cm -2.5 -1 5 false false 
+@SCAN_scale_Gamma 0.3 0.6 3 false false 
+@SCAN_Tau_Modif 0.5e-3 2e-3 2 false false 
+ @SCAN_B_x 0.0000000001 5 1000 true false 
+

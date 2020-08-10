@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Laser_interaction_in_fields" />
+		<Option pch_mode="2" />
+		<Option compiler="msys2_mingw64" />
+		<MakeCommands>
+			<Build command="" />
+			<CompileFile command="" />
+			<Clean command="" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command=" &gt; $(CMD_NULL)" />
+		</MakeCommands>
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/test Eigen" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="msys2_mingw64" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/test Eigen" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="msys2_mingw64" />
+				<Compiler>
+					<Add option="-march=corei7-avx" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="C:/msys64/mingw64/include/eigen3" />
+		</Compiler>
+		<Linker>
+			<Add library="opengl32" />
+			<Add library="glu32" />
+			<Add library="freeglut" />
+			<Add library="gsl" />
+		</Linker>
+		<Unit filename="Affichage.cpp" />
+		<Unit filename="Affichage.h" />
+		<Unit filename="Affichage_Mol.h" />
+		<Unit filename="BicubicInterpolation_module.cpp" />
+		<Unit filename="BicubicInterpolation_module.h" />
+		<Unit filename="Field.cpp" />
+		<Unit filename="Field.h" />
+		<Unit filename="Initialisation_programme.cpp" />
+		<Unit filename="Initialisation_programme.h" />
+		<Unit filename="Internal_state.cpp" />
+		<Unit filename="Internal_state.h" />
+		<Unit filename="Kinetic_Monte_Carlo.cpp" />
+		<Unit filename="Kinetic_Monte_Carlo.h" />
+		<Unit filename="LekienMarsdenMatrix.h" />
+		<Unit filename="Stat_Molecule.cpp" />
+		<Unit filename="Stat_Molecule.h" />
+		<Unit filename="Transition_rate_calcul.cpp" />
+		<Unit filename="Transition_rate_calcul.h" />
+		<Unit filename="Transitions_initialisation.cpp" />
+		<Unit filename="Transitions_initialisation.h" />
+		<Unit filename="TricubicInterpolation_module.h" />
+		<Unit filename="Vecteur3D.cpp" />
+		<Unit filename="Vecteur3D.h" />
+		<Unit filename="algorithmes.cpp" />
+		<Unit filename="algorithmes.h" />
+		<Unit filename="atome.cpp" />
+		<Unit filename="atome.h" />
+		<Unit filename="constantes_SI.h" />
+		<Unit filename="datacards.cpp" />
+		<Unit filename="datacards.h" />
+		<Unit filename="diagonalization.cpp" />
+		<Unit filename="diagonalization.h" />
+		<Unit filename="laser.cpp" />
+		<Unit filename="laser.h" />
+		<Unit filename="main_Laser_Cooling.cpp" />
+		<Unit filename="molecule.cpp" />
+		<Unit filename="molecule.h" />
+		<Unit filename="one_body.h" />
+		<Unit filename="params.cpp" />
+		<Unit filename="params.h" />
+		<Unit filename="scaling_velocities.cpp" />
+		<Unit filename="scaling_velocities.h" />
+		<Unit filename="shift_molecule.cpp" />
+		<Unit filename="shift_molecule.h" />
+		<Unit filename="sortie_donnees.cpp" />
+		<Unit filename="sortie_donnees.h" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
