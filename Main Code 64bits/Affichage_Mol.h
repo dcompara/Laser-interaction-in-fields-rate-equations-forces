@@ -204,8 +204,8 @@ void affichage_one_bod(const Body my_bod, FitParams &params)  // Affichage des p
     init_tailles(tailles_bod,Nb_max); // On met 100 et pas Nb_max car cela buggait ?????
 
 
-    int two_J_maX= params.LocateParam("N_Two_JX_out_max")->val + params.LocateParam("N_Two_JA_out_max")->val; // J_max pour l'affichage
-    int v_maX=params.LocateParam("NX_out")->val; // v_max pour l'affichage
+    int two_J_maX= params.LocateParam("two_J_maX")->val + params.LocateParam("N_Two_JA_out_max")->val; // J_max pour l'affichage
+    int v_maX=params.LocateParam("v_maX")->val; // v_max pour l'affichage
 
 
     // glRotate produces a rotation of angle	degrees	around the vector (x,y,z) for all object

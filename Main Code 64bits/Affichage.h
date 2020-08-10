@@ -63,7 +63,6 @@ L'unité de base est donc SIZE_real = SIZE_affichage
 #include <GL/gl.h>                          // OPENGL
 #include <GL/glu.h>                         // OPENGL (GLU)
 #include <gl/glut.h>                       // glut bibliotheque
-// #include <gl/freeglut.h>                       // glut bibliotheque
 #include <GL/glext.h>
 
 #include "Vecteur3D.h"
@@ -106,6 +105,7 @@ void texte_output(const double nombre, string text_string,const int x, const int
 void affichage_ellipse(const Vecteur3D Radius3D, const Vecteur3D color=Vecteur3D(1.,0.,1.), const int nb_polygone=20, const double SIZE_real = 0.005);
 
 /************
+// TODO (Daniel#9#): To be done (ellisoid for lasers)
 // Pour pouvoir afficher des faisceaux lasers comme des hyperboloides de révolution
 // D'après http://www-math.edu.kagoshima-u.ac.jp/~fractaro/AnschaulicheGeometrie/Hyperboloid.c
 **************/

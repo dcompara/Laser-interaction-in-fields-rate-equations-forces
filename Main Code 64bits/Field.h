@@ -14,7 +14,7 @@ Initialisation to zero
 Il y a plusieurs type de champ possible donné par type_field_read
 
 0: donné au 2ème ordre: Field selon x,y et z. se décompose par composante: Example selon Ox: F0_x + F1_x x + F2_x x^2 + Fn_x x^n
-1:  Field in Helmoltz coils (so usualy goes with @type_of_default_field 0)
+1:  Field in Helmoltz coils (so usualy goes with a field that is magnetic)
 2: Field map 3D from 2D cylindrical symmetry: 4 columns r,z, F_r(r,z); F_z(r,z)
 3: Field map 3D from 2D cylindrical symmetry: F_r(r,z); F_z(r,z)+ derivative d/dr; d/dz and d^2/drdz
 4: Field map 3D: 6x,y,z, Bx, By, Bz (TO BE DONE)
@@ -59,7 +59,7 @@ public:
     int type_field_read;
 
 // DEFAULT: 0: 2nd order plus a nth order
-// 1:  Field in Helmoltz coils (so usualy goes with @type_of_default_field 0)
+// 1:  Field in Helmoltz coils (so usualy goes with a field that is magnetic)
 // 2: Field map 3D from 2D cylindrical symmetry: 4 columns r,z, F_r(r,z); F_z(r,z)
 // 3: Field map 3D from 2D cylindrical symmetry: F_r(r,z); F_z(r,z)+ derivative d/dr; d/dz and d^2/drdz
 // 4: Field map 3D: 6x,y,z, Bx, By, Bz (TO BE DONE)

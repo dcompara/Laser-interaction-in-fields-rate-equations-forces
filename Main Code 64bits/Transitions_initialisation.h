@@ -60,37 +60,12 @@ using namespace std;
 // Retourne le nb de transitions
 int Pgopher_Line_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params);
 
-
-// initalisation des probabilités de peuplement de départ
-void initialisation_proba(const gsl_rng *r, vector <Molecule> &Mol, const int Nb_molecules, const vector <Internal_state> &Level);
-
-
-
-/************************************************************************/
-/************************** INITIALISATION FC, Energie, HL **************/
-/************************************************************************/
-
 // Initialisation des durées de vies
 void initialisation_Gamma( vector <Internal_state> &Level, FitParams &params);
 
 
-// Modification des fichiers de niveaux et de transitions en fonction des FC et des Energies
-void Modification_FC_trans_mol(const char *nom_file_Levels, const char *nom_file_Lines ,  vector <Internal_state> &Level, FitParams &params, DataCards data);
-
-
-// Initialization Of FC factors for absorption and emission
-void initialisation_FC(double **FCondon, const char *nom_file_FC, const int NvAmax, const int NvXmax);
-
-
-// Energy of vibrational levels
-// The file format is v Ev Bv (en cm-1)
-void initialisation_energie(double **Ev, const char *nom_file_E_v, const int Nvmax, const int NJmax, const double E_v0_J0 = 0.);
-
-// Crée le nouveau fichier de données à partir des FC.
-// On lit un fichier de base contenant juste vX=0 et vA=0. Ensuite des FC et des Energie Ev et Bv des niveaux et on forme le nouveau ficheir
-void New_Pgopher_Level_Line(const char *nom_file_initial_Level, const char *nom_file_initial_Line, vector <Internal_state> &Level, double **FC, double **EvX, double **EvA, int NXout, int NAout, int N_Two_JA_out_max, int N_Two_JX_out_max, FitParams &params);
-
-
+// initalisation des probabilités de peuplement de départ
+void initialisation_proba(const gsl_rng *r, vector <Molecule> &Mol, const int Nb_molecules, const vector <Internal_state> &Level);
 
 // Initi
 #endif

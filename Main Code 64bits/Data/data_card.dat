@@ -1,4 +1,4 @@
- Nb card 177
+ Nb card 144
 DATA 
 @Nb_type_of_Mol 1 
 @Nom_Mol[0] Ps 
@@ -16,7 +16,7 @@ DATA
 @offset_y[0] 0 
 @offset_z[0] 0 
   @v0_x[0] 0. 
-  @v0_y[0] 0. 
+  @v0_y[0] 1e5 
   @v0_z[0] 0. 
 @Nom_Mol[1] P_bar 
  @N_Mol[1] 10 
@@ -45,14 +45,11 @@ DATA
 @rot_axe_x 1 
 @rot_axe_y 0 
 @rot_axe_z 0 
-@is_velocity_scaling false 
-@time_max_vel_scaling 2e-7 
-  @dt_scal 1e-7 
-@coupling_efficiency 0.2 
+    @v_maX 8 
+@two_J_maX 10; 
 @num_manifold_not_studied -3 
 @num_niveau_etudie -1 
 @is_Levels_Lines_Diagonalized 1 
-@type_of_default_field 0 
 @type_of_field_for_internal_state_shift 0 
 @type_field_read_E 0 
 @type_field_read_B 0 
@@ -112,8 +109,6 @@ DATA
 @nu_repetition_MHz[0] 80 
 @nu_individual_comb_line_MHz[0] 80 
 @coherent_avec_laser_num[0] -1 
-@is_pompage[0] 0 
-@is_rep[0] 0 
 @waist_pos_x[1] 0. 
 @waist_pos_y[1] 0. 
 @waist_pos_z[1] 0 
@@ -129,42 +124,14 @@ DATA
 @polar_angle_degree[1] 45 
 @type_laser[1] 5 
 @coherent_avec_laser_num[1] -1 
-@is_pompage[1] 0 
-@is_rep[1] 0 
-@num_niveau_first 1 
-@num_niveau_second 6 
-@num_niveau_exc 3 
-@repompage_force 0 
-@Pompage_optique_force 0 
-@rate_repompe 1e7 
-@E0_coupure_repompe_cm 33.37 
-@scale_temp_pompage 3 
-@scale_temp_rep 0.4 
- @nb_repet 0 
-  @t_repet 1000000 
 @is_DataCard_out 2 
 @is_param_scanned_out 1 
-@is_File_FC false 
-@nom_file_FC_vAvX Data/BaF/FC_vA_0_15Lignes_vX_0_14Colonnes.dat 
-@nom_file_E_vA Data/Ps/Ps_Levels_0B_photo.dat 
-@nom_file_E_vX Data/Ps/Ps_Lines_0B_photo.dat 
-    @NXmax 15 
-    @NAmax 16 
-   @NX_out 8 
-   @NA_out 4 
-@N_Two_JX_out_max 10; 
-@N_Two_JA_out_max 10; 
-@if_fixed_lifetime 0 
-@duree_vie 15e9 
 @nom_file_Levels Data/Ps/Ps_Levels_21.dat 
 @nom_file_Lines Data/Ps/Ps_Lines_21.dat 
 @nom_file_Laser_Spectrum Data/Ps/Laser_Spectrum.dat 
 @nom_sortie_donnees Data/donnee_Mol.dat 
-@nom_sortie_pulse Data/sortie_pulse.dat 
 @nom_sortie_rate Data/sortie_rate.dat 
 @nom_sortie_donnees_Data Data/data_card.dat 
-@nom_sortie_temp Data/sortie_temp.dat 
-@nom_sortie_scal Data/sortie_scal.dat 
 @nom_fichier_random_gen Data/random_gen.txt 
 @Choix_algorithme_Monte_Carlo 0 
 @Choix_algorithme_N_corps 1 

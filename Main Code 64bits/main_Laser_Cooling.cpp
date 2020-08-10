@@ -153,12 +153,8 @@ void RePaint ()
     nom_sortie_rate_string = data.SParam("nom_sortie_rate");
     nom_fichier_random_gen_string = data.SParam("nom_fichier_random_gen");
     nom_file_Laser_Spectrum_string = data.SParam("nom_file_Laser_Spectrum");         // Fichier contenant les transitions
-    nom_sortie_temp_string = data.SParam("nom_sortie_temp");
-    nom_sortie_scal_string = data.SParam("nom_sortie_scal");
     nom_file_Magn_Field_3D_string =  data.SParam("nom_file_Magn_Field_3D");
     nom_file_Elec_Field_3D_string =  data.SParam("nom_file_Elec_Field_3D");
-
-// We need to do this fro codeblock 17_12 beacuse      nom_file_Levels = data.SParam("nom_file").c_str();  create a Bug !!
 
     nom_file_Levels =  nom_file_Levels_string.c_str();      // Fichier contenant les Levels (etat, energie, ...)
     nom_file_Lines =  nom_file_Lines_string.c_str();         // Fichier contenant les transitions
@@ -166,19 +162,13 @@ void RePaint ()
     nom_sortie_rate = nom_sortie_rate_string.c_str();
     nom_fichier_random_gen = nom_fichier_random_gen_string.c_str();
     nom_file_Laser_Spectrum = nom_file_Laser_Spectrum_string.c_str();         // Fichier contenant les transitions
-    nom_sortie_temp = nom_sortie_temp_string.c_str();
-    nom_sortie_scal = nom_sortie_scal_string.c_str();
     nom_file_Magn_Field_3D =  nom_file_Magn_Field_3D_string.c_str();
     nom_file_Elec_Field_3D =  nom_file_Elec_Field_3D_string.c_str();
-
-
 
     FitParams params; // this is a vector<Param *>
     params.read(nomdat); // Lit le ficher des paramètres entre "BEGIN_OF_FITPARAMS" et "END_OF_FITPARAMS".
     params.init_value(nomdat); // Initialise les paramètres selon la valeur non scannée de la dataCard (cf datacards.h) ou à la valeur min si scannée
 
-    // cout << data << endl;
-    // params.dump();
 
     /******************************************************************/
     /** création abstraite des objets (champs, molécules, laser ...) **/
@@ -200,8 +190,6 @@ void RePaint ()
     ofstream file_out(nom_sortie_donnees); // ajouter ", ios::app" si on veux écrire à la fin du fichier. Sinon efface le fichier à la réecriture
     file_out<< setprecision(8);             // 8 décimales dans les fichiers de sortie
     ofstream file_rate(nom_sortie_rate);
-    ofstream file_temp(nom_sortie_temp);
-    ofstream file_scal(nom_sortie_scal);// for scaling velocities
 
     clock_t t_start,t_end; // Pour mesurer le temps de déroulement du programme
     t_start = clock();
@@ -214,23 +202,16 @@ void RePaint ()
     /*****************************************************************/
 
     gsl_rng * r; // Générateur de nb aléatoire
-    // set_random_generator(r, (int) params.LocateParam("Seed_Init_Random_Number_Generator")->val, nom_fichier_random_gen);  // Initialize the random_generator (Mersenne Twister here)// Corriger car NE MARCHE PAS
+    // set_random_generator(r, (int) params.LocateParam("Seed_Init_Random_Number_Generator")->val, nom_fichier_random_gen);  // Initialize the random_generator (Mersenne Twister here)
+// TODO (Daniel#8#): DOes not work (file fo rrandom generator). But averything is almost done, so should be easy to fix
+
     const gsl_rng_type * T;
     gsl_rng_env_setup();
     T = gsl_rng_default;  // "Mersenne Twister" generator by default. Plus rapide que RANLUX. cf. chapitre 17.12 de gsl_ref.
     r = gsl_rng_alloc (T);
     initialisation_trans_mol(nom_file_Levels, nom_file_Lines, Level, params); // Lecture des fichiers de niveaux et de transitions
 
-
-    if (data.SParam("is_File_FC") == "true")
-    {
-        Modification_FC_trans_mol(nom_file_Levels, nom_file_Lines, Level, params, data); // Modification des fichiers de niveaux et de transitions en fonction des FC et des Energies
-        exit(1);  // Sortie.
-    }
-
     bool  test_fin_boucle_param; // Paramètre de fin de boucle sur les paramètres à scanner
-
-
 
     if (data.IParam("is_DataCard_out") == 1)
     {
@@ -297,75 +278,24 @@ void RePaint ()
         double t_repet = params.LocateParam("t_repet")->val;
         int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
 
-        bool velocity_scaling= (bool) data.IParam("velocity_scaling"); // affichage graphique ou non.
-
-        int i=0;
-
-        while(velocity_scaling == true) // scaling velocities ON. i.e thermalisation of the cloud
-        {
-
-            Init_Field(champB, champE, params);  // Re-Initialise les champs. Important si scan des paramètres car ils ont changés.
-
-            if(t>=t_max_vel_scaling)
-            {
-                velocity_scaling=false;
-                t=0; // remise à zéro du temps
-                break;
-            }
-
-
-            if(t>=t_scal)
-            {
-                //scaling_velocities( t, Mol, Mol.size(),Level, champB,champE, params, coupling_efficiency, file_scal);
-                //(saling_velocities calculates v'(t)=v(t)*Lambda(t). We want to apply: v'(t+dt)=v(t+dt)*Lambda(t).
-                Vecteur3D Lambda;
-                Lambda= calcul_lambda( t, Mol, Mol.size(),Level, champB,champE, params, coupling_efficiency, file_scal); //Lambda(t)
-                t_scal+=dt_scal; //t=t+dt
-                i++;
-                cout << "scaling in progress n " << i << endl;
-                evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_scal, params);
-                rescaling_velocities_after_dt ( t, Mol, Mol.size(),Level, champB,champE, params, coupling_efficiency, file_scal, Lambda);
-                //calculates v'(t+dt)=v(t+dt)*Lambda(t)
-            }
-            evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_dyn, params);
-            if (Graphics )
-            {
-                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des point
-                wait(params.LocateParam("t_wait_affichage")->val);   // Permet de ne pas avoir un affichage trop rapide
-            }
-        }
-
         cerr << "GRAVITY ON z-AXIS" << endl;
 
         //Create_dipole_Lines_from_Matrices("matrice_dipole.dat");
 
-        while(velocity_scaling == false) //once the rescaling is done. Infinit llop untill t_end is reached
+        while(true) // Infinit loop untill t_end is reached
         {
             Init_Field(champB, champE, params);  // Re0-Initialise les champs. Important si scan des paramètres car ils ont changés. We do not add the files because we do not modify them
             Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
-
-            //Sortie_test_debug(file_out, Mol,Level, champB, champE, lasers, t, Mol.size() ,params,  data, number_photons); // sortie de toutes les données moléculaires
-            //exit(1);
-
-            // t_evol_ext_typ = temps d'évolution typique des forces (ou potentiels) ~ 0.1 waist/vitesse et au max 1 ms
-            // dt_dyn = (params.LocateParam("epsilon_param")->val) * t_evol_ext(Mol, champB, champE, lasers, params.LocateParam("Temp_ini")->val); // Temps d'évolution pour le N_corps. Modifier epsilon_param jusqu'a convergence!
             dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
 
-            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune.
-            // Sinon on ne recalcule que celui de la molécule numero_mol
-            // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-
-            // Sortie_donnee_etat_int_simple(file_out , Mol, lasers, t, params);
-
-            // Sortie_debug(file_rate, rate, reaction_list, Mol, champB, champE, lasers, 0, t,params); // sortie de toutes les données moléculaires
-
+            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
 
             if (t >= t_dia)
             {
-                // Sortie_laser_spectrum(file_out, lasers, params, 0);
-                Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-                // Sortie_donnee_pop_v(file_out, Mol, N_Mol[0], t, NX_out, params, number_photons);
-                // Sortie_donnee_pop_vJ(file_out, Mol, N_Mol[0],  t, NX_out, N_Two_JX_out_max,  params);
+                /*** Here, or just before if you want to have output all the time, put you output files ***/
+                // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
+
+                // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
                 // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;
             }
@@ -376,8 +306,6 @@ void RePaint ()
             {
                 evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_KMC, params); // Evolution N corps (avant le changement de vitesse). Cela change aussi le temps;
                 number_mol = do_reaction(Algorithme_MC, r, rate, reaction_list, Mol, n_reac, lasers, dt_KMC, file_rate, true, number_photons, params); // On fait l'évolution de l'état interne
-               // if (Mol[number_mol].exc == photoionized)
-                //    Sortie_donnee_electrons(file_out, Mol,Level, champB, champE, lasers, t, number_mol,params,  data, number_photons);  // sortie de toutes les données moléculaires
             }
             else // L'évolution se fera sans réaction durant un temps dt_dyn
             {
@@ -405,15 +333,12 @@ void RePaint ()
             {
                 Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des point
                 t_out += dt_out;
-                // cout << "time " << (double) t << endl;
                 wait(params.LocateParam("t_wait_affichage")->val);   // Permet de ne pas avoir un affichage trop rapide
             }
 
 
             if (t > t_fin || nb_repet < 0) // FIN DE LA BOUCLE
             {
-                //cout << " time final " << t << "  fin loop " << endl;
-
                 for (ParamIterator i=params.begin(); i != params.end(); ++i)
                 {
                     Param &p = **i;
@@ -438,7 +363,6 @@ void RePaint ()
 
     file_out.close();
     file_rate.close();
-    file_temp.close();
     t_end = clock();
 
     cout << "durée du programme (s) = " << (t_end - t_start)/double(CLOCKS_PER_SEC) << endl;

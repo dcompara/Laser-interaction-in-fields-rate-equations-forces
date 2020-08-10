@@ -86,8 +86,6 @@
 		<Unit filename="one_body.h" />
 		<Unit filename="params.cpp" />
 		<Unit filename="params.h" />
-		<Unit filename="scaling_velocities.cpp" />
-		<Unit filename="scaling_velocities.h" />
 		<Unit filename="shift_molecule.cpp" />
 		<Unit filename="shift_molecule.h" />
 		<Unit filename="sortie_donnees.cpp" />

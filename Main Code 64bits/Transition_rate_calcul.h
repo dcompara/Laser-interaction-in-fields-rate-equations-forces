@@ -161,17 +161,4 @@ int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r,  const ve
 Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_pol_dipole_transition, Vecteur3D quantization_axis, int delta_M, FitParams &params);
 
 
-/***********************************************/
-/********** taux forcés *********/
-/***********************************************/
-
-// Repompage si r < waist laser repompeur
-void Repompage(  vector <double> &rate, vector <type_codage_react> &reaction_list, const Molecule &Mol, const double t, const int numero_mol, const vector <Laser> &laser, const int N_Mol, FitParams &params );
-
-// Pompage optique forcé en bord extérieur pour transferer dans le potentiel moins piégeant
-// SI la distance diminue on est dans le piège le moins profond
-// Si la distance augment afin de perdre de l'énergie on est dans l'autre potentiel
-void pompage_rv( vector <double> &rate, vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const double t);
-
-
 #endif

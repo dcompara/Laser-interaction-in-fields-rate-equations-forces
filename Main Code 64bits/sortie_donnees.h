@@ -32,17 +32,11 @@ using namespace std;
 //Sauve l'état du générateur de nombre aléatoire pour ne jamais reprendre le même
 void save_random_generator(gsl_rng * r,  const char *nom_file);
 
-/* Création du fichier de sortie des données totales param_Ryd_N° .txt*/
-void sortie_fichier(ofstream & file2, vector <Molecule> &Mol);
 
+void Sortie_donnee_example(ofstream & file_out,  vector <Molecule> &Mol, vector <Internal_state> &Levels, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol, FitParams &params,  DataCards &data, const int number_photons);
 
-void Sortie_test_debug(ofstream & file_out,  vector <Molecule> &Mol,  const vector <Internal_state> &Level, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol,  FitParams &params,  DataCards &data, const int number_photons);
-
-void Sortie_donnee_etat_int_simple(ofstream & file_out , const vector <Molecule> &Mol, const vector <Laser> &my_laser, const double t, FitParams &params);
 
 void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol, vector <Internal_state> &Levels, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol, FitParams &params,  DataCards &data, const int number_photons);
-
-void Sortie_donnee_electrons(ofstream & file_out,  vector <Molecule> &Mol, const vector <Internal_state> &Levels, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol, FitParams &params,  DataCards &data, const int number_photons);
 
 
 // Toutes à la suites en temps
@@ -51,15 +45,12 @@ void Sortie_donnee_pop_vJ(ofstream & file_out, const vector <Molecule> &Mol, con
 // Sortie des populations dans l'état vX à la suite les unes des autres en temps
 void Sortie_donnee_pop_v(ofstream & file_out, const vector <Molecule> &Mol, const int nb_Mol, const double t, const int NX, FitParams &params, int number_photons);
 
+void Sortie_rate_example(ofstream & file_rate,  const vector <double> &rate, vector <Internal_state> &Level, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int N_Mol, const double t, FitParams &params);
+
 void Sortie_rate(ofstream & file_rate,  const vector <double> &rate, vector <Internal_state> &Level, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int N_Mol, const double t, FitParams &params);
 
 // Sortie du spectre laser
 void Sortie_laser_spectrum(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser=0);
 
-// Debug. Gives state, potential, ...
-void Sortie_debug(ofstream & file_rate, const  vector <double> &rate, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int n_reac, const double t,  FitParams &params);
-
-// collsisional cross section for charge exchange Ps Pbar. Cf PRA 94, 022714 (2016) fitted
-double Cross_section_Ps(double v, const int n);
 
 #endif

@@ -3,7 +3,8 @@
   Copyright:
   Author: Daniel Comparat
   Date: 15/10/06 11:01
-MODIFIER 12/02/2012. J'AI ENLEVER LES get ET set EN RENDANT TOUT PUBLIC!
+
+// TODO (Daniel#6#): Simplify all this ad keeping only the few parameters needed for the lines transitions
 
 
 Contient:

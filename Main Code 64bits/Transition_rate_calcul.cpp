@@ -719,8 +719,6 @@ int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algori
         copie_rates_molecules(reaction_list, rate, numero_mol, rate.size());
         rates_molecule_spon(Level, reaction_list, rate, Mol[numero_mol], fieldB, fieldE, numero_mol, params); // Emission spontanée
         rates_molecule(Level, reaction_list, rate, Mol, numero_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params);        // Absorption ou Emission stimulée
-        if( ((int) params.LocateParam("repompage_force")->val) == ((int) true) )
-            Repompage( rate, reaction_list, Mol[numero_mol], t, numero_mol, laser, N_Mol, params);
     }
     else  //  Si on a (forcé) numero_mol = aucune on recalcule tout
     {
@@ -730,18 +728,10 @@ int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algori
         {
             rates_molecule_spon(Level, reaction_list, rate, Mol[n_mol], fieldB, fieldE, n_mol, params); // Emission spontanée
             rates_molecule(Level, reaction_list, rate, Mol, n_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params);  // Absorption ou Emission stimulée
-            if( ((int) params.LocateParam("repompage_force")->val) == ((int) true) )
-                Repompage( rate, reaction_list, Mol[n_mol], t, n_mol, laser, N_Mol, params);
         }
     }
 
-    if( ((int) params.LocateParam("Pompage_optique_force")->val) == ((int) true) )
-    {
-        pompage_rv(rate, reaction_list, Mol, t); // Pompage forcé des molécules
-        // dt_KMC = 10000000.;
-        cout << " verif nb rate POMPAGE FORCE " << endl;
-        int n_reac = 0;
-    }
+
 
     return rate.size();
 }
@@ -938,129 +928,6 @@ Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_po
     Vecteur3D  Angles_quantization_labo;
     Angles_quantization_labo = Euler_angles(quantization_axis); // We rotate the axis. because the quantization frame is not the lab frame
     return rotation_axis_lab(point, Angles_quantization_labo.x(), Angles_quantization_labo.y(), Angles_quantization_labo.z()); // k_spon_unit_vector
-}
-
-
-/***********************************************/
-/********** taux forcés *********/
-/***********************************************/
-
-// Repompage forcé
-void Repompage( vector <double> &rate, vector <type_codage_react> &reaction_list,const Molecule &Mol, const double t, const int numero_mol, const vector <Laser> &laser, const int N_Mol, FitParams &params)
-{
-    const int Num_laser = laser.size();
-    const int num_niveau_first = (int) params.LocateParam("num_niveau_first")->val; // numéro du niveau étudié pour faire des stats. -1 pour toutes les molécules
-    const int num_niveau_second = (int) params.LocateParam("num_niveau_second")->val; // numéro du niveau de moindre pente pour le Sisyphe
-    const int num_niveau_exc = (int) params.LocateParam("num_niveau_exc")->val; // numéro du niveau excité
-
-    double Temp_ini  = params.LocateParam("Temp_ini")->val ; // température initiale
-    const double DE_temp_cm1  = - (1./(hPlanck*100.*C)) *  kB*Temp_ini ;
-
-    double scale_temp_rep = params.LocateParam("scale_temp_rep")->val;
-    // double Tau_Modif = params.LocateParam("Tau_Modif")->val ;
-    double DE_repomp_cm = scale_temp_rep*DE_temp_cm1;  // Nouvelle énergie de transition kB T * scale > 0
-    double rate_repompe = params.LocateParam("rate_repompe")->val;  // taux de repompage
-    double E0_coupure_repompe_cm = params.LocateParam("E0_coupure_repompe_cm")->val; // valeur seuil sous laquel on repompe (même à T=0)
-
-// cout << " Ratio E_repom/KB T " << DE_repomp_cm/E_Temp_estime_cm << endl;
-
-
-    //
-    // Repompage si r < waist laser repompeur
-    //if (( Mol[i].get_pos().mag() <  (my_laser[1].get_waist()).x() ) &&  !Mol[i].is_equal(Levels[num_niveau_first]))
-    // if ( Mol[i].Energy_cm < 33.35601 + DE_repomp_cm &&   !Mol[i].is_equal(Levels[num_niveau_first])   )
-    int nb_rate = rate.size();
-    if ( Mol.Energy_cm < E0_coupure_repompe_cm + DE_repomp_cm )
-    {
-        Internal_state Internal_state_out = *( Mol.liste_raies[0].first) ; //  état interne de la molecule après la réaction
-        rate[nb_rate] = rate_repompe;
-        type_codage_react reaction = { numero_mol, Num_laser, Vecteur3D(1.,0.,0.),  Vecteur3D(1.,0.,0.),  Vecteur3D(1.,0.,0.), Internal_state_out}; // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}. IN this case the k_eff_laser is  not important (we put axe_quant but any other values will do )
-
-        reaction_list[nb_rate] = reaction;  // On met un numéro de laser quelconque Num_laser = Nb_laser et pas d'impuslion
-        nb_rate++;
-        // cout << " repompage vers " << Internal_state_out.Energy0_cm << endl;
-        // Mol[i] = Levels[num_niveau_exc]; // repompage
-        // set_all_pot_state(Mol[i], my_laser, nombre_niveaux);  //Met à jour (pour recalculer les bonnes transitions) du potentiel
-    }
-
-//            double scale_temp_pompage = params.LocateParam("scale_temp_pompage")->val;
-//            double DE_pomp = scale_temp_pompage*E_Temp_estime_cm;
-//            double B_Field_estime2 = Levels[num_niveau_second].Field_Shift_B_cm(DE_pomp); // Champ magnétique correspondant au shift
-//            double DE_pomp_max = Levels[num_niveau_first].Energy_Shift_B_cm(B_Field_estime2);  // Energy max permise pour le pompage Sisyphe. Sinon on retombe dans la zone dénergie que l'on pompe!
-//
-
-
-// cout << " Ratio E_pom_max/KB T " << DE_pomp_max/E_Temp_estime_cm << endl; //
-
-
-    //  double DE_pomp = - DE_temp_cm1*param[1]*exp(-t/param[3]); // >0 ici
-    // Dépompage forcée si Energie > seuil
-    // if ( Mol[i].Energy_cm - Mol[i].Energy0_cm > DE_pomp &&   Mol[i].is_equal(Levels[num_niveau_first])   )
-//            if ( (Mol[i].Energy_cm - Mol[i].Energy0_cm > DE_pomp) && (Mol[i].Energy_cm - Mol[i].Energy0_cm < DE_pomp + 0.0001 ) )
-//                {
-//                    Mol[i] = Levels[num_niveau_exc]; // pompage vers excité
-//                    // Mol[i] = Levels[num_niveau_second]; // pompage vers M=0
-//
-//                      cout << " MOL " << i  << " pompée à distance (mm)= " <<  Mol[i].get_pos().mag()*1000. << endl;
-//
-//                    set_all_pot_state(Mol[i], my_laser, nombre_niveaux);  //Met à jour (pour recalculer les bonnes transitions) du potentiel
-//                }
-
-
-
-
-}
-
-
-// Pompage optique forcé en bord extérieur pour transferer dans le potentiel moins piégeant
-// SI la distance diminue on est dans le piège le moins profond
-// Si la distance augmente afin de perdre de l'énergie on est dans l'autre potentiel
-void pompage_rv(vector <double> &rate, vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const double t)
-{
-//
-//    double epsilon = 1e-3;
-//    for (int i = 0; i != N_Mol ; ++i)
-//        {
-//            if ( (Mol[i].get_pos()).dot(Mol[i].get_vel()) < - epsilon )  // r.v <0 la molécule descend le potentiel (r diminue), il faut donc la mettre dans le potentiel du bas!
-//                {
-//                    // file_rate << " MOL " << i  << " AU bord " << endl;
-//                    if (   (Mol[i].exc != fond) || (Mol[i].v !=1) || (Mol[i].J != 3) || (Mol[i].M != 3) )
-//                        {
-//                            // file_rate << " POMPAGE pour Mol " << i << endl;
-//
-//                            file_rate << t << " pomp " << Mol[i].get_pos().mag() << "    " << i  << endl; // position du pompage
-//                            // Sortie_rate(file_rate, rate, reaction_list, Mol, t);
-//
-//                            // file_rate << t << " pomp " <<  (Mol[i].get_pos()).dot(Mol[i].get_vel()) << endl; // position du pompage
-//
-//
-//                            Mol[i].exc = fond;
-//                            Mol[i].v = vA_ini;
-//                            Mol[i].J = JA_ini;
-//                            Mol[i].M = MJA_ini;
-//                        }
-//                }
-//            if (  (Mol[i].get_pos()).dot(Mol[i].get_vel()) > epsilon )  // r.v >0 la molécule monte le potentiel (r augmente), il faut donc la mettre dans le potentiel su haut!
-//                {
-//                    //file_rate << " MOL " << i  << " descend " << endl;
-//                    if (   (Mol[i].exc != fond) || (Mol[i].v !=0) || (Mol[i].J != JX_ini) || (Mol[i].M != MJX_ini) )
-//                        {
-//                            Mol[i].exc = fond;
-//                            Mol[i].v = vX_ini;
-//                            Mol[i].J = JX_ini;
-//                            Mol[i].M = MJX_ini;
-//
-//
-//// file_rate << " REPOMPAGE pour Mol " << i << endl;
-//                            file_rate << t << " repomp " << Mol[i].get_pos().mag() << "  " << i << endl; // position du repompage
-//                            // Sortie_rate(file_rate, rate, reaction_list, Mol, t);
-//                            // file_rate << t << " repomp " <<  (Mol[i].get_pos()).dot(Mol[i].get_vel()) << endl; // position du pompage
-//
-//                        }
-//                }
-//        }
-//
-//    return;
 }
 
 

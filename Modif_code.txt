@@ -1,5 +1,11 @@
 2020/08/10
-Put on github the new version. 
+V1.2 Put on github the new version. 
+Simplify (a bit) the code. Especially by reoving the Sisyphus forced repumping part, the Franck_Condon part, the velocity scalling
+Put new ToDo list
+Comment e bit more the List_Param
+
+2020/08/10
+V1.0.2 Put on github the new version. 
 Imporve the diagonalization to be more general in the futur
 
 2020/08/07

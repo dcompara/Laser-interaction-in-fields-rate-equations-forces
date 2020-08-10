@@ -6,7 +6,8 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 # 0 = false ; 1 =  true
 
 ***********************************************************************/
-########## 	Particles  	###############################
+########## 	Particles  	###########################################################################
+########## 	all in SI units (if not clearly expressed by the name) 	###############################
 #
 // Nb of different particles. For now only the first one is laser cooled (Level and Lines correspond to it)
 @Nb_type_of_Mol	1
@@ -105,21 +106,9 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @rot_axe_y  0
 @rot_axe_z  0
 
-
-
-##### VELOCITY  SCALING (needs >1 particle) ####
-
-@is_velocity_scaling false
-// velocity scaling ON ou OFF
-@time_max_vel_scaling 2e-7
-// temps pendant lequel on procède au time scaling. (temps max)
-//@step_vel_scaling 1000
-//nombre de pas
-@dt_scal 1e-7
-@coupling_efficiency 0.2
-// in percentage (max 1) 0.1=10%
-
-// coupling parameter of the BERENDSEN THERMOSTAT Algorithm
+// Scaling of  the drawing of the molecules for the vibration v_max and rotation J_max
+@v_maX 8
+@two_J_maX 10;
 
 
 #
@@ -130,7 +119,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // To take all manifold into account just put a number that is not used such as -10
 @num_manifold_not_studied   -3
 // numéro du niveau étudié pour faire des stats.
-// c'est ne numéro (ordre das la lecture du fichier en commençant par 0) du niveau pas de la manifold
+// Be carefule: c'est le numéro (ordre dans la lecture du fichier en commençant par 0) du niveau pas de la manifold
 // -1 pour toutes les molécules
 @num_niveau_etudie  -1
 #
@@ -141,45 +130,35 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @is_Levels_Lines_Diagonalized   1
 #
 ######### 	CHAMPS EXTERNES SI units (T, T/m, T/m^2 ...)	################################
+#########   FOR MORE COMPLEX CASE  see is_Levels_Lines_Diagonalized    #########
 #
-// We cannot for now have both electric and magnetic field easilly (just because we have only one parameter in the Level file
-// Thus we have to choose if this parameter is Zeeman or Stak shift
+// We cannot for now have both electric and magnetic field easily (just because we have only one parameter in the Level file for the field shift
+// Thus we have to choose if this parameter is Zeeman or Stark shift
 // But both fields will be used of the Lorentz force between charged particles
-// So here
-// 0: magnetic (Zeeman shift)
+// 0: magnetic (the Delta and C parameter for Level file will be a Zeeman shift)
 // 1: electric (Stark shift)
-@type_of_default_field 0
-#
-## MAGNETIC FIELD ##
-#
-// We cannot for now have both electric and magnetic field easily (just because we have only one parameter in the Level file
-
- /******** FOR MORE COMPLEX CASE  see is_Levels_Lines_Diagonalized    ***************/
-
-// Thus we have to choose if this parameter is Zeeman (0) or Stark shift (10)
 @type_of_field_for_internal_state_shift 0
 
-// But both fields will be used of the Lorentz force between charged particles
+
+// But both fields are used for charges particles (Lorentz) forces
 // For instance in Penning trap --> There is a magnetic and electric. But the magnetic is fully treated (Zeeman + Lorentz force).
 // But the electric is only for the Lorentz FOrce not for the Stark effect.
-// Or for Paul trap with (not implemented) or without micro-motion.
-@type_field_read_E    0
-@type_field_read_B    0
-// THIS is only for the "field_for_internal_state_shift" the other one will be by default at zero so in 2nd +nth order
+
+/*** How to define the fields: analtically (0), by coils(1), or by reading grids points on different geometries (2,3,4,..) ****/
 // DEFAULT
 // 0: 2nd order plus a nth order
+// 1:  Field in  (anti-)Helmotlz coils coils (so usualy goes with a field that is magnetic)
 
-// (anti-)Helmotlz coils
-// 1:  Field in Helmoltz coils (so usualy goes with @type_of_default_field 0)
-
-// File grids + Electric 2nd order: EQUIPARTITIONED POINTS (at least per axis, the spacing can be different for each axis). Ordered by column (1st increasing then second then third etc ..)
-// 2: Field map 3D from 2D cylindrical symmetry: 4 columns r,z, F_r(r,z); F_z(r,z)
+// Then we have file grids + Electric 2nd order: EQUIPARTITIONED POINTS (at least per axis, the spacing can be different for each axis). Ordered by column (1st increasing then second then third etc ..)
+// 2: Field map 3D from 2D cylindrical symmetry: 4 columns r,z, F_r(r,z); F_z(r,z).   // NOte if needed in the code, and for speed. the derivatiove car be calculated using efficiently Field::Calculate_Derivative_Matrix
 // 3: Field map 3D from 2D cylindrical symmetry: F_r(r,z); F_z(r,z)+ derivative d/dr; d/dz and d^2/drdz
 // 4: Field map 3D: 6x,y,z, Bx, By, Bz (TO BE DONE)
-// For speed. WE SUGGEST TO CALCULATE THE DERIVATIVES IF TYPE 2 USING Field::Calculate_Derivative_Matrix
+@type_field_read_E    0
+@type_field_read_B    0
 
 
 #
+## MAGNETIC FIELD definition (if) coils ##
 #
 // Dans le cas 1: Nombre de bobines. Axe z positions  (N-1/2) * z_gap auquel on ajoute r si (anti-)Helmotz
 @Nb_bobines 1
@@ -194,16 +173,16 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // rayon des bobines
 @rayon_bobines  25e-3
 #
+## MAGNETIC FIELD definition analytical ##
+#
 // Champ magn selon x,y et z. se décompose par composante: Example selon Ox: B_x + grad_B_x x + grad_grad_B_x x^2 + Bn x^n
-// NEVER put 0 but something small like 1e-10
+// NEVER put 0 but something small like 1e-10 to keep a quantization axis
 @B_x	0.0000000001
 @B_y	0.
 @B_z	0.
-//1.1
 @grad_B_x	0.
 @grad_B_y	0.
 @grad_B_z   0.
-//210
 @grad_grad_B_x	0.
 @grad_grad_B_y	0.
 @grad_grad_B_z	0.
@@ -214,19 +193,13 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 ## ELECTRIC FIELD ##
 // Electric Field along x,y and z. example Ox: E_x + grad_E_x x + grad_grad_E_x x^2 + En x^n
-// NEVER put 0 but something small like 1e-10
+// NEVER put 0 but something small like 1e-10 to keep a quantization axis
 @E_x	0.
 @E_y	0.
 @E_z	0.
-//@grad_E_x	0
-//@grad_E_y	0
-// V(z) = -0.1 V *(z/1cm)^50 --> E(z) = 0.1 * 50 z^49/(0.01)^50
-//@grad_E_z	0
 @grad_E_x	0.
 @grad_E_y	0.
-// V(z) = -0.1 V *(z/1cm)^50 --> E(z) = 0.1 * 50 z^49/(0.01)^50
 @grad_E_z	0.
-
 @grad_grad_E_x	0.
 @grad_grad_E_y	0.
 @grad_grad_E_z	0.
@@ -237,23 +210,22 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 ######### 	LASERS 	########################################
 #
-// Parametre multiplicatif de la puissance des lasers
+// Parametre multiplicatif de la puissance des tous les lasers
 @scale_Power 1
+
 // Paramètre additif de la fréquence de tous les lasers
-// Si Offset_Detuning_cm est >0 le laser est plus bleu (*1K detunning*)
 @Offset_Detuning_cm  0
 
 // Parametre multiplivatif de la largeur spectrale laser
 @scale_Gamma 1
 
-// Nb de laser utilisés (pas forcément le nombre ci-après que peut être plus grand)
+// Nb de laser utilisés (pas forcément le nombre ci-après qui peut être plus grand mais ne seront pas utilisés)
 @Nb_laser 0
 
 // We can swhich between lasers
-// IF t is between 0 and T1 (modulo T1+T2) THEN the lasers on are the one with number between 0 and N_laser/2
-// IF t is between T1, T1+T2 (modulo T1+T2) THEN the lasers on are between    N_laser/2+1 and N_laser.
-
 @Is_Laser_Switched 0
+// IF t is between 0 and T1 (modulo T1+T2) THEN the lasers On are the one with numbers between 0 and N_laser/2
+// IF t is between T1, T1+T2 (modulo T1+T2) THEN the lasers On are between    N_laser/2+1 and N_laser.
 @dt_switch_1 3e-8
 @dt_switch_2 1e-8
 
@@ -264,30 +236,31 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @direction_x[0]	0.
 @direction_y[0]	1.
 @direction_z[0]	0.
-// @waist_x[0]	5e-3
-// @waist_y[0]	5e-3
-// Mettre si on veux un seul waist
-@waist[0]	5e-3
-//cooling: 2T X,v=0, j=1/2, Mj=1/2 -> A, v=0,j=1/2
-//@Energie_cm[0]  3943.504844
 
-//normal penning trap 1T (Zeeman shifted)
-//X,v=0, j=1/2, Mj=1/2 -> A, v=0,j=1/2
-//@Energie_cm[0] 41155.3604450767 // for 4.5 T and 500 K
+// waist in SI units
+@waist[0]	5e-3
 @Energie_cm[0] 41148.3848
-//for 1T and 500K
 
 @Gamma_L_MHz[0] 1e-3
 @Power[0]	200
-// Vector laser polarization (in the laser propagation frame)
+
+// Vector laser polarization (in the laser propagation frame) See User Guide
+// Polarization can be purely circular (sigma+ or sigma -). Example: sigma + --> Pol_circulaire_left_sp = 1 and @Pol_circulaire_right_sm =-1
+// Can also be linear example eX = eX=(e-1-e+1)/sqrt(2). SoPol_circulaire_left_sp = -0.7071 and Pol_circulaire_right_sm[ = 0.7071;
+// Then the angle_psi_degree is (for linear polarization) the angle (so 90° if we want eY polarisation)
 // For linear polarization at 54.7356 degree it is  sp= -0.707107  sm= 0.707107 and angle 54.7356
 // by the way this creates 1/3 sigma+, 1/3 sigma- and 1/3 pi polarization (for a Y laser beam and quantization axes along z)
 @Pol_circulaire_left_sp[0]    1
 @Pol_circulaire_right_sm[0]   0.
 @polar_angle_degree[0]  0.
-//  façonné ---> Energie_cm+2*Gamma > EnergiE_trans_cm > Energie_cm (OBSOLETTE)
- // gaussien = 5, lorentzien = 6. (En fait Gaussien ne marche que si le laser est à résonnance et large spectralement)
+
+// The laser types are numerous (see laser.h file) and can be use on purpose (cf  intensity_Convolution_linewidth function) for field_ionization, black body type, femtosecond
+//  spon_emission = -1,    CW = 0, femto =1,  multi_mode=2,  pulse=3,  faconne = 4 (Obsolete because of laser_spectrum now),  gaussien = 5,  lorentzien = 6,   comb = 7,  pseudo_BBR =8,  field_ionization =9
+// the more standard is  gaussien = 5
+// spectral shape and shaping can be done using Laser_spectrum file
 @type_laser[0]  5
+
+// If femtosecond + comb laser (type_laser = 7) we havee these parameters. If not they are useless
 @nu_offset_MHz[0] 0
 @nu_repetition_MHz[0] 80
 @nu_individual_comb_line_MHz[0] 80
@@ -296,11 +269,6 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // si  coherent_avec_laser_num[0] = -1 ce laser est seul et n'interfère avec personne.
 // Attention bien mettre dans l'ordre un laser j interfère TOUJOURS avec un laser i<=j. S'il y a interférence entre i et j alors le plus petit i interfère avec i aussi
 @coherent_avec_laser_num[0]  -1
-// est t'il utilisé pour le (re)pompage (i.e. sa fréquence varie avec scale_temp_pompage? False  par défaut.
-// Si oui on ajoute scale*Temp_initial à son énergie
-@is_pompage[0] 0
-@is_rep[0] 0
-// CW = 0, femto =1, multi_mode=2, pulse=3, faconne = 4, gaussien = 5, lorentzien = 6
 
 #Deuxieme laser. Laser n°2
 @waist_pos_x[1]	0.
@@ -311,16 +279,10 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @direction_z[1]	-1.
 
 @waist[1]	10e-3
-//repump 0.2T, X,v=0,j=1/2,Mj=-1/2 -> A,v=0,j=1/2
-//@Energie_cm[1]  3944.511096
-//repump 1T, X,v=0,j=1/2,Mj=-1/2 -> A,v=0,j=1/2
 @Energie_cm[1] 41148.3848
 
 @Gamma_L_MHz[1]	1e5
 @Power[1]	1
-// Polarization can be purely circular (sigma+ or sigma -). Example: sigma + --> Pol_circulaire_left_sp = 1 and @Pol_circulaire_right_sm =-1
-// Can also be linear example eX = eX=(e-1-e+1)/sqrt(2). SoPol_circulaire_left_sp = -0.7071 and Pol_circulaire_right_sm[ = 0.7071;
-// Then the angle_psi_degree is (for linear polarization) the angle (so 90° if we want eY polarisation)
 @Pol_circulaire_left_sp[1]    0.7071067812
 @Pol_circulaire_right_sm[1]   -0.7071067812
 @polar_angle_degree[1]  45
@@ -329,34 +291,6 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 
 @coherent_avec_laser_num[1]  -1
 
-@is_pompage[1] 0
-@is_rep[1] 0
-
-
-#
-######### 	PARAMETRES POMPAGE OPTIQUE + SISYPHE 	####################
-#
-//
-@num_niveau_first   1
- // numéro du niveau de moindre pente pour le Sisyphe
-@num_niveau_second	6
-// numéro du niveau excité
-@num_niveau_exc	3
-#
-// Repompage ou pompage forcé oui ou non (1 true or 0 false)
-@repompage_force    0
-@Pompage_optique_force  0
-#
-@rate_repompe   1e7
-@E0_coupure_repompe_cm 33.37
-// scale en temp (pompage Sisyphe à scale_temp * k_B T)
-@scale_temp_pompage 3
-// scale en temp (repompage à scale_temp_rep * k_B T)
-@scale_temp_rep 0.4
-// Nb de répétition (0 = aucune) du processus Sisyphe. A t_repet on recommence, on garde les molécules mais on remet à t=0 les paramètres
-@nb_repet    0
-@t_repet    1000000
-#
 #
 ##########   PARAMETRES DE SORTIE FICHIER ####################
 #
@@ -365,46 +299,12 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // # 0 = false ; 1 =  true ; 2 = 2 file (one with only datacard, one with data but without datacard)
 @is_param_scanned_out 1
 #
-#
-######### 	FICHIERS FC 	################################
-#
-// Lecture du ficher Franck-COndon. Si oui cela crée un autre fichier "nom_file_Levels" et "nom_file_Lines" utilisant l'existant
-// (supposé être entre v''=0 et v'=0) et multiplié par le fichier F.C. et avec les énergies et Bv donnés
-// Si is_File_FC=true on crée ces fichiers avec noms  + "new_v_2Jmax"
-@is_File_FC false
-// Fichier contenant les facteurs FC entre vA (lignes)  et vX (colonnes)
-@nom_file_FC_vAvX	Data/BaF/FC_vA_0_15Lignes_vX_0_14Colonnes.dat
-// Fichier contenant les facteurs niveaux vibrationels, les énergies et les Bv (en cm^-1)
-@nom_file_E_vA  Data/Ps/Ps_Levels_0B_photo.dat
-@nom_file_E_vX  Data/Ps/Ps_Lines_0B_photo.dat
-// Nb of vibrational levels in X state; 0,1,...,NXmax-1 in the FC file
-@NXmax  15
-// Nb of vibrational levels in A state; 0,1,...,NAmax-1
-@NAmax  16
-// Nb of vibrational levels used to calculate the new file for X state; 0,1,...,NX-1
-// Used also to give (for the J,v output) the NX used in the current file if @is_File_FC false)
-// This is also used for the drawing of the molecules if the graphic is on
-@NX_out 8
-// Nb of vibrational levels used to calculate A; 0,1,...,NA-1
-@NA_out 4
-// Max +1 of rotational levels à mettre dans le fichier de sortie. Si on veux 2J=0,1,2 mettre 3.
-// Used also to give (for the J,v output) the 2JX_max used in the current file if @is_File_FC false)
-// This is also used for the drawing of the molecules if the graphic is on
-@N_Two_JX_out_max 10;
-@N_Two_JA_out_max 10;
-#
-// true pour fixer la durée de vie à duree_vie sinon calculées à partir des forces de transition # 0 = false ; 1 =  true
-// EN FAIT EST UTILSE JUSTE pour les largeur, car la durée de vie des transitions vient du dipole dans  rates_molecule_spon
-@if_fixed_lifetime	0
-// en force la durée de vie de l'état excité d'avoir une durée de vie de 15 ns
-@duree_vie	15e9
+
+
 #
 ######### 	NOM_FICHIERS 	################################
 #
 // Fichier contenant les Niveaux (état, énergie, ...)
-
-//@nom_file_Levels    Data/H/LevelsH_circular_1_60_lmax50.dat
-//@nom_file_Lines     Data/H/LinesH_circular_1_60_lmax50.dat
 
 @nom_file_Levels    Data/Ps/Ps_Levels_21.dat
 @nom_file_Lines     Data/Ps/Ps_Lines_21.dat
@@ -414,11 +314,8 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @nom_file_Laser_Spectrum    Data/Ps/Laser_Spectrum.dat
 #
 @nom_sortie_donnees	Data/donnee_Mol.dat
-@nom_sortie_pulse	Data/sortie_pulse.dat
 @nom_sortie_rate	Data/sortie_rate.dat
 @nom_sortie_donnees_Data	Data/data_card.dat
-@nom_sortie_temp	Data/sortie_temp.dat
-@nom_sortie_scal    Data/sortie_scal.dat
 #
 @nom_fichier_random_gen Data/random_gen.txt
 #
@@ -429,18 +326,23 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Aucun_MC = -1 (does not even calculate the rates), Kinetic_Monte_Carlo = 0, Random_Selection_Method = 1, First_Reaction_Method = 2,
 // Fast_Rough_Method = 3 is a new one evolving every ~0.1/rate_max time so typically N_Mol/10 evolve during one time step
 @Choix_algorithme_Monte_Carlo	0
+
 // Aucun_N_corps = -1 (mais photon recoil), Verlet_acc = 1 (sans force dipolaire), Verlet_pot (avec potentiel dipolaire) = 2,
 // si = 6(c'est Verlet_pot_gradient_high_order avec potentiel dipolaire et calcul du gradient dans one_body à l'ordre supérieur)
 // Yoshida6_acc = 3,       // 6 th order symplectic algorithm based on Verlet_acc
 //    Yoshida6_pot = 4,        // 6 th order symplectic algorithm based on Verlet_pot
 // Boris_Buneman  (with Magnetic field for charged particles) = 7
 @Choix_algorithme_N_corps	1
+
 // Choix du epsilon en position (en metre) pour calculer la dérivée du potentiel.
 // Une variation de 1/100 du potentiel selon epsilon semble bien
 // So 1e-6 for standard lasers or 1e-9 when interferences are present
 // Ne pas hésiter à tester aussi epsilon <0. Et a vérifier avec le epsilon_param
 @choix_epsilon  1e-8
-// La même valeur permet d'avoir toujours la même séquence. Une valeur négative utilise le fichier pour renouveler la séquence. If 0 the standard seed from the original implementation
+
+// La même valeur permet d'avoir toujours la même séquence.
+// This is EXTREMELLY useful for debuging because the program is always the same.
+// We can use a negative value (but I never did it) to use a file to  have a new sequence a each run.
 @Seed_Init_Random_Number_Generator  2
 #
 #

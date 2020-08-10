@@ -327,22 +327,6 @@ void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, c
 
         int coherent_avec_laser_num = (int) params.LocateParam(string("coherent_avec_laser_num") + num)->val;
 
-//        double Temp_ini = params.LocateParam("Temp_ini[0]")->val; // Température initiale de la molécule type 0
-//        const double DE_temp_cm1  = (1./(hPlanck*100.*C)) *  kB*Temp_ini ; // Energie (>0) correspondant à cette température initiale
-//
-//        // 0 = false ; 1 =  true
-//        if( ((int) params.LocateParam(string("is_pompage") + num)->val) == ((int) true) ) // Le laser est utilisé pour le pompage. Son énergie en excès varie comme scale_temp_pompage
-//        {
-//            double scale_temp_pompage = params.LocateParam("scale_temp_pompage")->val;
-//            Energie_cm -= scale_temp_pompage*DE_temp_cm1; // On met l'énergie de transition laser à la résonance en scale_temp
-//        }
-//
-//        if( ((int) params.LocateParam(string("is_rep") + num)->val) == ((int) true) ) // Le laser est utilisé pour le repompage. Son énergie en excès varie comme scale_temp_rep
-//        {
-//            double scale_temp_rep = params.LocateParam("scale_temp_rep")->val;
-//            Energie_cm -= scale_temp_rep*DE_temp_cm1;
-//        }
-
         Laser current_Laser;
         current_Laser.set_waist_pos(waist_position);
         current_Laser.set_direction(Direction_laser);

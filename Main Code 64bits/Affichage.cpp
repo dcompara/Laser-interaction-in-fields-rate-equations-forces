@@ -155,7 +155,7 @@ void affichage_ellipse(const Vecteur3D Radius3D, const Vecteur3D color, const in
 }
 
 /************
-// Affiche un hyperboloide de révolution
+// Affiche un hyperboloide de révolution (pas encore vraiment opérationnel)
 // D'après http://www-math.edu.kagoshima-u.ac.jp/~fractaro/AnschaulicheGeometrie/Hyperboloid.c
 
 // int mode = 0;

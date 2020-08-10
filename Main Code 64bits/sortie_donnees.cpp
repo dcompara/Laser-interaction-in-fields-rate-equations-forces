@@ -17,80 +17,48 @@ void save_random_generator(gsl_rng * r, const char *nom_file)
 }
 
 
-/* Création du fichier de sortie des données totales  */
-void sortie_fichier(ofstream &  /* file2 */, Molecule /* Mol[] */)
+
+void Sortie_donnee_example(ofstream & file_out,  vector <Molecule> &Mol,  vector <Internal_state> &Level, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol,  FitParams &params,  DataCards &data, const int number_photons)
 {
-
-    /* A mettre si on veut une numérotation automatique (ainsi que la partie finale)
-
-
-    ifstream file_in("Data/file_num.txt"); // Ouvre le fichier contenant le futur numéro de fichier
-    int num;
-    file_in >> num  ;
-    file_in.close();
-
-    char snum[256];
-    sprintf(snum,"%d",num);
-    string ssnum = snum ;
-    string nom_fichier = "Data/param_Ryd_" + ssnum + ".txt" ;
-
-    ofstream file_out(nom_fichier.c_str()); // créer le fichier de donné de sortie param_Ryd_N° .txt contenant i, exc[i],  x[i], y[i], z[i], pot[i], pot_ji (plus proche voisin), theta_ji, d_ji
-
-    */
+    //set_pot_all_mol(Mol, fieldB, fieldE, laser, t, nb_mol, params); //Met à jour de tous les potentiels (gravité, PAS dipolaire, magnétique, electrique, ...) avec la nouvelle position pour uen sortie
+// ATTENTIION THIS DOES NOT WORK FOR THE POTENTIALS
 
 
-    /* A mettre si on veut une numérotation automatique (ainsi que la partie commentée initiale )
-        file_out.close();
-        ofstream file_num_out("Data/file_num.txt"); // créer le fichier contenant le futur numéro de fichier
-        file_num_out << ++num;
-        file_num_out.close();
-    */
-}
-
-
-
-void Sortie_donnee_etat_int_simple(ofstream & file_out, const vector <Molecule> &Mol, const vector <Laser> &my_laser, const double t, FitParams &params)
-{
-    file_out<< setprecision(8);
-    for(int i=0; i<(int) Mol.size(); i++)
+// SOrtie des paramètres scannés
+    if( ((int) params.LocateParam("is_param_scanned_out")->val) == ((int) true) )
     {
-        file_out << "   " << t << " " << i << " " << Mol[i].exc  << "   " << Mol[i].two_J/2.  << "   " << Mol[i].two_N/2. << "   " << Mol[i].two_M/2. << "   " << Mol[i].Energy0_cm << endl ;
-    }
-    // cout << endl << "    time t =  " << t << endl  ;
-    file_out << endl;
-
-    return;
-}
-
-
-
-
-
-void Sortie_test_debug(ofstream & file_out,  vector <Molecule> &Mol,  const vector <Internal_state> &Level, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int nb_mol,  FitParams &params,  DataCards &data, const int number_photons)
-{
-
-//    int number_matrix_lines = 2480;
-//    fieldB.Calculate_Derivative_Matrix(number_matrix_lines, "Data/Na/MagneticField2D_derivative.dat");
-
-    double step_r = 0.001;
-    double step_z = 0.001;
-    double nb_steps = 100;
-
-    // for (double  x= -nb_steps*step_r; x < nb_steps*step_r; x+=step_r)
-    //for (double  y= -nb_steps*step_r; y < nb_steps*step_r; y+=step_r)
-    for (double  x= 0.003; x < 0.005; x+=step_r)
-
-        for (double  z= -nb_steps*step_z; z < nb_steps*step_z; z+=step_z)
+        for (ParamIterator i=params.begin(); i != params.end(); ++i) // boucle sur les paramètres
         {
-            double y=0.;
-            file_out << sqrt(x*x+y*y) << " " <<  x << " " << y << " " << z << " "  << fieldB.get_Field(Vecteur3D(x,y,z)) << " " << fieldB.get_grad_field_F2(Vecteur3D(x,y,z)) << endl;
+            Param &p = **i;
+            if (p.is_scanned == true)
+            {
+                file_out << p.name ;
+                file_out << p.val_t0 << " " ;
+            }
         }
-    file_out << endl;
+    }
 
+    file_out<< setprecision(8);
+
+    const int num_niveau_etudie = (int) params.LocateParam("num_niveau_etudie")->val; // numéro du niveau étudié pour faire des stats. -1 pour toutes les molécules
+
+    Stat stat_Mol;
+    stat_molecule_un_niveau(Mol, stat_Mol, Level,  fieldB, fieldE, num_niveau_etudie, Mol.size(), params);
+
+
+    for (int i = 0; i < nb_mol; i++)
+    {
+        set_pot_mol(Mol, i, fieldB, fieldE, laser, t, params); //Met à jour de tous les potentiels (gravité, PAS dipolaire, magnétique, electrique, ...) avec la nouvelle position pour une sortie
+        file_out  << t << " ";
+        file_out << stat_Mol.Temp_3D_50 << " ";
+        file_out  << stat_Mol.population << " ";
+        file_out  << Mol[i].get_pos() << " ";
+        file_out  << Mol[i].get_vel() << " ";
+        file_out  << Mol[i].deg_number << " ";
+        cout << endl;
+    }
     return;
 }
-
-
 
 
 
@@ -138,8 +106,6 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //    file_out  << stat_Mol.population << " ";
 //    file_out  << stat_Mol.Temp_1D_50.z() << " ";
 
-
-//  Attention relative à la température E_pot = 3/2 k T, E_cin =3/2 kT; E tot=3 kT
 
 //  file_out  << (stat_Mol.E_pot/kB)/mK/1.5/nb_mol << "  ";
     //  file_out  << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
@@ -189,12 +155,12 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             // file_out << endl;
             // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
 
-        Vecteur3D v;
-        v = Mol[i].get_vel();
-        Vecteur3D Bfield;
-        Bfield= fieldB.get_Field(Mol[i].get_pos());
-        double B = Bfield.mag();
-        double v_perp= (v.cross(Bfield)).mag()/B;
+            Vecteur3D v;
+            v = Mol[i].get_vel();
+            Vecteur3D Bfield;
+            Bfield= fieldB.get_Field(Mol[i].get_pos());
+            double B = Bfield.mag();
+            double v_perp= (v.cross(Bfield)).mag()/B;
 
             file_out << B << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
         }
@@ -267,28 +233,6 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 
 
     // file_out << endl;
-    return;
-}
-
-
-void Sortie_donnee_electrons(ofstream & file_out,  vector <Molecule> &Mol,  const vector <Internal_state> &Level, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, const int number_mol,  FitParams &params,  DataCards &data, const int number_photons)
-{
-    Vecteur3D r,v;
-    r = Mol[number_mol].get_pos();
-    v = Mol[number_mol].get_vel();
-    Vecteur3D E = fieldE.get_Field(r);
-    double V = fieldE.get_electric_potential(r);
-    double Vcoulomb = get_coulomb_potential(Mol, r, Mol.size());
-
-    file_out<< setprecision(8);
-    file_out  << t << " ";
-    file_out << r << "  ";
-    file_out << E.mag() << "  ";
-    file_out <<  get_coulomb_field(Mol, number_mol, r).mag() << " ";
-    file_out << V << "  ";
-    file_out << Vcoulomb << "  ";
-
-    file_out << endl;
     return;
 }
 
@@ -396,6 +340,31 @@ void Sortie_donnee_pop_v(ofstream & file_out, const vector <Molecule> &Mol, cons
 
     return;
 }
+
+
+
+
+void Sortie_rate_example(ofstream & file_rate, const  vector <double> &rate,  vector <Internal_state> &Level, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int N_Mol, const double t,  FitParams &params)
+{
+    file_rate<< setprecision(12);
+    file_rate << " time t = " << t << endl;
+
+    int nb_rate = rate.size();
+    for (int i = 0; i < nb_rate; i++)
+    {
+        file_rate  << " " << i;
+        file_rate  << " " << rate[i];
+        int n_mol= reaction_list[i].n_mol;
+        int n_laser = reaction_list[i].n_laser;
+
+        file_rate << " " << n_mol ;
+        file_rate << " " << n_laser;
+        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
+        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
+        file_rate << endl ;
+    }
+}
+
 
 
 void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <Internal_state> &Level, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int N_Mol, const double t,  FitParams &params)
@@ -568,87 +537,6 @@ void Sortie_laser_spectrum(ofstream & file_out, const vector <Laser> &laser, Fit
     }
 
     return;
-}
-
-// Debug. Gives state, potential, ...
-void Sortie_debug(ofstream & file_rate, const  vector <double> &rate, const vector <type_codage_react> &reaction_list, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const int n_reac, const double t,  FitParams &params)
-{
-    // t	rate	nlas	z	B	delta	E_fin	E_in	2J_fin	2J_in	2Mfin	2M_in
-
-    file_rate<< setprecision(12);
-    //  file_rate << " time t = " ;
-    file_rate << t << " ";
-
-    int i=  n_reac;
-
-//   file_rate  <<  " rate[" << i << "] = ";
-    file_rate << rate[i] << " ";
-    int n_mol= reaction_list[i].n_mol;
-    int n_laser = reaction_list[i].n_laser;
-//   file_rate << " nMol = " ;
-    //  file_rate<< n_mol << " ";
-//   file_rate << " nlas = ";
-    file_rate << n_laser << " ";
-
-    Vecteur3D r;
-    r = Mol[n_mol].get_pos();
-    //  file_rate << " pos = " ;
-    file_rate << r.z() << " ";
-
-    double B = fieldB.get_Field(r).mag();
-    double E = fieldE.get_Field(r).mag();
-    Internal_state Internal_state_in = Mol[n_mol] ; //  état interne de la molecule
-    double Energy_in = Internal_state_in.Energy0_cm + (Internal_state_in.Energy_Shift_B_cm(B) + Internal_state_in.Energy_Shift_E_cm(E));
-    Internal_state Internal_state_out = reaction_list[i].final_internal_state ; //  état interne de la molecule après la réaction
-    double Energy_out = Internal_state_out.Energy0_cm + (Internal_state_out.Energy_Shift_B_cm(B) + Internal_state_out.Energy_Shift_E_cm(E));
-    double Energy_transition_laser_cm = cm/laser[n_laser].get_lambda(); // Energie de la transition laser en cm^-1
-
-
-//    file_rate << " B " ;
-    file_rate << B << " ";
-//   file_rate << " detuning_cm " ;
-    file_rate << abs(Energy_out- Energy_in) - Energy_transition_laser_cm << " ";
-//   file_rate << " Efin0 " ;
-//   file_rate << Internal_state_out.Energy0_cm<< " ";
-    //  file_rate << "E_in0 ";
-    //  file_rate << Internal_state_in.Energy0_cm << " ";
-    //  file_rate << " Efin " ;
-    file_rate << Energy_out << " ";
-    //  file_rate  << "E_in ";
-    file_rate << Energy_in << " " ;
-    //  file_rate << " 2J_fin ";
-    file_rate << (reaction_list[i].final_internal_state).two_J << " ";
-    //  file_rate << " 2J_in ";
-    file_rate << Mol[reaction_list[i].n_mol].two_J << " ";
-    file_rate << Mol[reaction_list[i].n_mol].two_M << " " ;
-
-    file_rate << endl ;
-
-}
-
-
-// collisional cross section for charge exchange Ps Pbar.
-
-double Cross_section_Ps(double v,  const int n)
-{
-    double s1= 1.32e-16;
-    double s2= 1.12e-15;
-    double v_electron = ALPHA * C/(2. * n);
-    double kv = v/v_electron;
-    double sigma = n*n*n*n*(s1/(kv * kv) + s2)/(1.+pow(kv/1.8,20)); //  Cf PRA 94, 022714 (2016) fitted
-
-    double B = 4.5*tesla;  // MAGNETIC FIELD (PUT HERE BY HAND !!!!!)
-
-    double E_max_field_ionization = (-QE/(4.*pi*EPSILON0 *(2.*A0)*(2.*A0)))/(16.*n*n*n*n) ; // Maximum field for field iniastion. 1/16n^4 can be replaced by 1/9 n^4  in pure electric field
-
-    if ( v*B < E_max_field_ionization)
-    {
-        return sigma ;
-    }
-    else
-    {
-        return 0. ; // because the particles is field ionized
-    }
 }
 
 
