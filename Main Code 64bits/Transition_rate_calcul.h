@@ -34,6 +34,13 @@ using namespace std;
 #include <complex>                      // Pour les calculs d'émission spontanée
 
 #include <Eigen/Eigen>  // For matrix manipulation
+
+// Strangely enough here (different form diagonlaization) it slow down the code !!
+//#define EIGEN_DONT_VECTORIZE
+//#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+//#include<Eigen/StdVector>
+
+
 using namespace Eigen;
 
 #include "params.h"     // Pour mettre des paramètres dedans
@@ -105,7 +112,8 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
 int rates_single_molecule_laser_level(const int n_las, double dipole, double &delta, double &eps_pol, double &Gamma_spon_tot, double sqrt_intensity_loc[],
                                       vector <Internal_state> &Level, Internal_state &Internal_state_in, Internal_state &Internal_state_out, vector <type_codage_react> &reaction_list, vector <double> &rate,
                                       const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const Laser &my_laser, const double t, double &delta_pot_dipolaire,
-                                      FitParams &params, bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1, const double Gamma_in=0., MatrixXd d[]= {});
+                                      FitParams &params, bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1,
+                                      const double Gamma_in=0., MatrixXd d[]={});
 
 
 // Calcul de tous les taux de la molécule  pour tous les lasers

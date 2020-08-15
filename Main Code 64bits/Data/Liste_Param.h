@@ -17,7 +17,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // so Mol[0] to Mol[Nom_Mol[0]-1]
 @Nom_Mol[0]	Ps
 // It is the number of molecules that are laser cooled.
-@N_Mol[0]  21
+@N_Mol[0]  1
 @Temp_ini_x[0] 1e-10
 @Temp_ini_y[0] 1e-10
 @Temp_ini_z[0] 1e-10
@@ -47,7 +47,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @offset_z[0]	0
 // Initial velocity added to the random one
 @v0_x[0]	0.
-@v0_y[0]	1e5
+@v0_y[0]	0.
 @v0_z[0]    0.
 #
 #2nd type of particle
@@ -96,7 +96,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Temps d'attende entre 2 affichages. Permet de ne pas avoir un affichage trop rapide
 @t_wait_affichage   1e-1
 // 0 = false ; 1 =  true
-@Graphics 1
+@Graphics 0
 // rotate 90 degree along the vector (rot_axe_x, rot_axe_y, rot_axe_z)
 // if no rotation we would have x (red arrow) toward the right, y (green arrow) up and z (blue arrow) toward the screen.
 // DEFAULT IS (1,0,0) = x right, y  in screen, z up (gravity down)
@@ -177,9 +177,9 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 // Champ magn selon x,y et z. se décompose par composante: Example selon Ox: B_x + grad_B_x x + grad_grad_B_x x^2 + Bn x^n
 // NEVER put 0 but something small like 1e-10 to keep a quantization axis
-@B_x	0.0000000001
+@B_x	0.
 @B_y	0.
-@B_z	0.
+@B_z	1e-10
 @grad_B_x	0.
 @grad_B_y	0.
 @grad_B_z   0.
@@ -193,7 +193,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 ## ELECTRIC FIELD ##
 // Electric Field along x,y and z. example Ox: E_x + grad_E_x x + grad_grad_E_x x^2 + En x^n
-// NEVER put 0 but something small like 1e-10 to keep a quantization axis
+// NEVER put 0 but something small like 1e-10 to keep a quantization axis (if given by E)
 @E_x	0.
 @E_y	0.
 @E_z	0.
@@ -306,8 +306,8 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 // Fichier contenant les Niveaux (état, énergie, ...)
 
-@nom_file_Levels    Data/Ps/Ps_Levels_21.dat
-@nom_file_Lines     Data/Ps/Ps_Lines_21.dat
+@nom_file_Levels    Data/Ps/Ps_Levels_23.dat
+@nom_file_Lines     Data/Ps/Ps_Lines_23.dat
 
 // Fichier contenant les spectres laser doit finir en .dat
 // Les dichiers contenant les transitions lasers seront donc ce nom +"[numero laser]" où numéro=0 pour le premier laser
@@ -370,6 +370,6 @@ BEGIN_OF_FITPARAMS
 @SCAN_Offset_Detuning_cm -2.5 -1 5 false false
 @SCAN_scale_Gamma 0.3 0.6 3   false    false
 @SCAN_Tau_Modif 0.5e-3 2e-3 2 false false
-@SCAN_B_x   0.0000000001   5  1000  true false
+@SCAN_B_z   0   5  1000  true false
 END_OF_FITPARAMS
 

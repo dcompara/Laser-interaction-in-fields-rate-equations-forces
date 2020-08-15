@@ -188,8 +188,8 @@ void initialisation_proba(const gsl_rng *r, vector <Molecule> &Mol, const int Nb
         int numero = gsl_ran_discrete(r, g); // Numéro du niveau tiré au Hazard
         Mol[nb] = Level[numero]; // The vector Mol has been created before so no push_pack() it is a modification of the content !. c'est l'état interne de la molecule
 
-//  DEBUG          Mol[nb] = Level[nb]; // The vector Mol has been created before so no push_pack() it is a modification of the content !. c'est l'état interne de la molecule
-//    cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
+//        Mol[nb] = Level[nb];
+// DEBUG  cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
     }
     gsl_ran_discrete_free (g);
 

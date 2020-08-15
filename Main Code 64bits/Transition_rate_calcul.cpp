@@ -186,6 +186,7 @@ double rate_field_ionization(const Laser& my_laser, const vector <Molecule> &Mol
     // double Vcoulomb = get_coulomb_potential(Mol, r, n);
 
     E_coulomb = get_coulomb_field(Mol, n_mol, r); // SI on veux ajouter le champ coulombien
+    // get_coulomb_field(const vector <Body> &bod, const int i, const Vecteur3D &ri)
     E = E + E_coulomb;
 
     double Gamma;
@@ -228,7 +229,7 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
     Molecule my_mol = Mol[n_mol];
     double rate_exc = 0.; // rate of excitation
 
-    if ((bool) is_bound_transition) // transition bound-bound (abs; permet de traiter les symmetrie +1 et -1 comme +1 donc true)
+    if ((bool) is_bound_transition) // transition bound-bound
         rate_exc = rate_two_level(Itot_loc, dipole_debye);
     else // bound_free transition (potential photo_ionization)
         if (my_laser.get_type_laser() == pseudo_BBR) //If we study BBR
@@ -285,14 +286,12 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
     /**********  WE DIAGONALIZED THE ENERGY LEVELS so the transition dipole moment are not constant and need to be calculated
     BUt we do not know the real k vector of the sponteneous emission so we do not correct for the recoil energy level **********/
 
-
-
-
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(1)|j> in  field
-        SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-          Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);
+
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
+        Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);
 
 
         // diagonalized the Hamiltionian for B field and v velocity and give the eigenvectors and eigenvalues and  update all Level[n].Energy_cm
@@ -375,8 +374,9 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         Internal_state_out = Level[n_level_out];
-        is_bound_transition = abs(Internal_state_out.Sym); // To know if the transition is towards continuum for instance
+        is_bound_transition = abs(Internal_state_out.Sym); // To know if the transition is towards continuum for instance (abs; permet de traiter les symmetrie +1 et -1 comme +1 donc true)
     }
+// TODO (Daniel#8#): Think of a beter way han the bas(sym) for the (un)bound transition. To have a simpler code
 
 
     Vecteur3D k,v,r;
@@ -407,7 +407,8 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         for(int q = -1; q <= 1; q++) // scan over the polarization d^(q) sur -1, 0, +1  ;d[0]=dsigma-, d[1] =dpi , d[2]=dsigma+ for polarization in absorption ; d0[q+1]_ij = 0_<i | d^(q) | j>_0
-        { // We choose the proper dipole because d[q+1][i][j] (WITH E_i> E_j to get m_i = m_j+q
+        {
+            // We choose the proper dipole because d[q+1][i][j] (WITH E_i> E_j to get m_i = m_j+q
             if (Internal_state_in.Energy_cm > Internal_state_out.Energy_cm) // EMISSION  up=i=n_level_in   low=j=n_level_out
                 dipole_vector = Vecteur3D( d[0](n_level_in,n_level_out), d[1](n_level_in,n_level_out), d[2](n_level_in,n_level_out));
             else   // ABSORPTION up=i=n_level_out   low=j=n_level_in
@@ -468,7 +469,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
     double dipole_debye =0.;
     double rate_exc=0;
     double sqrt_intensity_loc[100], delta[100]; // intensities ~sqrt(I), détuning
-    int is_bound_transition ; // Trick to treat the ionization. An ionizing state is of 0 symmetry. All other states are -1 or +1 thus transform to +1 = true
+    int is_bound_transition = 1 ; // Trick to treat the ionization. An ionizing state is of 0 symmetry. All other states are -1 or +1 thus transform to +1 = true
     Internal_state Internal_state_in,Internal_state_out; // State for transitions
 
     Vecteur3D r,v,Bfield;
@@ -500,7 +501,8 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(-1)|j> in  field
-        SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
+
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
         Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d); // calcul of the new dipole transition for the new levels.
 
         int n_level_in = my_mol.deg_number; //The molecules is in the Level number n_level_in.// so Level[ # = deg_number] shall be the Level itself// So in the Level file the deg_number is the Level number (START FROM 0)
@@ -522,11 +524,11 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
 // TODO (Daniel#9#): this test works only if the lowest level is a dead level. May be remove this part (which is here only for speed reasons
             if (n_level_in>0) // 0 is the dead level so it can not change
-               {
-                   my_mol.set_vel(v-HBAR*k/m); // new volocity for the diagonalization
-                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
-                   my_mol.set_vel(v); // put back as normal value
-               }
+            {
+                my_mol.set_vel(v-HBAR*k/m); // new volocity for the diagonalization
+                Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                my_mol.set_vel(v); // put back as normal value
+            }
             for( int n_level_out = 0; n_level_out < n_level_in; n_level_out++ )  // Emission so we scan only on level below
             {
                 rates_single_molecule_laser_level( n_las, dipole_debye, delta[n_las], eps_pol,  Gamma_spon_tot, sqrt_intensity_loc, Level, Internal_state_in, Internal_state_out,
@@ -537,13 +539,13 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
             /***** Absorption: v--> v+HBAR*k/m *****/
 
 
-            if (n_level_in< Level.size()) // to make the loop over all levels
-                 {
-                   my_mol.set_vel(v+HBAR*k/m); // new volocity for the diagonalization
-                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
-                   my_mol.set_vel(v); // put back as normal value
-               }
-            for( int n_level_out = n_level_in+1; n_level_out < Level.size(); n_level_out++ ) // Absorption  so we scan only on level above
+            if (n_level_in< (int)  Level.size()) // to make the loop over all levels
+            {
+                my_mol.set_vel(v+HBAR*k/m); // new volocity for the diagonalization
+                Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                my_mol.set_vel(v); // put back as normal value
+            }
+            for( int n_level_out = n_level_in+1; n_level_out < (int)  Level.size(); n_level_out++ ) // Absorption  so we scan only on level above
             {
                 is_bound_transition = abs(Level[n_level_out].Sym);
                 rates_single_molecule_laser_level(n_las, dipole_debye, delta[n_las], eps_pol,  Gamma_spon_tot, sqrt_intensity_loc, Level, Internal_state_in, Internal_state_out,

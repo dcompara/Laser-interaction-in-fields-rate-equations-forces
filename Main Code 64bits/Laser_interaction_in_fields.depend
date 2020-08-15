@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1597066458 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage.cpp
+1597066458 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage.cpp
 	"Affichage.h"
 
-1597066458 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage.h
+1597066458 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage.h
 	<iostream>
 	<time.h>
 	<windows.h>
@@ -15,7 +15,7 @@
 	"Vecteur3D.h"
 	"Laser.h"
 
-1596636060 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\vecteur3d.h
+1597409214 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\vecteur3d.h
 	<cmath>
 	<iostream>
 	<fstream>
@@ -23,47 +23,47 @@
 	<gsl/gsl_randist.h>
 	<iostream>
 
-1596636418 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\laser.h
+1596636418 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\laser.h
 	<map>
 	<iostream>
 	"Vecteur3D.h"
 	"constantes_SI.h"
 
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\constantes_si.h
+1597238776 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\constantes_si.h
 	<math.h>
 	"Vecteur3D.h"
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\algorithmes.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\algorithmes.cpp
 	"algorithmes.h"
 
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\algorithmes.h
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\algorithmes.h
 	<time.h>
 	<fstream>
 	<iostream>
 	<math.h>
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\atome.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\atome.cpp
 	"atome.h"
 
-1597064815 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\atome.h
+1597064815 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\atome.h
 	<iostream>
 	"Vecteur3D.h"
 
-1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\bicubicinterpolation_module.cpp
+1597409926 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\bicubicinterpolation_module.cpp
 	"BicubicInterpolation_module.h"
 	"LekienMarsdenMatrix.h"
 	<iostream>
 	<fstream>
 
-1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\bicubicinterpolation_module.h
+1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\bicubicinterpolation_module.h
 	<iostream>
 	<cmath>
 	<stdlib.h>
 	<vector>
 
-1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\lekienmarsdenmatrix.h
+1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\lekienmarsdenmatrix.h
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\datacards.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\datacards.cpp
 	"datacards.h"
 	<algorithm>
 	<iostream>
@@ -71,152 +71,24 @@
 	<cstdio>
 	<string.h>
 
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\datacards.h
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\datacards.h
 	<string>
 	<functional>
 	<list>
 	<vector>
 	<string>
 
-1596636519 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\field.cpp
-	"Field.h"
-	<math.h>
-	"constantes_SI.h"
-	"algorithmes.h"
-
-1597070221 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\field.h
-	"Vecteur3D.h"
-	<vector>
-	"BicubicInterpolation_module.h"
-	"TricubicInterpolation_module.h"
-
-1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\tricubicinterpolation_module.h
-	<iostream>
-	<cmath>
-	<stdlib.h>
-
-1597067808 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\initialisation_programme.cpp
-	"Initialisation_programme.h"
-
-1596637328 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\initialisation_programme.h
-	<iostream>
-	<gsl/gsl_rng.h>
-	<gsl/gsl_randist.h>
-	<gsl/gsl_cdf.h>
-	"Vecteur3D.h"
-	"Molecule.h"
-	"Laser.h"
-	"Field.h"
-	"Transitions_initialisation.h"
-	"shift_molecule.h"
-	<sstream>
-	"params.h"
-	"params.h"
-
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\molecule.h
-	"Atome.h"
-	"Internal_state.h"
-	<iostream>
-	"Field.h"
-
-1597067808 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\internal_state.h
-	"Vecteur3D.h"
-	"constantes_SI.h"
-	<vector>
-	<iostream>
-
-1597071537 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transitions_initialisation.h
-	<iostream>
-	"Internal_state.h"
-	<gsl/gsl_rng.h>
-	<gsl/gsl_randist.h>
-	"Molecule.h"
-	"params.h"
-	"datacards.h"
-	<gsl/gsl_sf_coupling.h>
-
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\params.h
-	<iostream>
-	<vector>
-	<iostream>
-	<string>
-	<gsl/gsl_rng.h>
-	<gsl/gsl_randist.h>
-
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\shift_molecule.h
-	"Molecule.h"
-	"Laser.h"
-	"Field.h"
-	"Initialisation_programme.h"
-	"params.h"
-	<iostream>
-
-1596636543 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\internal_state.cpp
-	"Internal_state.h"
-
-1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\kinetic_monte_carlo.cpp
-	"Kinetic_Monte_Carlo.h"
-
-1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\kinetic_monte_carlo.h
-	<vector>
-	<iostream>
-	"algorithmes.h"
-	<cmath>
-	<gsl/gsl_rng.h>
-	<gsl/gsl_randist.h>
-	"constantes_SI.h"
-
-1596637309 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\laser.cpp
-	"laser.h"
-	<complex>
-
-1597071652 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\main_laser_cooling.cpp
-	<iostream>
-	<cmath>
-	<cstdlib>
-	<stdlib.h>
-	<stdio.h>
-	<unistd.h>
-	<fstream>
-	<algorithm>
-	<numeric>
-	<iomanip>
-	<list>
-	<windows.h>
-	<GLUT/glut.h>
-	<GL/glut.h>
-	<gl/glut.h>
-	<GL/glu.h>
-	<GL/gl.h>
-	<GL/glext.h>
-	<gsl/gsl_rng.h>
-	<gsl/gsl_randist.h>
-	"algorithmes.h"
-	"Internal_state.h"
-	"constantes_SI.h"
-	"Kinetic_Monte_Carlo.h"
-	"Laser.h"
-	"Molecule.h"
-	"Field.h"
-	"datacards.h"
-	"params.h"
-	"Transitions_initialisation.h"
-	"Initialisation_programme.h"
-	"shift_molecule.h"
+1597485330 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\diagonalization.cpp
 	"diagonalization.h"
-	"Transition_rate_calcul.h"
-	"Stat_Molecule.h"
-	"Affichage.h"
-	"Affichage_Mol.h"
-	"sortie_donnees.h"
-	"one_body.h"
-	"scaling_velocities.h"
+	"laser.h"
+	<iostream>
 
-1597066093 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\diagonalization.h
+1597411604 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\diagonalization.h
 	<Eigen/Eigen>
 	"Internal_state.h"
 	"molecule.h"
 	"params.h"
+	<complex>
 
 1544619184 c:\msys64\mingw64\include\eigen3\eigen\eigen
 	"Dense"
@@ -1195,7 +1067,141 @@
 	<vector>
 	<list>
 
-1597067808 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transition_rate_calcul.h
+1597067808 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\internal_state.h
+	"Vecteur3D.h"
+	"constantes_SI.h"
+	<vector>
+	<iostream>
+
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\molecule.h
+	"Atome.h"
+	"Internal_state.h"
+	<iostream>
+	"Field.h"
+
+1597070221 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\field.h
+	"Vecteur3D.h"
+	<vector>
+	"BicubicInterpolation_module.h"
+	"TricubicInterpolation_module.h"
+
+1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\tricubicinterpolation_module.h
+	<iostream>
+	<cmath>
+	<stdlib.h>
+
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\params.h
+	<iostream>
+	<vector>
+	<iostream>
+	<string>
+	<gsl/gsl_rng.h>
+	<gsl/gsl_randist.h>
+
+1596636519 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\field.cpp
+	"Field.h"
+	<math.h>
+	"constantes_SI.h"
+	"algorithmes.h"
+
+1597326774 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\initialisation_programme.cpp
+	"Initialisation_programme.h"
+
+1596637328 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\initialisation_programme.h
+	<iostream>
+	<gsl/gsl_rng.h>
+	<gsl/gsl_randist.h>
+	<gsl/gsl_cdf.h>
+	"Vecteur3D.h"
+	"Molecule.h"
+	"Laser.h"
+	"Field.h"
+	"Transitions_initialisation.h"
+	"shift_molecule.h"
+	<sstream>
+	"params.h"
+	"params.h"
+
+1597071537 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transitions_initialisation.h
+	<iostream>
+	"Internal_state.h"
+	<gsl/gsl_rng.h>
+	<gsl/gsl_randist.h>
+	"Molecule.h"
+	"params.h"
+	"datacards.h"
+	<gsl/gsl_sf_coupling.h>
+
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\shift_molecule.h
+	"Molecule.h"
+	"Laser.h"
+	"Field.h"
+	"Initialisation_programme.h"
+	"params.h"
+	<iostream>
+
+1596636543 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\internal_state.cpp
+	"Internal_state.h"
+
+1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\kinetic_monte_carlo.cpp
+	"Kinetic_Monte_Carlo.h"
+
+1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\kinetic_monte_carlo.h
+	<vector>
+	<iostream>
+	"algorithmes.h"
+	<cmath>
+	<gsl/gsl_rng.h>
+	<gsl/gsl_randist.h>
+	"constantes_SI.h"
+
+1596637309 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\laser.cpp
+	"laser.h"
+	<complex>
+
+1597486689 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\main_laser_cooling.cpp
+	<iostream>
+	<cmath>
+	<cstdlib>
+	<stdlib.h>
+	<stdio.h>
+	<unistd.h>
+	<fstream>
+	<algorithm>
+	<numeric>
+	<iomanip>
+	<list>
+	<windows.h>
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<gl/glut.h>
+	<GL/glu.h>
+	<GL/gl.h>
+	<GL/glext.h>
+	<gsl/gsl_rng.h>
+	<gsl/gsl_randist.h>
+	"algorithmes.h"
+	"Internal_state.h"
+	"constantes_SI.h"
+	"Kinetic_Monte_Carlo.h"
+	"Laser.h"
+	"Molecule.h"
+	"Field.h"
+	"datacards.h"
+	"params.h"
+	"Transitions_initialisation.h"
+	"Initialisation_programme.h"
+	"shift_molecule.h"
+	"diagonalization.h"
+	"Transition_rate_calcul.h"
+	"Stat_Molecule.h"
+	"Affichage.h"
+	"Affichage_Mol.h"
+	"sortie_donnees.h"
+	"one_body.h"
+	"scaling_velocities.h"
+
+1597393201 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transition_rate_calcul.h
 	<iostream>
 	<iostream>
 	<cmath>
@@ -1208,7 +1214,7 @@
 	<Eigen/Eigen>
 	"params.h"
 
-1597071431 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\sortie_donnees.h
+1597071431 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\sortie_donnees.h
 	<iostream>
 	<gsl/gsl_rng.h>
 	<gsl/gsl_randist.h>
@@ -1226,7 +1232,7 @@
 	"datacards.h"
 	"diagonalization.h"
 
-1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\stat_molecule.h
+1587400266 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\stat_molecule.h
 	<iostream>
 	"Molecule.h"
 	"one_body.h"
@@ -1234,7 +1240,7 @@
 	"algorithmes.h"
 	"params.h"
 
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\one_body.h
+1597410471 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\one_body.h
 	<iostream>
 	<cmath>
 	<cstdlib>
@@ -1245,7 +1251,7 @@
 	"laser.h"
 	"params.h"
 
-1597070221 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage_mol.h
+1597070221 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\affichage_mol.h
 	<iostream>
 	"constantes_SI.h"
 	"Vecteur3D.h"
@@ -1253,7 +1259,7 @@
 	"Field.h"
 	"Affichage.h"
 
-1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\scaling_velocities.h
+1587400267 c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\scaling_velocities.h
 	"Atome.h"
 	"Internal_state.h"
 	"Vecteur3D.h"
@@ -1265,11 +1271,11 @@
 	"params.h"
 	"Field.h"
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\molecule.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\molecule.cpp
 	"molecule.h"
 	"shift_molecule.h"
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\params.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\params.cpp
 	<iomanip>
 	<cmath>
 	<cstring>
@@ -1278,17 +1284,7 @@
 	"datacards.h"
 	<cstdio>
 
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\scaling_velocities.cpp
-	"scaling_velocities.h"
-	"Atome.h"
-	"Internal_state.h"
-	"Vecteur3D.h"
-	"Laser.h"
-	"Molecule.h"
-	"one_body.h"
-	"Stat_Molecule.h"
-
-1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\shift_molecule.cpp
+1587400267 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\shift_molecule.cpp
 	"shift_molecule.h"
 	"one_body.h"
 	"algorithmes.h"
@@ -1304,25 +1300,31 @@
 	<gsl/gsl_blas.h>
 	<gsl/gsl_cblas.h>
 
-1597072117 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\sortie_donnees.cpp
+1597486689 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\sortie_donnees.cpp
 	"sortie_donnees.h"
 
-1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\stat_molecule.cpp
+1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\stat_molecule.cpp
 	"Stat_Molecule.h"
 	<math.h>
 
-1597071573 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transition_rate_calcul.cpp
+1597410471 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transition_rate_calcul.cpp
 	"Transition_rate_calcul.h"
 	"diagonalization.h"
 	<sstream>
 
-1597072117 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transitions_initialisation.cpp
+1597488167 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\transitions_initialisation.cpp
 	"Transitions_initialisation.h"
 
-1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\vecteur3d.cpp
+1587400266 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\current_version_before_github\laser-interaction-in-fields-rate-equations-forces\main code 64bits\vecteur3d.cpp
 	"Vecteur3D.h"
 
-1597066093 source:c:\users\daniel\owncloud\code\optical_pumping_cold_mol\github_repository\laser-interaction-in-fields-rate-equations-forces\main code 64bits\diagonalization.cpp
-	"diagonalization.h"
-	<iostream>
+1544619184 c:\msys64\mingw64\include\eigen3\eigen\stdvector
+	"Core"
+	<vector>
+	"src/StlSupport/StdVector.h"
+
+1544619184 c:\msys64\mingw64\include\eigen3\eigen\src\stlsupport\stdvector.h
+	"details.h"
+
+1544619184 c:\msys64\mingw64\include\eigen3\eigen\src\stlsupport\details.h
 

@@ -194,8 +194,6 @@ void RePaint ()
     clock_t t_start,t_end; // Pour mesurer le temps de déroulement du programme
     t_start = clock();
 
-    const int NX_out = params.LocateParam("NX_out")->val;
-    const int N_Two_JX_out_max = params.LocateParam("N_Two_JX_out_max")->val;
 
     /*****************************************************************/
     /********************** Initialisation du GSL ********************/
@@ -209,6 +207,7 @@ void RePaint ()
     gsl_rng_env_setup();
     T = gsl_rng_default;  // "Mersenne Twister" generator by default. Plus rapide que RANLUX. cf. chapitre 17.12 de gsl_ref.
     r = gsl_rng_alloc (T);
+
     initialisation_trans_mol(nom_file_Levels, nom_file_Lines, Level, params); // Lecture des fichiers de niveaux et de transitions
 
     bool  test_fin_boucle_param; // Paramètre de fin de boucle sur les paramètres à scanner
@@ -238,12 +237,6 @@ void RePaint ()
         double dt_dia = params.LocateParam("dt_dia")->val; // time interval between diagnostics (in cout) output
         double dt_out = params.LocateParam("dt_out")->val; // time interval between output of snapshots (draw particles)
 
-        double t_max_vel_scaling=params.LocateParam("time_max_vel_scaling")->val; //duration of the velocity scaling
-        double dt_scal = params.LocateParam("dt_scal")->val;
-        double t_scal=0.;
-        double coupling_efficiency = params.LocateParam("coupling_efficiency")->val;
-
-
         /*****************************************************************/
         /********************** Initialisation du GSL ********************/
         /*****************************************************************/
@@ -261,7 +254,6 @@ void RePaint ()
         Init_Molecule(r, Mol, champB, champE, Nb_type_of_Mol, params, data); // Position, vitesse
         initialisation_proba(r, Mol, N_Mol[0], Level); // Etat des populations de molécules au départ en fonction de la population voulue
 
-
         const int Nb_laser = data.IParam("Nb_laser");  // number of used laser (we could have more in the Liste_Param file, but this will be the number used in this run)
 
         Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers
@@ -274,15 +266,11 @@ void RePaint ()
         **/
 
         int number_mol = aucune;  // numéro de la molécule affectée par une modification (aucune au début d'où la valeur -1)
-        int nb_repet = (int) params.LocateParam("nb_repet")->val; // nb de répétition du processus. A t_repet on remet à zéro et on recommence
-        double t_repet = params.LocateParam("t_repet")->val;
         int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
-
-        cerr << "GRAVITY ON z-AXIS" << endl;
 
         //Create_dipole_Lines_from_Matrices("matrice_dipole.dat");
 
-        while(true) // Infinit loop untill t_end is reached
+        while(true) // Infinite loop untill t_end is reached
         {
             Init_Field(champB, champE, params);  // Re0-Initialise les champs. Important si scan des paramètres car ils ont changés. We do not add the files because we do not modify them
             Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
@@ -296,7 +284,7 @@ void RePaint ()
                 // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
 
                 // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-                // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
+                Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;
             }
 
@@ -321,29 +309,20 @@ void RePaint ()
             }
 // On pourrait penser accélerer, en faisant évoluer le N_corps jusqu'a dt_KMC sans recalculer dt_KMC à chaque fois. Mais cela est risqué comme on le voit avec un molécule loin d'un waist --> tKMC immense mais qui va diminuer vite et si on ne recalcule pas on va faire une erreur
 
-            if (t >= t_repet) // Remise à zéro au bout d'une seconde. On recommence la séquence temporelle mais avec les molécules comme elles sont
-            {
-                t=0.;
-                t_dia = dt_dia;
-                t_out = dt_out;
-                nb_repet --;
-            }
-
             if (Graphics && t >= t_out)
             {
-                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des point
+                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des points
                 t_out += dt_out;
                 wait(params.LocateParam("t_wait_affichage")->val);   // Permet de ne pas avoir un affichage trop rapide
             }
 
-
-            if (t > t_fin || nb_repet < 0) // FIN DE LA BOUCLE
+            if (t > t_fin) // FIN DE LA BOUCLE
             {
                 for (ParamIterator i=params.begin(); i != params.end(); ++i)
                 {
                     Param &p = **i;
                     if( p.is_scanned == true )
-                        cout << " " << p.val_t0 ;
+                        cout << " " << p.val_t0  ;
                 }
                 cout << endl;
                 break;

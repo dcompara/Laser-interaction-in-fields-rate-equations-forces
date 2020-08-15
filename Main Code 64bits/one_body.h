@@ -746,7 +746,7 @@ template <class Body>  Vecteur3D  get_coulomb_field(const vector <Body> &bod, co
 {
     Vecteur3D Ei=Vecteur3D(0.,0.,0.);
 
-    for (int j = 0; j != bod.size() ; ++j)
+    for (int j = 0; j != (int) bod.size() ; ++j)
     {
         // pre-compute some auxiliary quantites
         Vecteur3D rji= -bod[j].get_pos(); // -rj
@@ -755,7 +755,7 @@ template <class Body>  Vecteur3D  get_coulomb_field(const vector <Body> &bod, co
         if (r2 < VERY_SMALL_NUMBER)
             continue; // this mean that rji=0 and so i = j
 
-            double pr2   = 1./r2;                       // 1 / rji^2
+        double pr2   = 1./r2;                       // 1 / rji^2
 
         pr2 *= bod[j].get_charge()*sqrt(pr2);  //  qj/  r^3
         rji *= pr2;

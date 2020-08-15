@@ -108,7 +108,7 @@ static const double Mus = MICRON; // microseconde
 static const double Debye = 1.e-21/C;
 static const double Spol_Debye_A_s = (8e6*pi*pi*C*C*C*Debye*Debye)/(3.*EPSILON0*C*C*C*HBAR); // 3.13618932*10^-7 = Conversion HonlLondon (en Debye) en A Einstein (s^-1) si energie en cm^-1
 static const double Conv_Ecm_delta = 2.*pi*MHz*MHzcm ;//  cm^(-1) -> s^-1;
-static const double  sigmaSB = 5.670367e-8 ; // Stefan–Boltzmann
+static const double sigmaSB = 5.670367e-8 ; // Stefan–Boltzmann
 
 
 

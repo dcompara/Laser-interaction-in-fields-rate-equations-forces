@@ -76,8 +76,8 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             Param &p = **i;
             if (p.is_scanned == true)
             {
-                // file_out << p.name ;
-                // file_out << p.val_t0 << " " ;
+//                 file_out << p.name ;
+//                 file_out << p.val_t0 << " " ;
             }
         }
     }
@@ -135,36 +135,41 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
         /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization *******/
 
 
-        MatrixXd d[3] ;
-        SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
+        MatrixXd d[3];
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
         Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
 
-        for (int j=0; j< Level.size(); j++) //  we scan over the levels to calculate the parameter
+        Vecteur3D v;
+        v = Mol[i].get_vel();
+        Vecteur3D Bfield,Efield;
+        Bfield= fieldB.get_Field(Mol[i].get_pos());
+        Efield= fieldE.get_Field(Mol[i].get_pos());
+        double B = Bfield.mag();
+        double E = Efield.mag();
+        double v_perp= (v.cross(Bfield)).mag()/B;
+
+        for (int j=0; j< (int) Level.size(); j++) //  we scan over the levels to calculate the parameter
         {
             double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
 
-            for (int j0=0; j0< Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
+            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
                 // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
             {
                 // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
                 if (Level[j0].two_Omega == 2) // If the state is triplet (2S+1=3 so S=1) we look on the decomposition, |0_<i | i>|^2 , and sum them
                 {
-                    tripletness +=  pow((es.eigenvectors()(j0,j)),2); // sum_|triple, j>_O   |0_<j | j>|^2
+                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
                 }
             }
             // file_out << endl;
             // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
 
-            Vecteur3D v;
-            v = Mol[i].get_vel();
-            Vecteur3D Bfield;
-            Bfield= fieldB.get_Field(Mol[i].get_pos());
-            double B = Bfield.mag();
-            double v_perp= (v.cross(Bfield)).mag()/B;
 
-            file_out << B << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
+
+            file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
         }
     }
+
 
 
 
@@ -374,14 +379,15 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 
     int nb_levels=Level.size(); // Level.size()
 
-    double rate_level_i_vers_level_2[nb_levels] =  {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
-    double rate_level_i_vers_level_3[nb_levels] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
-    double rate_level_i_total[nb_levels] =  {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
-    double Ecm_i[nb_levels] =  {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+    // 3S1-1  est level 4   et  3S1-1 est level     5
+    double rate_level_i_vers_level_4[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_vers_level_5[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_total[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double Ecm_i[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
     int nb_rate = rate.size();
-    double B, current_rate ;
-    Vecteur3D r,v,k_laser,Bfield;
+    double B, E, current_rate ;
+    Vecteur3D r,v,k_laser,Bfield,Efield;
     Internal_state Internal_state_in,Internal_state_out;
 
     for (int i = 0; i < nb_rate; i++)
@@ -402,6 +408,9 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         v= Mol[n_mol].get_vel();
         Bfield= fieldB.get_Field(r);
         B = Bfield.mag();
+        Efield= fieldE.get_Field(r);
+        B = Bfield.mag();
+        E= Efield.mag();
         k_laser = reaction_list[i].k_eff_laser;
 //        file_rate  << " " << r ;
 //        file_rate  << " " << v.mag(); ;
@@ -434,8 +443,8 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         int i_out = Internal_state_out.deg_number;
         Ecm_i[i_in] =  Internal_state_in.Energy_cm;
 
-        if (i_out == 2)   rate_level_i_vers_level_2[i_in] +=  current_rate;
-        if (i_out == 3)   rate_level_i_vers_level_3[i_in] +=  current_rate;
+        if (i_out == 4)   rate_level_i_vers_level_4[i_in] +=  current_rate;
+        if (i_out == 5)   rate_level_i_vers_level_5[i_in] +=  current_rate;
         rate_level_i_total[i_in] += current_rate;
 
 
@@ -459,7 +468,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 
                     file_rate  << endl;
                     MatrixXd d[3] ;
-                    SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
+                    SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
 
                     Diagonalization(Level, Mol[i], fieldB, fieldE, params,es, d)
 
@@ -502,16 +511,17 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     }
 
 
-    for (int i = 0; i <Level.size() ; i++)
+    for (int i = 0; i < (int) Level.size() ; i++)
     {
 
         file_rate <<  " " << B ;
+        file_rate <<  " " << E ;
         file_rate <<  " " << v.mag() ;
         file_rate <<  " " << i ;
         file_rate <<  " " << Ecm_i[i] ;
         file_rate <<  " " << Level[i].Energy_cm  ;
-        file_rate <<  " " << rate_level_i_vers_level_2[i] ;
-        file_rate <<  " " << rate_level_i_vers_level_3[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_4[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_5[i] ;
         file_rate <<  " " << rate_level_i_total[i] ;
         file_rate << endl ;
     }

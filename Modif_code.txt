@@ -1,8 +1,14 @@
+2020/08/15
+V1.3 New diagonalizaiton with Stark effect -d.E given by the dipole matrix. So the Hamiltonian is complex now (hermitian). In addition in case of positronium 
+Improve user guide for this part in appendix. 
+
+
+
 2020/08/10
 V1.2 Put on github the new version. 
-Simplify (a bit) the code. Especially by reoving the Sisyphus forced repumping part, the Franck_Condon part, the velocity scalling
+Simplify (a bit) the code. Removing  Sisyphus forced repumping, Franck_Condon part and the velocity scalling part
 Put new ToDo list
-Comment e bit more the List_Param
+Comment a bit more the List_Param and sortie_donnee with examples
 
 2020/08/10
 V1.0.2 Put on github the new version. 

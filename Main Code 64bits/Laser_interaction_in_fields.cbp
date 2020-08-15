@@ -5,6 +5,11 @@
 		<Option title="Laser_interaction_in_fields" />
 		<Option pch_mode="2" />
 		<Option compiler="msys2_mingw64" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[Read the Todo list]]>
+			</notes>
+		</Option>
 		<MakeCommands>
 			<Build command="" />
 			<CompileFile command="" />
@@ -20,6 +25,8 @@
 				<Option type="1" />
 				<Option compiler="msys2_mingw64" />
 				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-Wno-unused" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -29,12 +36,9 @@
 				<Option type="1" />
 				<Option compiler="msys2_mingw64" />
 				<Compiler>
-					<Add option="-march=corei7-avx" />
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
+					<Add option="-Ofast" />
 					<Add option="-s" />
-				</Linker>
+				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>

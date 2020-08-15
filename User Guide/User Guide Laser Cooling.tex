@@ -195,7 +195,7 @@ In the following section you will have more informations about each files.
 \begin{figure}
 	\centering
 	\includegraphics[width=1\linewidth]{linker}
-	\caption{Example of possible installation (in the case of the simple gsl 1-13). To put either in the Settings/Compiler directory, either in the Project/Build options one.}
+	\caption{Example of possible installation. To put either in the Settings/Compiler directory, either in the Project/Build options one.}
 	\label{fig:linker}
 \end{figure}
 
@@ -253,7 +253,7 @@ file names in the "program files" tab of executable toolchain (you will find  th
 Then in Project / Build options... you have to select the right compiler (the MSYS2 MINGW6 should be at the very bottom of the list)
 	
 
-\item Add extra packages: freeglut, gsl= GNU Scientific Library  and Eigen Library
+\item Add extra packages: freeglut, GNU Scientific Library (gsl), Eigen Library, and GNU debugger (gdb)
 
 
 
@@ -265,6 +265,8 @@ pacman -S mingw-w64-x86\_64-freeglut
 pacman -S mingw-w64-x86\_64-gsl
 
 pacman -S mingw-w64-x86\_64-eigen3
+
+ pacman -S mingw-w64-x86\_64-gdb
 
 This automatically copy the 64bit files from \textbackslash{}include, \textbackslash{}lib and \textbackslash{}bin  directories of freeglut, gsl and Eigen in the correspondings \textbackslash{}include, \textbackslash{}lib and \textbackslash{}bin of the  C:/msys64/mingw64 directory.
 
@@ -286,6 +288,7 @@ glu32,
 gsl, 
 freeglut. 
 
+
 For instance for freeglut this
 mean that the compiler has to look for a library file such as libfreeglut.a or freeglut.lib
 
@@ -293,6 +296,8 @@ and for the corresponding .dll
 
 If you have some problems, may be you need to add your compiler \textbackslash{}bin path (for instance C:\textbackslash{}msys64\textbackslash{}MinGW64\textbackslash{}bin)
  to the Path of the System Environment Variables (look at "How to add to the Path on Windows 10")
+
+You may also need to adapt the path for the debugger C:\textbackslash{}msys64\textbackslash{}mingw64\textbackslash{}bin\textbackslash{}gdb.exe path) 
 
 
 \subsubsection{speed consideration}
@@ -521,12 +526,12 @@ Columns are separated by tabulation. Points (not coma) are used for decimal sepa
 The detail of the columns are(in bold the data that should absolutely be correct):
 
 \begin{itemize}
-\item 	 \textbf{Manifold}: usually 0 means ground electronical level, 1 is for an excited electronical level, 2 for another one ... Negative values can be used for a "dead" level such as one in a continuum (photo-ionization -1, photodetachement -2, or annihilation -3).
+\item 	 \textbf{Manifold}: usually 0 means ground electronical level, 1 is for an excited electronical level, 2 for another one ... Negative values can be used for a "dead" level such as one in a continuum (photo-ionization -1, photodetachement -2, or annihilation -3). 
 	
 	\item 	 \textbf{2M}: where  M is the projection of the total angular momentum. We note 2M and not M to be able to use integer in the code for M=1/2 for instance.
 	In the code the particle will be assumed to always follow (adiabatically) the local quantification axis given by the local field.
 
-{\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you coudld impose $M$=0 for all states and use $\pi$ laser polarization.}	
+{\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you could impose $M$=0 for all states and use $\pi$ laser polarization. Another common "trick" is to create "dead" levels with proper dipole transition for an annihilation event that will be simply treated as a spontaneous emission event}	
 	
 \item 	 \textbf{Sym}:  Originally it was the parity of the state but this not the case but it should be +1 or -1 to design  bound states and 0 for an continuumm state (that is above the continuum threshold such as for photodetachment or photoionization).
 
@@ -1045,7 +1050,7 @@ We recall here some important points. The notations differ sometimes from  \cite
 	 	 where 
 	 	 $A_q = \bm A.
 	 	 {\bf{e}}_q$ so for instance $A_0 = A_z, A_{\pm 1} =  \mp (A_x \pm
-	 	 i A_y)$.
+	 	 i A_y)/\sqrt{2}$.
 	 	 %	If $\bm A$ is a \textit{real} vector we have $\bm A = (\bm A)^*$ and $ A^q = A_q^*$ so $\bm A =  \sum_q  A_q^* {\bf{e}}_q  	$.
 	 	 We will often have the case where the $A_q$ or $A^q$ are reals (example of the dipoles or of pure laser polarization) but in general we should keep in mind that the vectors are complex.
 	 	 
@@ -1316,8 +1321,25 @@ $	 {\bm D_{ij}}_.  = \begin{pmatrix}D_{ij;-1} \, D_{ij;0} \, D_{ij;+1} \end{pmat
 	 		({\phi_{\bm F}}+{\phi_{\bm k}})} \left(-{a_+}+{a_-} e^{2 i \psi }\right) \left(\sqrt{2} {D_0} \cos ({\theta_{\bm F}})+({D_+}-{D_-}) \sin ({\theta_{\bm F}})\right) \\
 	 	& & +\left({a_+}+{a_-} e^{2 i \psi
 	 	}\right) \left(({D_-}+{D_+}) \left(e^{2 i {\phi_{\bm F}}}+e^{2 i
-	 		{\phi_{\bm k}}}\right)-\left(e^{2 i {\phi_{\bm F}}}-e^{2 i {\phi_{\bm k}}}\right) \left(\sqrt{2} {D_0} \sin ({\theta_{\bm F}})+({D_-}-{D_+}) \cos ({\theta_{\bm F}})\right)\right) \Big]
+	 		{\phi_{\bm k}}}\right)-\left(e^{2 i {\phi_{\bm F}}}-e^{2 i {\phi_{\bm k}}}\right) \left(\sqrt{2} {D_0} \sin({\theta_{\bm F}})+({D_-}-{D_+}) \cos ({\theta_{\bm F}})\right)\right) \Big]
 	 \end{eqnarray*}	 
+
+
+	\subsubsection{Stark effect}
+\label{Stark}
+
+The Stark effect $\hat H_{\rm Stark}  = -\hat {\bm d}.\bm E$ under the effect of an external electric field $\bm E$ is given by the exact same hamiltonian than the dipolar transition. The calcul is thus very similar providing that now the polarization vector (field orientation) is in fact along the field (along $\bm k$), so  $ {\bm \epsilon}^. = \begin{pmatrix} \epsilon^{-1}=0 \\ \epsilon^{0}=1 \\ \epsilon^{+1}=0
+\end{pmatrix}$. The final results is
+	  \begin{eqnarray}
+\langle i | \hat {\bm d}.\bm E | j \rangle &= &
+ \frac{1}{2} \Big[ 
+ \cos({\theta_{\bm k}})\left( 2 D_0 \cos({\theta_{\bm F}}) + \sqrt{2}(D_+-D_-) \sin({\theta_{\bm F}}) \right)+ \\
+ & &
+ \sin({\theta_{\bm k}}) \left(
+ \sqrt{2}(D_--D_+) \cos({\theta_{\bm F}}) \cos(\phi_{\bm F}-\phi_{\bm k}) + 2 D_0 \cos(\phi_{\bm F}-\phi_{\bm k}) 
+\sin({\theta_{\bm F}})  - i \sqrt{2} (D_-+D_+)  \sin(\phi_{\bm F}-\phi_{\bm k})  \right) 
+ \Big] \nonumber
+\end{eqnarray}	
 
 	 	 \subsection{Angular distribution of spontaneous emission: recoil}
 	 	 
