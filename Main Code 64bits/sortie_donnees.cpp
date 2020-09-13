@@ -135,7 +135,7 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
         /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization *******/
 
 
-        MatrixXd d[3];
+        MatrixXcd d[3];
         SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
         Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
 
@@ -392,8 +392,6 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 
     for (int i = 0; i < nb_rate; i++)
     {
-        // file_rate  << " " << i;
-        // file_rate  << " " << rate[i];
         current_rate = rate[i];
         int n_mol= reaction_list[i].n_mol;
         int n_laser = reaction_list[i].n_laser;
@@ -412,31 +410,21 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         B = Bfield.mag();
         E= Efield.mag();
         k_laser = reaction_list[i].k_eff_laser;
-//        file_rate  << " " << r ;
-//        file_rate  << " " << v.mag(); ;
-//        file_rate  << " " << B ;
-//        file_rate  << " " << k_laser.mag()/(2*pi*100.) ;  // k = 2*pi*100.*Energy_transition_cm;
-//        double E = fieldE.get_Field(r).mag();
+
         Internal_state_in = Mol[n_mol] ; //  état interne de la molecule
-//        double Energy_in = Internal_state_in.Energy_cm;
-//        double Energy_in = Internal_state_in.Energy0_cm + (Internal_state_in.Energy_Shift_B_cm(B) + Internal_state_in.Energy_Shift_E_cm(E));
-//        file_rate  << " " <<  Internal_state_in.deg_number ;
-
         Internal_state_out = reaction_list[i].final_internal_state ; //  état interne de la molecule après la réaction
-//        double Energy_out = Internal_state_out.Energy_cm;
+
+//        file_rate  << B;
+//
+//        file_rate  << " " << i;
+//        file_rate  << " " << rate[i];
 //
 //
-//  double Energy_out = Internal_state_out.Energy0_cm + (Internal_state_out.Energy_Shift_B_cm(B) + Internal_state_out.Energy_Shift_E_cm(E));
-//        double Energy_transition_laser_cm = cm/laser[n_laser].get_lambda(); // Energie de la transition laser en cm^-1
-
-
-//        file_rate <<  " " << Bfield.z();
-//        file_rate <<  " " << Energy_out- Energy_in - Energy_transition_laser_cm;
-//        file_rate << "  " << Energy_in ;
-
 //        file_rate <<  "  " << Internal_state_in.deg_number;
-//        file_rate <<  "  " << Internal_state_out.deg_number;
 //        file_rate << "  " << Internal_state_in.Energy_cm ;
+//
+//        file_rate <<  "  " << Internal_state_out.deg_number;
+//        file_rate << "  " << Internal_state_out.Energy_cm ;
 
 
         int i_in = Internal_state_in.deg_number;
@@ -467,7 +455,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
                     file_rate  << " " << level_out ; // is the number for the level of the molecule
 
                     file_rate  << endl;
-                    MatrixXd d[3] ;
+                    MatrixXcd d[3] ;
                     SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
 
                     Diagonalization(Level, Mol[i], fieldB, fieldE, params,es, d)
@@ -507,7 +495,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 //        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
 //        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
 
-//        file_rate << endl ;
+ //     file_rate << endl ;
     }
 
 

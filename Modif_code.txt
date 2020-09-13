@@ -1,3 +1,6 @@
+2020/09/13
+Modify real dipoles by complex ones. The eigenvectors phases are "random" (probably depend on the convergence of the diagonaization)
+
 2020/08/15
 V1.3 New diagonalizaiton with Stark effect -d.E given by the dipole matrix. So the Hamiltonian is complex now (hermitian). In addition in case of positronium 
 Improve user guide for this part in appendix. 

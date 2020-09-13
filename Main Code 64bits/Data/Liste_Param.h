@@ -46,7 +46,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @offset_y[0]	0
 @offset_z[0]	0
 // Initial velocity added to the random one
-@v0_x[0]	0.
+@v0_x[0]	1e5
 @v0_y[0]	0.
 @v0_z[0]    0.
 #
@@ -370,6 +370,6 @@ BEGIN_OF_FITPARAMS
 @SCAN_Offset_Detuning_cm -2.5 -1 5 false false
 @SCAN_scale_Gamma 0.3 0.6 3   false    false
 @SCAN_Tau_Modif 0.5e-3 2e-3 2 false false
-@SCAN_B_z   0   5  1000  true false
+@SCAN_B_z   0   5  1000  false false
 END_OF_FITPARAMS
 

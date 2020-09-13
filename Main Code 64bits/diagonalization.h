@@ -12,7 +12,7 @@ using namespace std;
 
 // diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm
 void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, const Field &fieldB, const Field &fieldE,
-                                      FitParams &params,  SelfAdjointEigenSolver<MatrixXcd> &es,  MatrixXd d[]);
+                                      FitParams &params,  SelfAdjointEigenSolver<MatrixXcd> &es,  MatrixXcd d[]);
 
 
 //   d.E (for the Stark effect that is -d.E)

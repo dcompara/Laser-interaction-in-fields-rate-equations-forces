@@ -1118,8 +1118,7 @@ is  ${\bm \epsilon}_{\rm L} = {\bf e}'_x \cos\Psi + {\bf e}'_y \sin \Psi =
 	 	 $ \bm d_{ij} = \langle i | \bm d | j \rangle = \sum_q (-1)^q d_{ij;q} {\bf{e}}_q = \sum_q d_{ij;q} {\bf{e}}^q $ so $ d_{ij;q} = \bm d_{ij}.{\bf{e}}_q$. The notation $d_{ij}^{(q)} = d_{ij;q}$ is often used but has to be avoided because of possible confusion with the (contravariant) notation $d_{ij}^{q}$.
 	 	 The correct component that forms an irreductible tensor (rank 1) $\hat d_{1q} = \hat d_{q}$ are $ d_{ij;-1},d_{ij;0},d_{ij;+1} $. 
 	 	 In the code this vector is called
-	 	 the "polarization" dipole vector  $\bm d_{ij} $ and is recorded as $ \{ d_{ij;-1},d_{ij;0},d_{ij;+1} \} $ (obviously in C++ the array number will be respectively dipole[0], dipole[1], dipole[2]).
- With the proper (Condon-Shortley's type) convention \cite{varshalovich1988quantum}, these dipoles are reals.
+	 	 the "polarization" dipole vector  $\bm d_{ij} $ and is recorded as $ \{ d_{ij;-1},d_{ij;0},d_{ij;+1} \} $ (obviously in C++ the array number will be respectively dipole[0], dipole[1], dipole[2]). In general the dipoles are complex (but often, in field free or in well defined quantization axis with the proper (Condon-Shortley's type) convention \cite{varshalovich1988quantum} they dipoles can be reals).
 	 	 
 	 %	 We also	 	 the polarization dipole vector  by ${\bf{e}}_{\rm pol,ij} =  \bm d_{ij}/|d_{ij}| = 	  \{ d_{\rm pol,ij}^{-1}, d_{\rm pol,ij}^0 , d_{\rm pol,ij}^{+1} \} $
 	 	
@@ -1373,7 +1372,7 @@ The Stark effect $\hat H_{\rm Stark}  = -\hat {\bm d}.\bm E$ under the effect of
 	 		 we diagonalized $ \hat H = \hat H_0+\hat V$ to get the new eigenvectors
 	 		  $| i\rangle = \sum_{i_0} {}_0\langle i_0 |   i\rangle |i_0\rangle_0   =  \sum_{i_0} {\rm \bm evec}_{i_0 i } |i_0\rangle_0  $ with the eigenvectors matrix  ${\rm \bm evec}_{i_0 i } =
 	 		  {}_0\langle i_0 |   i\rangle$. We can then calculate the new dipoles 
-	 		$ \langle i | \hat d_q | j \rangle =  ({\rm \bm evec}^\dag.{\bm d0}_q.{\rm \bm evec})_{ij} $ that is coded with the dipole vector $ \{ d_{ij;-1},d_{ij;0},d_{ij;+1} \} $.
+	 		$ \langle i | \hat d_q | j \rangle =  ({\rm \bm evec}^\dag.{\bm d0}_q.{\rm \bm evec})_{ij} $ that is coded with the (complex) dipole vector $ \{ d_{ij;-1},d_{ij;0},d_{ij;+1} \} $.
 	
 	 
 \bibliographystyle{unsrt}

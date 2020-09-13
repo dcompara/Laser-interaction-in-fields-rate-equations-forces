@@ -58,6 +58,7 @@ RAPPEL: E =h\nu = \hbar \omega= h c / \lambda_{\rm vide} = h c \sigma(m-1) = \hb
 
 #include <map>          // Pour le spectre du laser Energy, Intensité relative
 #include <iostream>
+#include <complex>
 using namespace std;
 
 #include "Vecteur3D.h"
@@ -423,7 +424,7 @@ double champ_E(const double irradiance);
 // (absolute value of the)  effectif dipole d.e_laser = sum_p d_p epsilon^p
 // where the dipole transition vector d= sum_p d_p e^p is given in the local quantification axis
 // and the polarisation vector e_laser= sum_p' epsilon^p' e_p'  is given in the laser axis
-double effectif_dipole_local(const Vecteur3D& dipole, const Vecteur3D& axe_quant,  const Laser& my_laser);
+double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& axe_quant,  const Laser& my_laser);
 
 
 

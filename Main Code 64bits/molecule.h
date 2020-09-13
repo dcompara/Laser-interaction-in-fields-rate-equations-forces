@@ -23,11 +23,12 @@ contient
 
 #include "Atome.h"
 #include "Internal_state.h"
+#include <complex>
 
 #include <iostream>
 using namespace std;
 
-struct type_codage_react{ int n_mol; int n_laser; Vecteur3D quant_axis; Vecteur3D pol_vector; Vecteur3D k_eff_laser; Internal_state final_internal_state;};
+struct type_codage_react{ int n_mol; int n_laser; Vecteur3D quant_axis; complex<double> pol_vector[3]; Vecteur3D k_eff_laser; Internal_state final_internal_state;};
 // In order to define a reaction we need to know the initial state (so the n_mol), the finale state (so final_internal_state)
 // and to implement the recoil we need to have
 // 1) For absorption or stimulated emission: the laser (n_laser) which will give the photon momentum.

@@ -277,12 +277,12 @@ double champ_E(const double irradiance)
 // (absolute value of the) effectif dipole d.e_laser = sum_p d_p epsilon^p
 // where the dipole transition vector d= sum_p d_p e^p is given in the local quantification axis
 // and the polarisation vector e_laser= sum_p' epsilon^p' e_p'  is given in the laser axis
-double effectif_dipole_local(const Vecteur3D& dipole, const Vecteur3D& axe_quant,  const Laser& my_laser)
+double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& axe_quant,  const Laser& my_laser)
 {
-    double dp,d0,dm;
-    dm = dipole(0);
-    d0 = dipole(1);
-    dp = dipole(2);
+    complex<double> dp,d0,dm;
+    dm = dipole[0];
+    d0 = dipole[1];
+    dp = dipole[2];
 
     Vecteur3D Euler_angles_axe_quant = Euler_angles(axe_quant);
     Vecteur3D Euler_angles_axe_laser = Euler_angles(my_laser.get_direction());
@@ -317,21 +317,21 @@ double effectif_dipole_local(const Vecteur3D& dipole, const Vecteur3D& axe_quant
     double cos_theta_F = cos(theta_F);
     double sqrt2 = sqrt(2.);
 
-     double dp_minus_dm = (dp-dm);
+    complex<double> dp_minus_dm = (dp-dm);
 
-    double d1F = -dp_minus_dm*cos_theta_F + sqrt2*d0*sin_theta_F;
-    double d2F = dp_minus_dm*sin_theta_F + sqrt2*d0*cos_theta_F;
+    complex<double> d1F = -dp_minus_dm*cos_theta_F + sqrt2*d0*sin_theta_F;
+    complex<double> d2F = dp_minus_dm*sin_theta_F + sqrt2*d0*cos_theta_F;
 
-    double dp_plus_dm = dp+dm;
+    complex<double> dp_plus_dm = dp+dm;
 
     complex<double> am_psi_minus_ap = am*exp(2.*i*psi) - ap;
     complex<double> am_psi_plus_ap = am*exp(2.*i*psi) + ap;
     complex<double> exp_F_plus_k = exp(2.*i*phi_F) + exp(2.*i*phi_k) ;
     complex<double> exp_F_minus_k = exp(2.*i*phi_F) - exp(2.*i*phi_k) ;
 
-       dip_eff  = am_psi_plus_ap*(dp_plus_dm*exp_F_plus_k - exp_F_minus_k*d1F)+
-       am_psi_minus_ap*cos_theta_k*(-dp_plus_dm*exp_F_minus_k + exp_F_plus_k*d1F)
-       -2.*exp(i*(phi_F+phi_k))*am_psi_minus_ap*d2F*sin_theta_k;
+    dip_eff  = am_psi_plus_ap*(dp_plus_dm*exp_F_plus_k - exp_F_minus_k*d1F)+
+               am_psi_minus_ap*cos_theta_k*(-dp_plus_dm*exp_F_minus_k + exp_F_plus_k*d1F)
+               -2.*exp(i*(phi_F+phi_k))*am_psi_minus_ap*d2F*sin_theta_k;
 
     return abs(dip_eff/4.); // Only the absolute value is needed
 }
