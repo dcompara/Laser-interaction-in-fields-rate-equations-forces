@@ -48,7 +48,7 @@ En effet les boucles sont vA puis vX
 #include "Transitions_initialisation.h"
 
 
-/*** Program to read Line or Energy list from Pgopher ***/
+/*** Program to read Line or Energy list from  ***/
 
 // Author: Daniel Comparat
 //  Date: 12/02/2012
@@ -56,25 +56,25 @@ En effet les boucles sont vA puis vX
 
 
 /** ENERGY LIST **/
-// PGOPHER Gives
+//  Gives
 // Molecule Manifold   M  Sym  #  g Population Label  Energy Linear   Dipole  Err  Quadratic       Err  Two_Level Energy Delta     C              Dipole2    Err
 // WE DO NOT USE IT LIKE THAT BUT USING ORIGIN WE MODIFY AND USE ONLY
-// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  Sym(Parity +/-)  #(number to discriminate the levels) Population J N  Energy0(in 0 field)   Delta   C
+// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  bound_level  #(number to discriminate the levels) Population J N  Energy0(in 0 field)   Delta   C
 // Where for fit in Energy in Fields  Energy +/- Sqrt(Delta^2/4 + C^2*F^2) where F is field
 // C= Linear coefficient is in cm-1/T
 // Energy and Delta are in cm-1
 
-/*** Program to read Line or Energy list from Pgopher ***/
-// PGOPHER Gives
+/*** Program to read Line or Energy list ***/
+//  Gives
 // Molecule Manifold   M  Sym  #  g Population Label  Energy Linear   Dipole  Err  Quadratic       Err  Two_Level Energy Delta     C              Dipole2    Err
 // WE DO NOT USE IT LIKE THAT BUT USING ORIGIN WE MODIFY AND USE ONLY
-// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  Sym(Parity +/-)  #(number to discriminate the levels) J N  Energy0(in 0 field)   Delta   C
+// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  bound_level  #(number to discriminate the levels)   Energy0(in 0 field)   Delta   C
 // Where for fit in Energy in Fields  Energy +/- Sqrt(Delta^2/4 + C^2*F^2) where F is field
 // C= Linear coefficient is in cm-1/T
 // Energy and Delta are in cm-1
 
 // Retourne le nb de niveaux (1 si contient seulement Level[0])
-int Pgopher_Level_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params)
+int Level_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params)
 {
     Level.clear();
     ifstream file(nom_file);
@@ -92,9 +92,9 @@ int Pgopher_Level_List(const char *nom_file, vector <Internal_state> &Level, Fit
     {
         Internal_state Current_Level;
         if (type_of_field_for_internal_state_shift == 0) // Zeeman effect
-            Current_Level.read_Level_Pgopher_B(file); // read the new level
+            Current_Level.read_Level__B(file); // read the new level
         if (type_of_field_for_internal_state_shift == 10) // Stark effect
-            Current_Level.read_Level_Pgopher_E(file); // read the new level
+            Current_Level.read_Level__E(file); // read the new level
         Level.push_back(Current_Level);
         i++;
         // cout << i << "  "  << Level[i].Energy0_cm << "  " << Level[i].Delta_FieldB << endl;
@@ -107,7 +107,7 @@ int Pgopher_Level_List(const char *nom_file, vector <Internal_state> &Level, Fit
 // Read the file containing the position, assignment and intensity of lines in the simulated spectrum.
 // Retourne le nb de transitions
 //  C'est une liste qui depuis l'état de départ pointe vers tous les états d'arrivés possible
-int Pgopher_Line_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params)
+int Line_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params)
 {
     int nb_levels = Level.size();
 
@@ -120,13 +120,13 @@ int Pgopher_Line_List(const char *nom_file, vector <Internal_state> &Level, FitP
     }
 
     Internal_state Up_state, Low_state;
-    double Spol,position,intensity; // Intensité de la raie en Debye^2
+    double dip_Debye;
 
     int i=0; // Compteur du nombre de transitions
 
     while (!file.eof())
     {
-        read_Line_Pgopher(file, Up_state, Low_state, Spol,position,intensity); // Transition Up_state --> Low_state avec force Spol
+        read_Line(file, Up_state, Low_state, dip_Debye); // Transition Up_state --> Low_state avec dipole dip_Debye
 // On ajoute ensuite à la liste des raies le vrai niveau car il contient plus d'informations (en particulier les variations en champ E et B)
 // que celui donné dans le fichier de liste des raies
         int n_up = -1;
@@ -143,8 +143,8 @@ int Pgopher_Line_List(const char *nom_file, vector <Internal_state> &Level, FitP
         // cout << " Transition entre niveau num. " << n_up << " et " << n_low << endl;
         if ((n_up != -1) && (n_low != -1)) // if we have find the corresponding levels then add the transition
         {
-            Level[n_up].add_transition ( &(Level[n_low]), Spol); // Ajoute la transition  Up_state --> Low_state avec force Spol
-            Level[n_low].add_transition ( &(Level[n_up]), Spol);
+            Level[n_up].add_transition ( &(Level[n_low]), dip_Debye); // Ajoute la transition  Up_state --> Low_state avec dipole dip_Debye
+            Level[n_low].add_transition ( &(Level[n_up]), dip_Debye);
             i++;
         }
     }
@@ -188,7 +188,7 @@ void initialisation_proba(const gsl_rng *r, vector <Molecule> &Mol, const int Nb
         int numero = gsl_ran_discrete(r, g); // Numéro du niveau tiré au Hazard
         Mol[nb] = Level[numero]; // The vector Mol has been created before so no push_pack() it is a modification of the content !. c'est l'état interne de la molecule
 
-//        Mol[nb] = Level[nb];
+ //       Mol[nb] = Level[nb];
 // DEBUG
 // cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
     }

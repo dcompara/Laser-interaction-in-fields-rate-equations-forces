@@ -4,11 +4,17 @@
 #include  <iostream>                       // to include cout, cin
 
 
-// diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm
+// diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm.
 void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, const Field &fieldB, const Field &fieldE,
                      FitParams &params,  SelfAdjointEigenSolver<MatrixXcd> &es,  MatrixXcd d[])
 {
-    int nb_levels=23; //   Level.size(); 21 in our case  // TODO (Daniel#7#): I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
+    const int nb_levels=23; //   Level.size();
+    // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
+
+    const int nb_incoherent_low_levels=3; //  These are the "dead" levels number 0, 1, ... nb_incoherent_low_levels-1  for annihilation so for incoherent dipole sum
+    const int nb_incoherent_high_levels=0; //  These are the "continuum" levels number nb_levels-nb_incoherent_high_levels, nb_levels-2, nb_levels-1  for photoionization so for incoherent dipole sum
+
+
 
     /******* ORDER OF LEVELS (the n=0 and n=1 manifold, the one for spontaneous emission, should be order in Energy) ****************
 
@@ -56,7 +62,7 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41148.66482}
     };
 
-     // With 1e-3 offset
+    // With 1e-3 offset
 //    {
 //        {-10000.001, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 //        {0, -10000.000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -200,9 +206,9 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
 
     /*** dipole matrix element ***/
     MatrixXcd d0[3]; // d0 = matrix dipole in zero field
-    d0[0] = MatrixXcd(23,23);
-    d0[1] = MatrixXcd(23,23);
-    d0[2] = MatrixXcd(23,23);
+    d0[0] = MatrixXcd(nb_levels,nb_levels);
+    d0[1] = MatrixXcd(nb_levels,nb_levels);
+    d0[2] = MatrixXcd(nb_levels,nb_levels);
     for (int i=0; i<nb_levels; i++)
         for (int j=0; j<nb_levels; j++)
         {
@@ -215,7 +221,7 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
 
 
     /*** Hamiltonian matrix element: Zeeman + Stark (External field + Dynamical Stark) ***/
-    MatrixXcd H(23,23); // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
+    MatrixXcd H(nb_levels,nb_levels); // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
 
     Vecteur3D r,v,B,F,dip_ij;
     r = my_mol.get_pos();
@@ -267,15 +273,38 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
     }
 
 
-    /**** calcul of the new dipoles (in Debye) in d[q] ***/
+    /**** calcul of the new dipoles (in Debye) in d[q]
+
+    evec = es.eigenvectors() verifie evec(j0,j) = 0<j0 | j>  gives (j0=line, j = column index) the new (column) vector |j> in function of the old |j0>_0
+    d0[q+1]_i0 j0 = 0_<i0 | d_q | j0>_0 . So d[q+1]_ij = <i | d_q | j> = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j> =  Sum i0,j0  evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)
+
+    IN CONCLUSION: the new dipole are given by d[polar] = evec^dag.d0[polar].evec =  <i | d_q | j> with evec_j = |j> = sum_|j>_0   0_<j| j>.
+
+
+    But for some transition (low to dead levels and high to continuum we use an incoherent sum. To do this we use the Hadamar product A°B = (A.cwiseProduct(B)) defined by (A°B)__ij = A_ij B_ij
+    d_incoh[q+1]_ij^2 = <i | d_incoh_q | j> = Sum i0,j0   | <i |i0>0 0<i0| d_q | j0>0 0<j0|j> |^2 =  Sum i0,j0  |evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)|^2 = Sum i0,j0  evec^dag (i,i0) evec^dag(i,i0)^*   d_q(i0,j0) d_q(i0,j0)^*  evec(j0,j) evec(j0,j)^*
+    d_incoh[q+1]_ij^2 = Sum i0,j0  evec^dag°evec^dag* (i,i0)    d_q°d_q* (i0,j0)  evec°evec* (j0,j)  =  (evec^dag°evec^dag* .   d_q°d_q* .  evec°evec*)_ij
+    with for such state typically the |j> levels does not change so |j>=|j0>_0 and the last sum is Sum i0  |<i |i0>0 0<i0| d_q | j=j0>0 |^2
+    But we keep in case of order changing in the levels files ...
+
+    IN CONCLUSION dSQUARE_incoh = evec^dag°evec^dag* .   d_q°d_q* .  evec°evec*
+    ***/
 
     for(int n_polar = -1; n_polar <= 1; n_polar++)
     {
-        d[n_polar+1] = ( (es.eigenvectors().adjoint())*d0[n_polar+1]*(es.eigenvectors()) ); // The results is real but it is coded in complex number so I take the real part
+        // We first calculate all dipoles as incoherent sum and then we replace the central part with the proper coherent dipoles. Remark: We do twice the work (so it is slower, but what is long is probably the diagonalization) but is is very simple to write
 
-        // evec = es.eigenvectors() verifie evec(j0,j) = 0<j0 | j>  gives (j0=line, j = column index) the new (column) vector |j> in function of the old |j0>_0
-        //  d0[q+1]_i0 j0 = 0_<i0 | d_q | j0>_0 . So d[q+1]_ij = <i | d_q | j> = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j> =  Sum i0,j0  evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)
-        // The new dipole are given by d[polar] = evec^dag.d0[polar].evec =  <i | d_q | j> with evec_j = |j> = sum_|j>_0   0_<j| j>.
+        // incoherent sum for all dipoles
+        d[n_polar+1] = ( ( es.eigenvectors().adjoint()).cwiseProduct(es.eigenvectors().adjoint().conjugate()) ) * ( d0[n_polar+1].cwiseProduct(d0[n_polar+1].conjugate()) ) * ( (es.eigenvectors()).cwiseProduct(es.eigenvectors().conjugate()) );
+        // this is not yet the matrix of the dipole but the one of dipole squared d_incoh[q+1]_ij^2
+        for (int i=0; i<nb_levels; i++)
+            for (int j=0; j<nb_levels; j++)
+                d[n_polar+1](i,j) = sqrt(d[n_polar+1](i,j)); // To go back to d_incoh[q+1]_ij
+
+        // We replace the central part with the proper block matrix of coherent dipole. Using matrix.block<p,q>(i,j) = Block of size (p,q), starting at (i,j)
+        const int i = nb_incoherent_low_levels;
+        const int p = nb_levels - nb_incoherent_high_levels - nb_incoherent_low_levels;  // size of coherent block
+        d[n_polar+1].block<p,p>(i,i) = ( (es.eigenvectors().adjoint())*d0[n_polar+1]*(es.eigenvectors()) ).block<p,p>(i,i);
     }
 
     H.resize(0,0);

@@ -4,16 +4,15 @@
   Author: Daniel Comparat
   Date: 15/10/06 11:01
 
-// TODO (Daniel#6#): Simplify all this ad keeping only the few parameters needed for the lines transitions
 
 
 Contient:
-Level electronique: exc (excitation de la molecule, par exemple niveau électronique), Spin, Lambda, Omega
-niveau vibrationel: v
-niveau rotationel: J, N, (Omega déjà donné)
+Level electronique: exc (excitation de la molecule, par exemple niveau électronique)
+moment total J (ou F)
 projection du moment total J (ou F) sur un axe supposé connu: M
-parité: -1 ou +1
-nombre pour lever la dégénérescence
+other variable (such as vibration, etc...): v
+bound level:  +1  (or 0 for unbound states)
+# = nombre pour lever la dégénérescence
 1/durée de vie (A Einstein du niveau)
 shift en énergie > 0 si le niveau initial gagne de l'énergie (se rapproche des états excité vers la ionisation)
 population: La population (non normalisée)
@@ -21,25 +20,25 @@ population: La population (non normalisée)
 Coefficient pour un fit en champ F via formule: Energy (en cm^-1) + signe(Linear)*(-Delta/2+sqrt((Delta/2)^2+(Linear F)^2)). Ici l'unité n'est pas spécifiée mais souvent nous utiliserons comme unité d'énergie le cm^-1.
 Liste des raies = la liste des transitions vers d'autres états
 
- * Tout initialisée à 0. (sauf parité et dégénérescence +1)
+ * Tout initialisée à 0. (sauf bound level et dégénérescence +1)
 
  * write et read permettent d'écrire et de lire dans un flux (cout (pas cerr ou clog) ou fichier)
  * write_list_raie écrit la liste des raies
 
-IL y a aussi la lecture des fichiers de PGOPHER
-        d'où le choix des unités DEBYE^2 pour force de raie (dipole^2) et CM^-1 pour énergie
+
+ unités DEBYE pour dipole et CM^-1 pour énergie
 * Levels
 * Liste des raies = la liste des transitions vers d'autres états
 
 
 La comparaison des niveaux se fait uniquement sur
-Level electronique (Manifold), M, parité et nombre pour lever la dégénérescence
+Level electronique (Manifold), M, bound_level  et nombre pour lever la dégénérescence
 
   */
 
 /***
-ATTENTION TOUS LES NOMBRES QUANTIQUES SONT EN FAIT *2
-Ainsi J=1/2 est stocké en 1 d'ou le nom de  two_J.
+SOUVENT LES NOMBRES QUANTIQUES SONT EN FAIT *2
+Ainsi M=1/2 est stocké en 1 d'ou le nom de  two_M.
 ***/
 
 
@@ -59,16 +58,16 @@ class Internal_state
 {
 public:
     int exc;                 // état excité ou non (0 est l'état fondamental)
-    int two_Spin, two_Lambda, two_Omega;
-    int v;
-    int two_J, two_N, two_M;
-    int Sym;                  // Parity
+    int bound_level;                  // Parity
+    int two_J;  // 2J
+    int two_M;  // 2M
+    int v;  // Other variable (such a vibrational number)
     int deg_number;           // nombre de dégénérescence
     double Energy0_cm, Delta_FieldB, Linear_FieldB, Delta_FieldE, Linear_FieldE; // Energie en cm^-1. Coefficient pour un fit de l'énergie en champ B ou E via formule: E0 + signe(C)*(-Delta/2+sqrt((Delta/2)^2+(C F)^2))
     double one_over_lifetime; // 1/(durée de vie en seconde)
     double Energy_cm, population; //  Energie réelle due au shift en énergie et population initiale de l'état
 
-    typedef pair<Internal_state *,double> transition; // Une transition est vers un (pointeur vers) un état final (INTERNAL STATE) avec une force de raie (un double)
+    typedef pair<Internal_state *,double> transition; // Une transition est vers un (pointeur vers) un état final (INTERNAL STATE) avec un dipole de transition (un double)
 
     vector < transition > liste_raies; //La liste des raies possibles est: vecteur donnant la liste des états finaux et de la force de transition
 
@@ -89,24 +88,24 @@ public:
 
 
 // True si l'état est = à w, false sinon
-// On ne teste que l'état électronique, v, M, parité et numéro.
+// On ne teste que l'état électronique, v, M, bound_level  et numéro.
     bool is_equal (const Internal_state & w) const;
 
 
 //----------------------------------
-// Lecture des fichiers PGOPHER de niveaux
+// Lecture des fichiers  de niveaux
 //----------------------------------
 
 // Les fichiers contiennent
-// Manifold,  M, Sym(Parity +/-), #, J, N, Omega, Energy0, Delta, C
+// Manifold,  M, bound_level, #, J, N, Omega, Energy0, Delta, C
 
 
 // Ecriture dans le flux du niveau avec le format souhaité
-    void write_Level_PgopherB(ostream & flux);
+    void write_Level_B(ostream & flux);
 
 // Si variation en B ou E
-    void read_Level_Pgopher_B(istream & flux);
-    void read_Level_Pgopher_E(istream & flux);
+    void read_Level__B(istream & flux);
+    void read_Level__E(istream & flux);
 
 // Calcul du shift en champ: via E0 + signe(C)*(-Delta/2+sqrt((Delta/2)^2+(C F)^2))
     double   Energy_Shift_B_cm(const double B) const;
@@ -136,13 +135,13 @@ public:
 
 
 
-// Lecture des fichier Pgopher qui contiennent
-// UpperManifold	M'	Sym'	#'	LowerManifold	M"	Sym"	#"	Position	Intensity	Eupper	Elower	Spol
-void read_Line_Pgopher(istream & flux, Internal_state & Upper_state,Internal_state & Lower_state,
-                       double & Spol, double  & position, double & Intensity);
+// Lecture des fichier  qui contiennent
+// UpperManifold	M'	bound_level'	#'	LowerManifold	M"	bound_level"	#"	Eupper	Elower	Dipole_Debye
+void read_Line(istream & flux, Internal_state & Upper_state,Internal_state & Lower_state,
+                       double & Dipole_Debye);
 
 // Ecriture dans le flux la transition (ligne) avec le format souhaité
-void write_Line_Pgopher(ostream & flux, Internal_state & Upper_state, Internal_state & Lower_state, const double  Spol, const double position, const double Intensity);
+void write_Line(ostream & flux, Internal_state & Upper_state, Internal_state & Lower_state, const double  Dipole_Debye);
 
 
 //----------------------------------

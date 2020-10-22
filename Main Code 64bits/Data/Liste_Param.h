@@ -46,7 +46,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @offset_y[0]	0
 @offset_z[0]	0
 // Initial velocity added to the random one
-@v0_x[0]	1e5
+@v0_x[0]	0.
 @v0_y[0]	0.
 @v0_z[0]    0.
 #
@@ -84,7 +84,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 //for t> t_scaling_max
 // fin du temps.
 //@t_fin  10e-9
-@t_fin  0.1e-9
+@t_fin  1e-9
 // time interval between diagnostics (in cout) output
 @dt_dia 5e-9
 // time interval between output of snapshots (draw particles)
@@ -220,14 +220,11 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @scale_Gamma 1
 
 // Nb de laser utilisés (pas forcément le nombre ci-après qui peut être plus grand mais ne seront pas utilisés)
-@Nb_laser 0
+@Nb_laser 1
 
 // We can swhich between lasers
 @Is_Laser_Switched 0
-// IF t is between 0 and T1 (modulo T1+T2) THEN the lasers On are the one with numbers between 0 and N_laser/2
-// IF t is between T1, T1+T2 (modulo T1+T2) THEN the lasers On are between    N_laser/2+1 and N_laser.
-@dt_switch_1 3e-8
-@dt_switch_2 1e-8
+
 
 # Premier laser. Laser n°1 (called number 0 in the C++ program)
 @waist_pos_x[0]	0.
@@ -239,10 +236,9 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 
 // waist in SI units
 @waist[0]	5e-3
-@Energie_cm[0] 41148.3848
-
-@Gamma_L_MHz[0] 1e-3
-@Power[0]	200
+@Energie_cm[0] 41150
+@Gamma_L_MHz[0] 1e5
+@Power[0]	200e-10
 
 // Vector laser polarization (in the laser propagation frame) See User Guide
 // Polarization can be purely circular (sigma+ or sigma -). Example: sigma + --> Pol_circulaire_left_sp = 1 and @Pol_circulaire_right_sm =-1
@@ -312,6 +308,10 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Fichier contenant les spectres laser doit finir en .dat
 // Les dichiers contenant les transitions lasers seront donc ce nom +"[numero laser]" où numéro=0 pour le premier laser
 @nom_file_Laser_Spectrum    Data/Ps/Laser_Spectrum.dat
+#
+// File for the laser timing (not required, if not presnet the laser intensity is constant
+// Teh files wiil then be this mname +"[laser number]" with number=0 pour le premier laser
+@nom_file_Laser_Intensity    Data/Ps/Laser_Intensity.dat
 #
 @nom_sortie_donnees	Data/donnee_Mol.dat
 @nom_sortie_rate	Data/sortie_rate.dat

@@ -1,3 +1,15 @@
+2020/10/18
+Add a timing dependance for the lasers using Laser_Intensity[#Laser] files. So I remove the switching
+
+The levels and lines files have been simplify (no 2N, 2J, 2Omega neither DE and GAmma of the transition).
+The Lines are now given by their dipole not dipole^2/3 as before
+
+For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
+transition we use incoherent summation.
+
+
+
+
 2020/09/13
 Modify real dipoles by complex ones. The eigenvectors phases are "random" (probably depend on the convergence of the diagonaization)
 

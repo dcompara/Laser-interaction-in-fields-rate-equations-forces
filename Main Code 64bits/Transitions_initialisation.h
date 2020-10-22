@@ -1,6 +1,6 @@
 /*
 
-Program to read Line or Energy list from Pgopher
+Program to read Line or Energy list from
 
 
 LES UNITES ICI SONT CELLES DES FICHIERS (cm^-1 typiquement)
@@ -44,21 +44,21 @@ using namespace std;
 // Gives 0 in wrong cases
 
 
-/*** Program to read Line or Energy list from Pgopher ***/
-// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  Sym(Parity +/-)  #(number to discriminate the levels) Population J N  Energy0(in 0 field)   Delta   C
+/*** Program to read Line or Energy list from  ***/
+// Manifold(1 for upper or 0 for lower typically)  M(in Field it is real M)  bound_level  #(number to discriminate the levels) Population J N  Energy0(in 0 field)   Delta   C
 // Where for fit in Energy in Fields  Energy +/- Sqrt(Delta^2/4 + C^2*F^2) where F is field
 // C= Linear coefficient is in cm-1/T
 // Energy and Delta are in cm-1
 // Retourne le nb de niveaux (1 si contient seulement Level[0])
- int Pgopher_Level_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params);
+ int Level_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params);
 
 
 /*** LINE LIST *****/
 // Les fichiers  contiennent
- // UpperManifold	M'	Sym'	#'	LowerManifold	M"	Sym"	#"	Position	Intensity	Eupper	Elower	Spol
+ // UpperManifold	M'	bound_level'	#'	LowerManifold	M"	bound_level"	#"  Eupper	Elower	dip_Debye
 // Read the file containing the position, assignment and intensity of lines in the simulated spectrum.
 // Retourne le nb de transitions
-int Pgopher_Line_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params);
+int Line_List(const char *nom_file, vector <Internal_state> &Level, FitParams &params);
 
 // Initialisation des durées de vies
 void initialisation_Gamma( vector <Internal_state> &Level, FitParams &params);

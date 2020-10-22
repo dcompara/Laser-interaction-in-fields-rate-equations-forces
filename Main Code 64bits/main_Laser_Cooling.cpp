@@ -15,7 +15,7 @@ leur paramètres (nb, vitesse, etc.. sont dans le fichier Liste_Param.h) (ce n'es
 Les transtions moléculaires niveaux, transitions (Franck-COndon, Hönl London,...) sont lus
 dans Initialisation_programme qui appelle les fichiers dans Transitions_initialisation
 
-Les taux de transitions proviennent d'une liste qui souvent vient du programme PGOPHER
+Les taux de transitions proviennent d'une liste qui souvent vient du programme
 Ainsi les unités sont
 DEBYE^2 pour force de raie (dipole^2) et
 CM^-1 pour énergie
@@ -143,9 +143,10 @@ void RePaint ()
 
     /***  NOM DES FICHIERS ***/
     string nom_sortie_temp_string, nom_sortie_scal_string, nom_file_Levels_string, nom_file_Lines_string, nom_sortie_donnees_string, nom_sortie_rate_string, nom_fichier_random_gen_string,
-           nom_file_Laser_Spectrum_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
+           nom_file_Laser_Spectrum_string, nom_file_Laser_Intensity_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
 
-    const char *nom_sortie_temp, *nom_sortie_scal, *nom_file_Levels, *nom_file_Lines, *nom_sortie_donnees, *nom_sortie_rate, *nom_fichier_random_gen, *nom_file_Laser_Spectrum, *nom_file_Magn_Field_3D, *nom_file_Elec_Field_3D;
+    const char *nom_sortie_temp, *nom_sortie_scal, *nom_file_Levels, *nom_file_Lines, *nom_sortie_donnees, *nom_sortie_rate, *nom_fichier_random_gen,
+          *nom_file_Laser_Spectrum, *nom_file_Laser_Intensity, *nom_file_Magn_Field_3D, *nom_file_Elec_Field_3D;
 
     nom_file_Levels_string =  data.SParam("nom_file_Levels");      // Fichier contenant les Levels (etat, energie, ...)
     nom_file_Lines_string = data.SParam("nom_file_Lines");         // Fichier contenant les transitions
@@ -153,6 +154,7 @@ void RePaint ()
     nom_sortie_rate_string = data.SParam("nom_sortie_rate");
     nom_fichier_random_gen_string = data.SParam("nom_fichier_random_gen");
     nom_file_Laser_Spectrum_string = data.SParam("nom_file_Laser_Spectrum");         // Fichier contenant les transitions
+    nom_file_Laser_Intensity_string = data.SParam("nom_file_Laser_Intensity");         // Fichier contenant les transitions
     nom_file_Magn_Field_3D_string =  data.SParam("nom_file_Magn_Field_3D");
     nom_file_Elec_Field_3D_string =  data.SParam("nom_file_Elec_Field_3D");
 
@@ -162,6 +164,7 @@ void RePaint ()
     nom_sortie_rate = nom_sortie_rate_string.c_str();
     nom_fichier_random_gen = nom_fichier_random_gen_string.c_str();
     nom_file_Laser_Spectrum = nom_file_Laser_Spectrum_string.c_str();         // Fichier contenant les transitions
+    nom_file_Laser_Intensity = nom_file_Laser_Intensity_string.c_str();         // Fichier contenant les transitions
     nom_file_Magn_Field_3D =  nom_file_Magn_Field_3D_string.c_str();
     nom_file_Elec_Field_3D =  nom_file_Elec_Field_3D_string.c_str();
 
@@ -256,8 +259,9 @@ void RePaint ()
 
         const int Nb_laser = data.IParam("Nb_laser");  // number of used laser (we could have more in the Liste_Param file, but this will be the number used in this run)
 
-        Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers
-        // Sortie_laser_spectrum(file_out, lasers[0], params);
+        Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers
+        // Sortie_laser_spectrum(file_out, lasers, params,0); // Debug
+        // Sortie_laser_intensity(file_out, lasers, params,0);
 
         /**
         on calcul un temps dt_KMC pour l'évolution de l'état interne.
@@ -273,18 +277,17 @@ void RePaint ()
         while(true) // Infinite loop untill t_end is reached
         {
             Init_Field(champB, champE, params);  // Re0-Initialise les champs. Important si scan des paramètres car ils ont changés. We do not add the files because we do not modify them
-            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
+            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
             dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
 
             calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
-
             if (t >= t_dia)
             {
                 /*** Here, or just before if you want to have output all the time, put you output files ***/
                 // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
 
                 // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-                Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
+                // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;
             }
 

@@ -22,6 +22,8 @@ Laser::Laser()                       // Constructeur par défaut
     coherent_avec_laser_num = -1;
     spectre_Ecm_attenuation.clear(); // spectre_Ecm_attenuation =  map < double, double > ();
     spectre_Ecm_attenuation.insert ( pair<double,double>(0.,1.) ); // Par défaut le spectre est non façonné. On écrit  spectre_Ecm_attenuation[0.] = 1.;
+    Intensity_time_attenuation.clear();
+    Intensity_time_attenuation.insert ( pair<double,double>(0.,1.) ); //  Intensity_time_attenuation[0.] = 1.; so no attenuaion by default
 
 };
 
@@ -44,6 +46,7 @@ Laser::Laser(const Laser & my_laser)               // Constructeur de (re)copie
     coherent_avec_laser_num = my_laser.coherent_avec_laser_num;
     // map < double, double > spectre_Ecm_attenuation; // In order to create properly the object (cf Guarreta course p22)
     spectre_Ecm_attenuation = my_laser.spectre_Ecm_attenuation;
+    Intensity_time_attenuation = my_laser.Intensity_time_attenuation;
 };
 
 Laser & Laser::operator = (const Laser& my_laser)          // Affectation par recopie
@@ -61,6 +64,7 @@ Laser & Laser::operator = (const Laser& my_laser)          // Affectation par re
         type_laser = my_laser.type_laser;
         coherent_avec_laser_num = my_laser.coherent_avec_laser_num;
         spectre_Ecm_attenuation = my_laser.spectre_Ecm_attenuation; // Attention ne recopie pas la map seulement l'adresse.
+        Intensity_time_attenuation = my_laser.Intensity_time_attenuation;
     }
     return *this;
 }
@@ -118,6 +122,38 @@ istream& operator >> (istream &flux, Laser & my_laser) //my_laser est modifié!
 }
 
 
+void Laser::read_Intensity(istream & flux)
+{
+    double time_ns, attenuation;
+    flux >> time_ns;
+    flux >> attenuation;
+    Intensity_time_attenuation.insert ( pair<double,double>(time_ns,attenuation) );  // Intensity_time_attenuation[time_ns] = attenuation;
+}
+
+int Laser::read_Intensity(const char *nom_file)
+{
+    ifstream file(nom_file);
+
+    if ( !file || nom_file== NULL)
+    {
+        // cerr << "No able to open the file " << nom_file << endl;  // Better to not put because sometimes their is no file (and so if this line is here, we will have all the time a message) and we just as the defautl values
+        file.close();
+        return 0; // So Intensity_time_attenuation is unchanged and thus compose by the default file
+    }
+
+    int i=0;
+    Intensity_time_attenuation.clear(); // To avoid to insert the default file at the begining
+
+    while (!file.eof())
+    {
+        this->read_Intensity(file);
+        i++;
+    }
+
+    file.close();
+    return i;
+}
+
 void Laser::read_Spectrum(istream & flux)
 {
     double energy_cm, attenuation;
@@ -151,6 +187,8 @@ int Laser::read_Spectrum(const char *nom_file)
 }
 
 
+
+
 void Laser::write_Spectrum(ostream & flux)
 {
     if (spectre_Ecm_attenuation.size() ==0)
@@ -181,6 +219,44 @@ double  Laser::intensity()  const
     return intensity;
 
 }
+
+// Intensity at time t. Linear Interpolated between the time given in the laser_intensity file
+double  Laser::intensity_t_nanosecond(const double t_nanosecond) const
+{
+    map < double, double >::const_iterator itr;
+
+    double t_i_ns,t_iplus1_ns, A_i, A_iplus1,A;
+
+    itr = Intensity_time_attenuation.upper_bound (t_nanosecond);  // itr pointe sur l'élément juste après t_second
+
+
+    if (itr ==  Intensity_time_attenuation.begin())   //  if t < first time in the file. And in this case Attenuation  = A[first]
+        A= itr->second;
+    else
+    {
+        if (itr ==  Intensity_time_attenuation.end())   //  if t > last time in the file. And in this case Attenuation  = A[last]
+        {
+            itr--;
+            A= itr->second;
+        }
+        else    // NORMAL CASE
+        {
+            t_iplus1_ns= itr->first;
+            A_iplus1= itr->second;
+
+            itr--;
+            t_i_ns= itr->first;
+            A_i= itr->second;
+
+            A=  A_i + (t_nanosecond-t_i_ns) * (A_iplus1-A_i)/(t_iplus1_ns-t_i_ns);
+            // The attenuation is   a linear interpolation between the 3 points, t_i, t and t_{i+1} : A = A[i] + (t-t[i]) * (A[i+1]-A[i])/(t[i+1]-t[i]) . }
+        }
+    }
+
+    return A;
+}
+
+
 
 
 // intensité au waist prenant en compte le spectre

@@ -52,5 +52,9 @@ void Sortie_rate(ofstream & file_rate,  const vector <double> &rate, vector <Int
 // Sortie du spectre laser
 void Sortie_laser_spectrum(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser=0);
 
+// Sortie de la variation temporelle de l'intensité  laser
+void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser=0);
+
+
 
 #endif

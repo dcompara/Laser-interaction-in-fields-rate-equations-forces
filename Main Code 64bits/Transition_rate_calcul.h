@@ -89,7 +89,7 @@ double intensity_Convolution_linewidth(const double I, const double delta, const
 double rate_two_level(const double I_loc, const double dip_Debye);
 
 // Rate for (photo-)ionization
-double rate_ionization(const double I_loc, const double dip_Debye, const double delta, const double Energy_transition_cm);
+double rate_ionization(const double I_tot, const double dip_Debye);
 
 // Field ionization rate
 double rate_field_ionization(const Laser& my_laser,  const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE);

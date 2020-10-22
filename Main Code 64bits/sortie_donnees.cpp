@@ -156,7 +156,7 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
                 // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
             {
                 // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
-                if (Level[j0].two_Omega == 2) // If the state is triplet (2S+1=3 so S=1) we look on the decomposition, |0_<i | i>|^2 , and sum them
+                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
                 {
                     tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
                 }
@@ -164,12 +164,14 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             // file_out << endl;
             // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
 
+// Level[j].write_Level_B(file_out);
 
 
-            file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
+
+
+             file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
         }
     }
-
 
 
 
@@ -377,11 +379,14 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     file_rate<< setprecision(12);
 //   file_rate << " time t = " << t << endl;
 
-    int nb_levels=Level.size(); // Level.size()
+    const int nb_levels=Level.size(); // Level.size()
 
-    // 3S1-1  est level 4   et  3S1-1 est level     5
+ //         1S00     3S1-1    3S11    3S10
+ // LEvel   3           4       5       6
+    double rate_level_i_vers_level_3[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
     double rate_level_i_vers_level_4[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
     double rate_level_i_vers_level_5[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+     double rate_level_i_vers_level_6[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
     double rate_level_i_total[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
     double Ecm_i[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
@@ -431,66 +436,12 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         int i_out = Internal_state_out.deg_number;
         Ecm_i[i_in] =  Internal_state_in.Energy_cm;
 
+        if (i_out == 3)   rate_level_i_vers_level_3[i_in] +=  current_rate;
         if (i_out == 4)   rate_level_i_vers_level_4[i_in] +=  current_rate;
         if (i_out == 5)   rate_level_i_vers_level_5[i_in] +=  current_rate;
+        if (i_out == 6)   rate_level_i_vers_level_6[i_in] +=  current_rate;
         rate_level_i_total[i_in] += current_rate;
 
-
-        /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization,
-         because the Internal States are not the correct one we need to diagonalized in order to find
-         the proper one
-
-
-         for all 21 levels              j        Energy_j         Energy_J-Energy_out     TRIPLET_CHARACTER
-
-            *******/
-
-        /****
-                if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
-                {
-                    int level_in = Internal_state_in.deg_number;
-                    int level_out = Internal_state_out.deg_number;
-
-                    file_rate  << " " << level_in ; // is the number for the level of the molecule
-                    file_rate  << " " << level_out ; // is the number for the level of the molecule
-
-                    file_rate  << endl;
-                    MatrixXcd d[3] ;
-                    SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
-
-                    Diagonalization(Level, Mol[i], fieldB, fieldE, params,es, d)
-
-
-        //            for (int i=0; i<Level.size(); i++)
-        //                file_rate << " i  "  << i  << " E_i " <<  round(100.*(es.eigenvalues()(i)))/100. << endl;
-        //
-        //
-        //
-        //            for (int i=0; i<Level.size(); i++)
-        //                for (int j=0; j<Level.size(); j++)
-        //                {
-        //                    file_rate << " i  "  << i  << " j " << j  << " evec_{ij} " <<  round(100.*(es.eigenvectors())(i,j))/100. << endl;
-        //                }
-
-
-
-                    for (int j=0; j< Level.size(); j++) //  we scan over the levels to calculate the parameter
-                    {
-                        double param = 0.; //This is the parameter we want to calculate (here the triplet character)
-
-                        for (int j0=0; j0< Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
-                            // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the on in the Level file)
-                        {
-                            if (Level[j0].two_Omega == 2) // If the state is triplet (2S+1=3 so S=1) we look on the decomposition, |0_<i | i>|^2 , and sum them
-                            {
-                                param +=  pow((es.eigenvectors()(j0,j)),2); // sum_|triple, j>_O   |0_<j | j>|^2
-                            }
-                        }
-                        //                       file_rate << " " << j << " " << es.eigenvalues()(j)<< " " << es.eigenvalues()(j) - es.eigenvalues()(level_out) << " " << abs(round(10.*param))/10. << endl;
-                        //          file_rate << " " << es.eigenvalues()(j) << " " << abs(round(100.*param))/100. ;
-                    }
-                }
-        ****/
 
 //        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
 //        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
@@ -508,13 +459,32 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         file_rate <<  " " << i ;
         file_rate <<  " " << Ecm_i[i] ;
         file_rate <<  " " << Level[i].Energy_cm  ;
+         file_rate <<  " " << rate_level_i_vers_level_3[i] ;
         file_rate <<  " " << rate_level_i_vers_level_4[i] ;
         file_rate <<  " " << rate_level_i_vers_level_5[i] ;
+         file_rate <<  " " << rate_level_i_vers_level_6[i] ;
         file_rate <<  " " << rate_level_i_total[i] ;
         file_rate << endl ;
     }
 
 }
+
+// Sortie de la variation temporelle de l'intensité  laser
+void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser)
+{
+    Laser my_laser = laser[num_laser];
+    file_out<< setprecision(8);
+
+    for (double t_ps = -100e3; t_ps < 100e3; t_ps++)
+    {
+        double I_shape = my_laser.intensity_t_nanosecond(t_ps/1000.); // Intensité laser façonnée
+        file_out << t_ps/1000. << " " << I_shape << endl;
+        // cout << t_ns << " " << I_shape << endl;
+    }
+
+    return;
+}
+
 
 
 
@@ -524,12 +494,12 @@ void Sortie_laser_spectrum(ofstream & file_out, const vector <Laser> &laser, Fit
     double Energy_transition_laser_cm = cm/my_laser.get_lambda(); // Energie de la transition laser en cm^-1
 
     file_out<< setprecision(8);
-    double intensity0=intensity_Convolution_linewidth(1., 0., 0., my_laser.get_Gamma_Laser(), my_laser.get_type_laser(),num_laser, 0., 0., params);
+    double intensity0=intensity_Convolution_linewidth(1., 0., 0., my_laser.get_Gamma_Laser(), my_laser.get_type_laser(),num_laser, 0., 0., params); // intensity at resonance
 
-    for (int E_cm = 0; E_cm < 20000; E_cm++)
+    for (double E_cm = 41100; E_cm < 41200; E_cm = E_cm + 0.01)
     {
         double I_shape = my_laser.transmission_spectrum(E_cm); // Intensité laser façonnée
-        double delta =(E_cm - 0.01/my_laser.get_lambda())*Conv_Ecm_delta  ;// detuning de la transition en s^-1
+        double delta =(E_cm - cm/my_laser.get_lambda())*Conv_Ecm_delta  ;// detuning de la transition en s^-1
         double I_laser =  intensity_Convolution_linewidth(1., delta, 0., my_laser.get_Gamma_Laser(), my_laser.get_type_laser(),num_laser,Energy_transition_laser_cm, E_cm, params)/intensity0; //
         file_out << E_cm << " " << I_shape << " " << I_laser << endl;
     }

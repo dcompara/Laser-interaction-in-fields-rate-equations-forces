@@ -38,7 +38,7 @@ const double VERY_SMALL_NUMBER = 1./VERY_LARGE_NUMBER;
 const double SMALL_NUMBER = 1.e-10; // Utile pour les différences finies (pour éviter les erreurs d'arrondis)
 const double  LARGE_NUMBER = 1./SMALL_NUMBER;
 const double SMALL_NUMBER_RATE = 1.; // Rate smaller than this (1 second) will not be considered
-const double SMALL_DIPOLE_DEBYE = 1.e-8; // Rate smaller than this (1 second) will not be considered
+const double SMALL_DIPOLE_DEBYE = 1.e-8; // Rate smaller than this (~1 second) will not be considered
 
 
 const int aucune = -1; // numéro pour indiquer aucune molécule

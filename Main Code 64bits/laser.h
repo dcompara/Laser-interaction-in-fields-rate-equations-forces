@@ -24,7 +24,7 @@ coherent_avec_laser_num: pour les interférences  est le numéro du premier lase
 On met aussi (surtout pour le cas façonné) un spectre en énergie spectrale (cm^-1) du laser.
 C'est un tableau Energie_cm, I_attenuation (1= non atténué, 0= éteind).
 L'intensité sera donc celle du laser multiplié par I_attenuation à l'énergie (immédiatement supérieure) de la transition (1 par défaut).
-
+Il y a aussi une atténuation temporelle possible tableau Intensity: time (in nanosecond), I_attenuation
 
 
 Il y a aussi les fonctions donnant (ATTENTION LES X,Y,Z réfèrent au repère lié au laser !)
@@ -112,8 +112,8 @@ protected:
 
 public:
     map < double, double > spectre_Ecm_attenuation ; //La liste du spectre laser atténué
-// C'est un tableau Energie_cm, I_attenuation (1= non atténué, 0= éteind).
-
+    // C'est un tableau Energie_cm, I_attenuation (1= non atténué, 0= éteind).
+    map < double, double > Intensity_time_attenuation; // list of intensity versus time (in nanosecond)
 
 
 
@@ -222,6 +222,12 @@ public:                // Forme canonique d'une classe
     {
         coherent_avec_laser_num = new_type;
     }
+
+
+// Read intensity versus time
+    void read_Intensity(istream & flux);
+
+    int read_Intensity(const char *nom_file);
 
 
 // Lit les fichiers Energy_cm atténuation
@@ -375,6 +381,9 @@ public:                // Forme canonique d'une classe
 
 // intensité au waist
     double  intensity()  const;
+
+    // Intensity at time t. Linear Interpolated between the time given in the laser_intensity file. For time longer than the last time in the file the attenuation keep the last value
+    double  intensity_t_nanosecond(const double t_nanosecond)  const;
 
     // transmission (1 = 100%, 0 = 0) prenant en compte le spectre à l'énergie de la transition
     double transmission_spectrum(const double energie_trans_cm)  const;
