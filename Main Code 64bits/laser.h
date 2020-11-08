@@ -437,6 +437,16 @@ double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& a
 
 
 
+// Polynomial approximating arctangent on the range -1,1.
+// Max error (0.21 degrees)
+float ApproxAtan(float z);
+
+
+// Approximation of atan2 that is a function that is called a lot of time and take 10% of the full computational time!!
+// cf https://www.dsprelated.com/showarticle/1052.php
+float atan2_approximation(float y, float x);
+
+
 /***
 
 Compare to the PRA 2014 we change notation now to be like Wikipedia in ZXZ convention(BE CAREFUL MATHEMATICA and Varshalovitch are in ZYZ convention)

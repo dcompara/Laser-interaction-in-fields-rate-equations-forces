@@ -104,7 +104,9 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
 /************************************************************************/
 
 // Calcul de tous les taux d'emission spontanée de la molécule
-int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate, const Molecule &my_mol, const Field &fieldB, const Field &fieldE, const int num_mol, FitParams &params);
+int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate, const Molecule &my_mol, const Field &fieldB,
+                        const Field &fieldE, const int num_mol, FitParams &params,
+                        SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
 
 
 // Calcul of rate (if no interferece between laser)  between level in and out for a given laser and for a given molecule. This add the light shift effect to the dipolar potential (delta_pot_dipolaire)
@@ -112,8 +114,8 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
 int rates_single_molecule_laser_level(const int n_las, double dipole, double &delta, double &eps_pol, double &Gamma_spon_tot, double sqrt_intensity_loc[],
                                       vector <Internal_state> &Level, Internal_state &Internal_state_in, Internal_state &Internal_state_out, vector <type_codage_react> &reaction_list, vector <double> &rate,
                                       const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const Laser &my_laser, const double t, double &delta_pot_dipolaire,
-                                      FitParams &params, bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1,
-                                      const double Gamma_in=0., MatrixXcd d[]={});
+                                      FitParams &params, MatrixXcd d[], bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1,
+                                      const double Gamma_in=0.);
 
 
 // Calcul de tous les taux de la molécule  pour tous les lasers
@@ -122,7 +124,10 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
 // It calculate also the dipole detuning which is just rate * delta/Gamma
 // In this last case we do not necessarily to calculate the rate, as for the dipolar shift, so is_rate_calculated would be false
 int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate,
-                   const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, double &delta_pot_dipolaire, FitParams &params, bool is_rate_calculed = true);
+                   const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t,
+                   double &delta_pot_dipolaire, FitParams &params,
+                  SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[],
+                    bool is_rate_calculed = true);
 
 
 
@@ -142,7 +147,8 @@ int copie_rates_molecules(vector <type_codage_react> &reaction_list, vector <dou
 // Calcul de tous les taux de toutes les molécules si numero_mol = aucune (-1)
 // Sinon on ne recalcule que celui de la molécule numero_mol
 int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algorithme_MC, vector <type_codage_react> &reaction_list, vector <double> &rate, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-                           const double t, const int numero_mol, const int N_Mol, FitParams &params );
+                           const double t, const int numero_mol, const int N_Mol, FitParams &params,
+                            SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
 
 
 

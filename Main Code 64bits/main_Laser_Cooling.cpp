@@ -64,6 +64,9 @@ DEBUG là où je met des fonctions utilisées pour le débuggage actuel
 #include <numeric>                         // Pour accumulate
 #include <iomanip>
 #include <list>                            // for list
+#include <Eigen/Eigen>  // POur les matrice du hamiltonien
+using namespace Eigen;
+
 
 
 #include <windows.h>
@@ -272,7 +275,32 @@ void RePaint ()
         int number_mol = aucune;  // numéro de la molécule affectée par une modification (aucune au début d'où la valeur -1)
         int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
 
-        //Create_dipole_Lines_from_Matrices("matrice_dipole.dat");
+
+        /*** Hamiltonian + dipole matrix element ***/
+
+// TODO (Daniel#6#): Use dynamcial size (check fr speed) to avoir this value
+        const int nb_levels=32; //   Level.size();
+        // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
+
+        MatrixXcd E0_cm(nb_levels,nb_levels);
+        MatrixXcd Zeeman_cm_B(nb_levels,nb_levels);
+
+        MatrixXd d0[3];
+        d0[0] = MatrixXd(nb_levels,nb_levels);
+        d0[1] = MatrixXd(nb_levels,nb_levels);
+        d0[2] = MatrixXd(nb_levels,nb_levels);
+
+        MatrixXcd d[3];
+        d[0] = MatrixXcd(nb_levels,nb_levels);
+        d[1] = MatrixXcd(nb_levels,nb_levels);
+        d[2] = MatrixXcd(nb_levels,nb_levels);
+
+        MatrixXcd H(nb_levels,nb_levels);     // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
+
+        Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize the Energy, Zeeman and dipoles matrices
+
+
 
         while(true) // Infinite loop untill t_end is reached
         {
@@ -280,13 +308,14 @@ void RePaint ()
             Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
             dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
 
-            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
+            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params, es, H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
             if (t >= t_dia)
             {
                 /*** Here, or just before if you want to have output all the time, put you output files ***/
                 // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
 
                 // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
+                // Sortie_rate_example(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
                 // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;
             }
@@ -346,6 +375,11 @@ void RePaint ()
     file_out.close();
     file_rate.close();
     t_end = clock();
+
+//    H.resize(0,0);
+//    d0[0].resize(0,0);
+//    d0[1].resize(0,0);
+//    d0[2].resize(0,0);
 
     cout << "durée du programme (s) = " << (t_end - t_start)/double(CLOCKS_PER_SEC) << endl;
 

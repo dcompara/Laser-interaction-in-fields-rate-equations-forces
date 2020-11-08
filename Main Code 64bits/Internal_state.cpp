@@ -10,7 +10,7 @@ Internal_state::Internal_state()                    // Constructeur par défaut
     v =0;
     two_M = 0;
     two_J =0;
-    bound_level  = 1;                  // Parity
+    bound_level  = 1;                  // Bound level 0=continuum, 1 = bound level
     deg_number = 0;           // nombre de dégénérescence
     Energy0_cm = Delta_FieldB = Linear_FieldB = Delta_FieldE = Linear_FieldE = 0.;
     one_over_lifetime=0.;

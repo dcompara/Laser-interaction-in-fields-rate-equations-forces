@@ -430,7 +430,7 @@ The code requires source input files
 Contains all relevant parameters such as number, temperatures, locations of the particles, lasers parameters and some output properties and algorithm choices.
 The location of the files are also given in $@${}nom\_file\_Levels,   
 $@${}nom\_file\_Lines    or $@${}nom\_file\_Laser\_Spectrum  
-
+f
 
 
 	\item "Levels".
@@ -617,12 +617,12 @@ This file LASER\_SPECTRUM is used only if you want to  shape spectrally a laser.
 
 The code reads a file one file per laser (number).
 Laser\_spectrum[i] for laser number i+1
-that contains 2 columns: E$_{\rm cm}$  (Energy in cm$^{-1}$) and Attenuation (intensity attenuation coefficient).
+that contains 2 columns: E$_{\rm cm}$  (Energy in cm$^{-1}$) and transmission (intensity transmission coefficient).
 
 
 When a transition should occur at the energy  $E_{\rm cm}$. 
 The program look in this file for the line $i$ such as  $E_{\rm cm}[i] \leq E_{\rm cm} < E_{\rm cm}[i+1]$ and then it takes the corresponding value 
-Attenuation$[i]$. This will be the multiplicative factor for the laser intensity for this transition energy.
+transmission$[i]$. This will be the multiplicative factor for the laser intensity for this transition energy.
 So in summary the energy in the file is the energy just below yours and the intensity would thus just be multiplied by the amplitude factor.
 
 
@@ -644,12 +644,12 @@ It is important to know that this is a pure intensity effect, no (Fourier-Transf
 
 The code reads a file one file per laser (number).
 Laser\_intensity[i] for laser number i+1
-that contains 2 columns: $t_{\rm ns}$  (time in ns) and Attenuation $A$ (intensity attenuation coefficient).
+that contains 2 columns: $t_{\rm ns}$  (time in ns) and transmission $T$ (intensity transmission coefficient).
 
 
 When a transition rate is calculated at time $t$, the program look in this file for the line $i$ such as  $t_{\rm ns}[i] \leq t < t_{\rm ns}[i+1]$ and then it interpolate, at first order, the corresponding value between
-$A[i]$ and $A[i+1]$. So $A$ is the Attenuation value:
-$A = A[i] + \frac{A[i+1]-A[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $A=1$ (or $A=0$) as last point.
+$T[i]$ and $T[i+1]$. So $A$ is the transmission value:
+$T = T[i] + \frac{T[i+1]-T[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $T=1$ (or $T=0$) as last point.
 This will be the multiplicative factor for the laser intensity.
 
 

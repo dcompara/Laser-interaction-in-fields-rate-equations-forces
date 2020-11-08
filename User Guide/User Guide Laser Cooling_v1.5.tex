@@ -105,7 +105,7 @@
 
 \begin{abstract}
 This document gives an introduction to the use of the C++ Laser Cooling code described in PHYSICAL REVIEW A 89, 043410 (2014) 
- and available on git: https://github.com/dcompara/Laser-interaction-in-fields.
+ and available on git: https://github.com/dcompara/Laser-interaction-in-fields-rate-equations-forces.
 The program solves the rate equations to study laser excitation, forces (scattering + dipolar + magnetic + electric + coulombian interactions).
 It has been developed under Code::Blocks and Windows.
 The inputs are 2 external files describing the	levels (with information about their energy + linear or quadratic Stark, Zeeman effect) and the
@@ -116,7 +116,7 @@ The output is writen in a file containing relevant information such as populatio
 Output is also performed through 3D snapshots.
 % An update of the modifications done in the code can be find in Modif\_code\_rate\_eq.txt. 
 \textbf{Any modifications, bugs, improvement, ... should be refereed to
-Daniel.Comparat$@$u-psud.fr}
+Daniel.Comparat$@$universite-paris-saclay.fr}
 \end{abstract}
 
 
@@ -607,13 +607,16 @@ with  $C_{{\rm Debye},s} = (8\times 10^6 \pi^2 c^3 {\rm Debye}^2 )/(3. \varepsil
 
 
 For an continuum transition (so with Sym' = 0), the idea to treat it, is to put a "fake" level: the energy should be just at the ionisation threshold (thus the program can test if the laser wavelength is enough to ionize). But, in this case the $S_{\rm pol}$ column is  not $d^2/3$ but $\sigma/$cm$^2$ which is the ionization cross section in cm$^2$.
+There is only one constant value for this cross section, no wavelength dependence is included so you have to choose the one adapted to your lasers.
 
 
 
 
 \subsection{LASER\_SPECTRUM} 
+
+It is possible to shape both in time and spectraly a laser as shown in Fig. \ref{fig:shaping}.
  
-This file is used only if you want to  shape spectrally a laser.  If you do not create such a file a default one (containing only one line: 0 1) is created which does not affect the laser intensity.
+This file LASER\_SPECTRUM is used only if you want to  shape spectrally a laser.  If you do not create such a file a default one (containing only one line: 0 1) is created which does not affect the laser intensity.
 
 
 The code reads a file one file per laser (number).
@@ -626,6 +629,32 @@ The program look in this file for the line $i$ such as  $E_{\rm cm}[i] \leq E_{\
 Attenuation$[i]$. This will be the multiplicative factor for the laser intensity for this transition energy.
 So in summary the energy in the file is the energy just below yours and the intensity would thus just be multiplied by the amplitude factor.
 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{shaping}
+	\caption{Shaping examples. Left  shaping for the laser intensity versus time: the code (solid black line) interpolate linearly between (red) points, if the point is before or after the points we kept the nearest value. Right: shaping for the laser spectrum: the value of the interpolation is the lower one in the file (no interpolation between red points). The example illustrate a gaussian laser, 100 GHz broad. In Red is the final (relative) intensity.}
+	\label{fig:shaping}
+\end{figure}
+
+
+
+\subsection{LASER\_INTENSITY} 
+
+This file is used only if you want to  shape the intensity in time for a given a laser. 
+It is important to know that this is a pure intensity effect, no (Fourier-Transform) spectral effect is liked to it (so we can not create a broadband femtosecond laser just using this for instance).
+ If you do not create such a file a default one (containing only one line: 0 1) is created which does not affect the laser intensity.
+
+
+The code reads a file one file per laser (number).
+Laser\_intensity[i] for laser number i+1
+that contains 2 columns: $t_{\rm ns}$  (time in ns) and Attenuation $A$ (intensity attenuation coefficient).
+
+
+When a transition rate is calculated at time $t$, the program look in this file for the line $i$ such as  $t_{\rm ns}[i] \leq t < t_{\rm ns}[i+1]$ and then it interpolate, at first order, the corresponding value between
+$A[i]$ and $A[i+1]$. So $A$ is the Attenuation value:
+$A = A[i] + \frac{A[i+1]-A[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $A=1$ (or $A=0$) as last point.
+This will be the multiplicative factor for the laser intensity.
 
 
 
@@ -642,7 +671,7 @@ But if it usually runs but then bug after some modifications it is 90\% due to a
 
 For debugging use the debugger in the Debug file. But you can also use  Sortie\_rate  which gives all rates, or Sortie\_donnee\_etat\_int\_simple that gives the list of levels, and that are commented on Main\_Laser\_Cooling. You have also Sortie\_laser\_spectrum to check the laser spectrum you make or Sortie\_transition to check the transition per
 
-\textcolor{red}{The best way to debug is to use a simple two level system and to look for the rates to understand if they are as expected. 95\% of the time the problems comes from the Levels or Lines files}
+\textcolor{red}{The best way to debug is to use a simple two level system and to look for the rates to understand if they are as expected. Very often the problems comes from the Levels or Lines files}
 
 
 \subsection{CodeBlocks problems}
@@ -881,6 +910,10 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 Despite the fact that the code could largely be improved to use more C++ spirit (like maps between reaction and rates, ...), a long list of possible improvements exists among them are:
 	 
 	 \begin{itemize}
+	 	
+	 	\item use Dipoles and not $d^2/3$ in the Files 
+	 	
+	 	\item Simplify the Levels file and use only the relevant data used for Lines, plus one extra column for comments
 	
 	 	\item Use of adaptive time steps (like t\_evol\_ext) for the algorithms (under consideration).
 	 	
@@ -894,8 +927,7 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 	with \# include <omp.h>
 	 	+ \# pragma omp parallel
 	 	
-	 	
-	 	\item Combine electric and magnetic field of arbitrary orientations. This is partially done using the diagonalization cf section \ref{diagonalization}
+	 
 	 	
 	 	\item Treat chemical reactions during collisions.
 	 	
@@ -911,7 +943,7 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 	
 	 	\item Improve the calculation of the dipolar shift. Until now the dipolar potential is not included in the shift for the transition. This avoids accumulation, but in some cases, it may be good to have it.
 	 	
-	 	\item Improve performance using GNU Gprof (Code Profiler Pluggin in Code::Blocks)
+	 	\item Improve performance. For instance using GNU Gprof (Code Profiler Pluggin in Code::Blocks)
 	 	
 	 	
 	 \end{itemize}

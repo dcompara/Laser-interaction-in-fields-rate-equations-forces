@@ -413,6 +413,76 @@ double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& a
 }
 
 
+// Polynomial approximating arctangent on the range -1,1.
+// Max error (0.21 degrees)
+float ApproxAtan(float z)
+{
+    return z*(pi/4.0f + 0.273f*(1-abs(z)));
+    // A nice discussion of the speed is given in "Elementary Functions and Approximate Computing"
+// Another good  is "Efficient Approximations for the Arctangent Function"
+//Finally "New Fast Arctangent Approximation Algorithm for Generic Real-Time Embedded Applications"
+
+}
+
+
+// Approximation of atan2 that is a function that is called a lot of time and take 10% of the full computational time!!
+// cf https://www.dsprelated.com/showarticle/1052.php
+float atan2_approximation(float y, float x)
+{
+    if (x != 0.0f)
+    {
+        if (fabsf(x) > fabsf(y))
+        {
+            const float z = y / x;
+            if (x > 0.0)
+            {
+                // atan2(y,x) = atan(y/x) if x > 0
+                return ApproxAtan(z);
+            }
+            else if (y >= 0.0)
+            {
+                // atan2(y,x) = atan(y/x) + PI if x < 0, y >= 0
+                return ApproxAtan(z) + pi;
+            }
+            else
+            {
+                // atan2(y,x) = atan(y/x) - PI if x < 0, y < 0
+                return ApproxAtan(z) - pi;
+            }
+        }
+        else // Use property atan(y/x) = PI/2 - atan(x/y) if |y/x| > 1.
+        {
+            const float z = x / y;
+            if (y > 0.0)
+            {
+                // atan2(y,x) = PI/2 - atan(x/y) if |y/x| > 1, y > 0
+                return -ApproxAtan(z) + pi/2.0f;
+            }
+            else
+            {
+                // atan2(y,x) = -PI/2 - atan(x/y) if |y/x| > 1, y < 0
+                return -ApproxAtan(z) - pi/2.0f;
+            }
+        }
+    }
+    else
+    {
+        if (y > 0.0f) // x = 0, y > 0
+        {
+            return pi/2.0f;
+        }
+        else if (y < 0.0f) // x = 0, y < 0
+        {
+            return - pi/2.0f;
+        }
+    }
+    return 0.0f; // x,y = 0. Could return NaN instead.
+}
+
+
+
+
+
 /***
 Compare to the PRA 2014 we change notation now to be like Wikipedia in ZXZ concention (BE CAREFUL MATHEMATICA and Varshalovitch are in ZYZ convention)
  repère x,y,z du labo  et X,Y,Z de l'axe de quantification donné par le champ extérieur local
@@ -439,8 +509,9 @@ Vecteur3D  Euler_angles( Vecteur3D direction)
     if (direction.x()==0 && direction.y()==0)
         alpha = pi/2.;
     else
-        alpha = atan2(direction.x(), - direction.y()); //  alpha  = atan2(Z_1,-Z2); where Z1 is the x coordinate of Z, Z2 is the y, Z3 is the z .  atan2 (y,x)   is defined as the angle  between the positive x-axis and the ray to the point of coordinate (x,y)
-    //  The other formula does nt depends on Z1 so is wrong for instance for direction = (-1,0,0) along -Ox :  cos(alpha) = -Z_2 / \sqrt{1 - Z_3^2}. acos( - direction.y() / sqrt(1.00000000000001 -direction.z()*direction.z()) )  to avoid 1-1=0
+        alpha = atan2_approximation(direction.x(), - direction.y());
+    // alpha = atan2(direction.x(), - direction.y()); //  alpha  = atan2(Z_1,-Z2); where Z1 is the x coordinate of Z, Z2 is the y, Z3 is the z .  atan2 (y,x)   is defined as the angle  between the positive x-axis and the ray to the point of coordinate (x,y)
+    //  The other formula does not depends on Z1 so is wrong for instance for direction = (-1,0,0) along -Ox :  cos(alpha) = -Z_2 / \sqrt{1 - Z_3^2}. acos( - direction.y() / sqrt(1.00000000000001 -direction.z()*direction.z()) )  to avoid 1-1=0
 
     double beta = acos(direction.z()); // ArcCos(Z3)
     return Vecteur3D(alpha,beta,-pi/2.);

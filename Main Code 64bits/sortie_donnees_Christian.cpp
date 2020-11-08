@@ -76,8 +76,8 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             Param &p = **i;
             if (p.is_scanned == true)
             {
-//                 file_out << p.name ;
-//                 file_out << p.val_t0 << " " ;
+                 file_out << p.name ;
+                 file_out << p.val_t0 << " " ;
             }
         }
     }
@@ -111,11 +111,14 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
     //  file_out  << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
     //  file_out << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
 
-//    cout  << (stat_Mol.E_pot/kB)/mK/1.5/nb_mol << "  ";
-//    cout  << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
-//    cout << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
-//
-//    cout << endl;
+    cout << t << "  ";
+    cout << (stat_Mol.E_pot/kB)/mK/1.5/nb_mol << "  ";
+    cout << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
+    cout << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
+
+    cout << number_photons << "  ";
+
+    cout << endl;
 
     for (int i = 0; i < nb_mol; i++)
     {
@@ -125,50 +128,52 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //        file_out  << Mol[i].get_pos().z() << " ";
 //        file_out  << vz_init << " ";
 //        file_out  << Mol[i].get_vel().z() << " ";
-//        file_out << t << " ";
-//        file_out  << Mol[i].get_pos() << " ";
-//        file_out  << Mol[i].get_vel() << " ";
-//        file_out  << Mol[i].deg_number << " ";
-//    file_out << endl;
+        file_out << t << " ";
+        file_out  << Mol[i].get_pos() << " ";
+        file_out  << Mol[i].get_vel() << " ";
+        file_out  << Mol[i].deg_number << " ";
+		file_out << endl;
 
 
         /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization *******/
 
 
-//        MatrixXcd d[3];
-//        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
-//        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
-//
-//        Vecteur3D v;
-//        v = Mol[i].get_vel();
-//        Vecteur3D Bfield,Efield;
-//        Bfield= fieldB.get_Field(Mol[i].get_pos());
-//        Efield= fieldE.get_Field(Mol[i].get_pos());
-//        double B = Bfield.mag();
-//        double E = Efield.mag();
-//        double v_perp= (v.cross(Bfield)).mag()/B;
-//
-//        for (int j=0; j< (int) Level.size(); j++) //  we scan over the levels to calculate the parameter
-//        {
-//            double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
-//
-//            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
-//                // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
-//            {
-//                // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
-//                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
-//                {
-//                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
-//                }
-//            }
+        MatrixXcd d[3];
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
+        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
+
+        Vecteur3D v;
+        v = Mol[i].get_vel();
+        Vecteur3D Bfield,Efield;
+        Bfield= fieldB.get_Field(Mol[i].get_pos());
+        Efield= fieldE.get_Field(Mol[i].get_pos());
+        double B = Bfield.mag();
+        double E = Efield.mag();
+        double v_perp= (v.cross(Bfield)).mag()/B;
+
+        for (int j=0; j< (int) Level.size(); j++) //  we scan over the levels to calculate the parameter
+        {
+            double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
+
+            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
+                // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
+            {
+                // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
+                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
+                {
+                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
+                }
+            }
             // file_out << endl;
             // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
 
 // Level[j].write_Level_B(file_out);
 
 
+
+
 //             file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
- //       }
+        }
     }
 
 
@@ -364,8 +369,8 @@ void Sortie_rate_example(ofstream & file_rate, const  vector <double> &rate,  ve
 
         file_rate << " " << n_mol ;
         file_rate << " " << n_laser;
-        file_rate <<  " " << (reaction_list[i].final_internal_state).deg_number;
-        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].deg_number ;
+        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
+        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
         file_rate << endl ;
     }
 }

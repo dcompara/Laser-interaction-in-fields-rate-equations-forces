@@ -1,14 +1,18 @@
+2020/11/08
+For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
+transition we use incoherent summation.
+
+Try to imrove speed by going to float (does not work for 64 bits). Puting Diagonlization in Initialisation. 
+This creates more global variable (Hamiltonina etc..) but may be more flexible for the futur (to read external file). And is slighly faster
+
+10% of the total computational time was taken by atan2!!! So I use an approximation.
+
+
 2020/10/18
 Add a timing dependance for the lasers using Laser_Intensity[#Laser] files. So I remove the switching
 
 The levels and lines files have been simplify (no 2N, 2J, 2Omega neither DE and GAmma of the transition).
 The Lines are now given by their dipole not dipole^2/3 as before
-
-For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
-transition we use incoherent summation.
-
-
-
 
 2020/09/13
 Modify real dipoles by complex ones. The eigenvectors phases are "random" (probably depend on the convergence of the diagonaization)

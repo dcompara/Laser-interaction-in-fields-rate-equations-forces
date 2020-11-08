@@ -32,6 +32,10 @@ using namespace std;
 #include "params.h"
 #include "datacards.h"                      // Pour lire le fichier de paramètres
 
+#include <Eigen/Eigen>  // POur les matrice du hamiltonien
+using namespace Eigen;
+
+
 #include <gsl/gsl_sf_coupling.h> // POUR les 3j de Wigner
 // double gsl_sf_coupling_3j (int two_ja, int two_jb, int two_jc, int two_ma, int two_mb, int two_mc)
 // gsl_sf_coupling_3j (2*ja,2*jb,2*jc,2*ma,2*mb,2*mc);
@@ -42,6 +46,13 @@ using namespace std;
 
 // where the arguments are given in half-integer units, ja = two ja/2, ma = two ma/2
 // Gives 0 in wrong cases
+
+
+
+// Initialise the Energy, Zeeman and dipoles matrices
+void Read_Energy_Zeeman_dipole_for_Diagonalization(MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[]);
+
+
 
 
 /*** Program to read Line or Energy list from  ***/
