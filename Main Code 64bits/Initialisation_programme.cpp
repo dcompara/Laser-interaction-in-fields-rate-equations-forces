@@ -10,10 +10,11 @@
 // retourne le nombre de niveaux
 int   initialisation_trans_mol(const char *nom_file_Levels, const char *nom_file_Lines, vector <Internal_state> &Level, FitParams &params)
 {
-    int nb_Levels = Pgopher_Level_List(nom_file_Levels, Level, params);
+    int nb_Levels = Level_List(nom_file_Levels, Level, params);
     cout << "Nb de niveaux = " << nb_Levels << endl << endl;
+
     cout << " Only Zeeman effect no Stark effect " << endl;
-    int nb_raies =  Pgopher_Line_List(nom_file_Lines, Level, params);
+    int nb_raies =  Line_List(nom_file_Lines, Level, params);
     cout << "Nb de raies  (en absorption) = " << nb_raies  << endl << endl;
 
     initialisation_Gamma(Level, params); // Initialisation des durées de vies
@@ -290,7 +291,7 @@ void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB
 
 
 // Initialise les lasers
-void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, const char *nom_file)
+void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, const char *nom_file_spectrum, const char *nom_file_intensity)
 {
     laser.clear();
     for (int i=0; i < Nb_lasers ; i++)
@@ -338,10 +339,14 @@ void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, c
         current_Laser.set_polar_angle(polar_angle_degree);
         current_Laser.set_type_laser(type_laser);
         current_Laser.set_coherent_avec_laser_num(coherent_avec_laser_num);
-        string nom_file_short = (string(nom_file)).substr(0,string(nom_file).length() -4); // enlève le .dat
-        string nom_file_long = nom_file_short + num + ".dat";
-        const char *nom_file_spectrum = (nom_file_long).c_str(); // Nom_file[numero_laser].dat
+        string nom_file_spectrum_short = (string(nom_file_spectrum)).substr(0,string(nom_file_spectrum).length() -4); // enlève le .dat
+        string nom_file_spectrum_long = nom_file_spectrum_short + num + ".dat";
+        const char *nom_file_spectrum = (nom_file_spectrum_long).c_str(); // Nom_file[numero_laser].dat
         current_Laser.read_Spectrum(nom_file_spectrum); // Lit le fichier du spectre laser (rien si le ficheir n'existe pas)
+        string nom_file_intensity_short = (string(nom_file_intensity)).substr(0,string(nom_file_intensity).length() -4); // enlève le .dat
+        string nom_file_intensity_long = nom_file_intensity_short + num + ".dat";
+        const char *nom_file_intensity = (nom_file_intensity_long).c_str(); // Nom_file[numero_laser].dat
+        current_Laser.read_Intensity(nom_file_intensity); // Lit le fichier du spectre laser (rien si le ficheir n'existe pas)
         laser.push_back(current_Laser); // laser[i] = current_Laser;
     }
 

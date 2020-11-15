@@ -114,6 +114,9 @@ public:
         {
             return dz;
         }
+        cerr << "use double & operator () (int i)  with inot 0,1,2 " << endl;
+        return dx; // To avoid warning in the compiler that "reaches end of non-void function [-Wreturn-type]"
+
     }
 
 

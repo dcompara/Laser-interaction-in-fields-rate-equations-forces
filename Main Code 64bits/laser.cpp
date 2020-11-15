@@ -22,6 +22,8 @@ Laser::Laser()                       // Constructeur par défaut
     coherent_avec_laser_num = -1;
     spectre_Ecm_attenuation.clear(); // spectre_Ecm_attenuation =  map < double, double > ();
     spectre_Ecm_attenuation.insert ( pair<double,double>(0.,1.) ); // Par défaut le spectre est non façonné. On écrit  spectre_Ecm_attenuation[0.] = 1.;
+    Intensity_time_attenuation.clear();
+    Intensity_time_attenuation.insert ( pair<double,double>(0.,1.) ); //  Intensity_time_attenuation[0.] = 1.; so no attenuaion by default
 
 };
 
@@ -44,6 +46,7 @@ Laser::Laser(const Laser & my_laser)               // Constructeur de (re)copie
     coherent_avec_laser_num = my_laser.coherent_avec_laser_num;
     // map < double, double > spectre_Ecm_attenuation; // In order to create properly the object (cf Guarreta course p22)
     spectre_Ecm_attenuation = my_laser.spectre_Ecm_attenuation;
+    Intensity_time_attenuation = my_laser.Intensity_time_attenuation;
 };
 
 Laser & Laser::operator = (const Laser& my_laser)          // Affectation par recopie
@@ -61,6 +64,7 @@ Laser & Laser::operator = (const Laser& my_laser)          // Affectation par re
         type_laser = my_laser.type_laser;
         coherent_avec_laser_num = my_laser.coherent_avec_laser_num;
         spectre_Ecm_attenuation = my_laser.spectre_Ecm_attenuation; // Attention ne recopie pas la map seulement l'adresse.
+        Intensity_time_attenuation = my_laser.Intensity_time_attenuation;
     }
     return *this;
 }
@@ -118,6 +122,38 @@ istream& operator >> (istream &flux, Laser & my_laser) //my_laser est modifié!
 }
 
 
+void Laser::read_Intensity(istream & flux)
+{
+    double time_ns, attenuation;
+    flux >> time_ns;
+    flux >> attenuation;
+    Intensity_time_attenuation.insert ( pair<double,double>(time_ns,attenuation) );  // Intensity_time_attenuation[time_ns] = attenuation;
+}
+
+int Laser::read_Intensity(const char *nom_file)
+{
+    ifstream file(nom_file);
+
+    if ( !file || nom_file== NULL)
+    {
+        // cerr << "No able to open the file " << nom_file << endl;  // Better to not put because sometimes their is no file (and so if this line is here, we will have all the time a message) and we just as the defautl values
+        file.close();
+        return 0; // So Intensity_time_attenuation is unchanged and thus compose by the default file
+    }
+
+    int i=0;
+    Intensity_time_attenuation.clear(); // To avoid to insert the default file at the begining
+
+    while (!file.eof())
+    {
+        this->read_Intensity(file);
+        i++;
+    }
+
+    file.close();
+    return i;
+}
+
 void Laser::read_Spectrum(istream & flux)
 {
     double energy_cm, attenuation;
@@ -151,6 +187,8 @@ int Laser::read_Spectrum(const char *nom_file)
 }
 
 
+
+
 void Laser::write_Spectrum(ostream & flux)
 {
     if (spectre_Ecm_attenuation.size() ==0)
@@ -181,6 +219,44 @@ double  Laser::intensity()  const
     return intensity;
 
 }
+
+// Intensity at time t. Linear Interpolated between the time given in the laser_intensity file
+double  Laser::intensity_t_nanosecond(const double t_nanosecond) const
+{
+    map < double, double >::const_iterator itr;
+
+    double t_i_ns,t_iplus1_ns, A_i, A_iplus1,A;
+
+    itr = Intensity_time_attenuation.upper_bound (t_nanosecond);  // itr pointe sur l'élément juste après t_second
+
+
+    if (itr ==  Intensity_time_attenuation.begin())   //  if t < first time in the file. And in this case Attenuation  = A[first]
+        A= itr->second;
+    else
+    {
+        if (itr ==  Intensity_time_attenuation.end())   //  if t > last time in the file. And in this case Attenuation  = A[last]
+        {
+            itr--;
+            A= itr->second;
+        }
+        else    // NORMAL CASE
+        {
+            t_iplus1_ns= itr->first;
+            A_iplus1= itr->second;
+
+            itr--;
+            t_i_ns= itr->first;
+            A_i= itr->second;
+
+            A=  A_i + (t_nanosecond-t_i_ns) * (A_iplus1-A_i)/(t_iplus1_ns-t_i_ns);
+            // The attenuation is   a linear interpolation between the 3 points, t_i, t and t_{i+1} : A = A[i] + (t-t[i]) * (A[i+1]-A[i])/(t[i+1]-t[i]) . }
+        }
+    }
+
+    return A;
+}
+
+
 
 
 // intensité au waist prenant en compte le spectre
@@ -277,12 +353,12 @@ double champ_E(const double irradiance)
 // (absolute value of the) effectif dipole d.e_laser = sum_p d_p epsilon^p
 // where the dipole transition vector d= sum_p d_p e^p is given in the local quantification axis
 // and the polarisation vector e_laser= sum_p' epsilon^p' e_p'  is given in the laser axis
-double effectif_dipole_local(const Vecteur3D& dipole, const Vecteur3D& axe_quant,  const Laser& my_laser)
+double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& axe_quant,  const Laser& my_laser)
 {
-    double dp,d0,dm;
-    dm = dipole(0);
-    d0 = dipole(1);
-    dp = dipole(2);
+    complex<double> dp,d0,dm;
+    dm = dipole[0];
+    d0 = dipole[1];
+    dp = dipole[2];
 
     Vecteur3D Euler_angles_axe_quant = Euler_angles(axe_quant);
     Vecteur3D Euler_angles_axe_laser = Euler_angles(my_laser.get_direction());
@@ -317,24 +393,94 @@ double effectif_dipole_local(const Vecteur3D& dipole, const Vecteur3D& axe_quant
     double cos_theta_F = cos(theta_F);
     double sqrt2 = sqrt(2.);
 
-     double dp_minus_dm = (dp-dm);
+    complex<double> dp_minus_dm = (dp-dm);
 
-    double d1F = -dp_minus_dm*cos_theta_F + sqrt2*d0*sin_theta_F;
-    double d2F = dp_minus_dm*sin_theta_F + sqrt2*d0*cos_theta_F;
+    complex<double> d1F = -dp_minus_dm*cos_theta_F + sqrt2*d0*sin_theta_F;
+    complex<double> d2F = dp_minus_dm*sin_theta_F + sqrt2*d0*cos_theta_F;
 
-    double dp_plus_dm = dp+dm;
+    complex<double> dp_plus_dm = dp+dm;
 
     complex<double> am_psi_minus_ap = am*exp(2.*i*psi) - ap;
     complex<double> am_psi_plus_ap = am*exp(2.*i*psi) + ap;
     complex<double> exp_F_plus_k = exp(2.*i*phi_F) + exp(2.*i*phi_k) ;
     complex<double> exp_F_minus_k = exp(2.*i*phi_F) - exp(2.*i*phi_k) ;
 
-       dip_eff  = am_psi_plus_ap*(dp_plus_dm*exp_F_plus_k - exp_F_minus_k*d1F)+
-       am_psi_minus_ap*cos_theta_k*(-dp_plus_dm*exp_F_minus_k + exp_F_plus_k*d1F)
-       -2.*exp(i*(phi_F+phi_k))*am_psi_minus_ap*d2F*sin_theta_k;
+    dip_eff  = am_psi_plus_ap*(dp_plus_dm*exp_F_plus_k - exp_F_minus_k*d1F)+
+               am_psi_minus_ap*cos_theta_k*(-dp_plus_dm*exp_F_minus_k + exp_F_plus_k*d1F)
+               -2.*exp(i*(phi_F+phi_k))*am_psi_minus_ap*d2F*sin_theta_k;
 
     return abs(dip_eff/4.); // Only the absolute value is needed
 }
+
+
+// Polynomial approximating arctangent on the range -1,1.
+// Max error (0.21 degrees)
+float ApproxAtan(float z)
+{
+    return z*(pi/4.0f + 0.273f*(1-abs(z)));
+    // A nice discussion of the speed is given in "Elementary Functions and Approximate Computing"
+// Another good  is "Efficient Approximations for the Arctangent Function"
+//Finally "New Fast Arctangent Approximation Algorithm for Generic Real-Time Embedded Applications"
+
+}
+
+
+// Approximation of atan2 that is a function that is called a lot of time and take 10% of the full computational time!!
+// cf https://www.dsprelated.com/showarticle/1052.php
+float atan2_approximation(float y, float x)
+{
+    if (x != 0.0f)
+    {
+        if (fabsf(x) > fabsf(y))
+        {
+            const float z = y / x;
+            if (x > 0.0)
+            {
+                // atan2(y,x) = atan(y/x) if x > 0
+                return ApproxAtan(z);
+            }
+            else if (y >= 0.0)
+            {
+                // atan2(y,x) = atan(y/x) + PI if x < 0, y >= 0
+                return ApproxAtan(z) + pi;
+            }
+            else
+            {
+                // atan2(y,x) = atan(y/x) - PI if x < 0, y < 0
+                return ApproxAtan(z) - pi;
+            }
+        }
+        else // Use property atan(y/x) = PI/2 - atan(x/y) if |y/x| > 1.
+        {
+            const float z = x / y;
+            if (y > 0.0)
+            {
+                // atan2(y,x) = PI/2 - atan(x/y) if |y/x| > 1, y > 0
+                return -ApproxAtan(z) + pi/2.0f;
+            }
+            else
+            {
+                // atan2(y,x) = -PI/2 - atan(x/y) if |y/x| > 1, y < 0
+                return -ApproxAtan(z) - pi/2.0f;
+            }
+        }
+    }
+    else
+    {
+        if (y > 0.0f) // x = 0, y > 0
+        {
+            return pi/2.0f;
+        }
+        else if (y < 0.0f) // x = 0, y < 0
+        {
+            return - pi/2.0f;
+        }
+    }
+    return 0.0f; // x,y = 0. Could return NaN instead.
+}
+
+
+
 
 
 /***
@@ -363,8 +509,9 @@ Vecteur3D  Euler_angles( Vecteur3D direction)
     if (direction.x()==0 && direction.y()==0)
         alpha = pi/2.;
     else
-        alpha = atan2(direction.x(), - direction.y()); //  alpha  = atan2(Z_1,-Z2); where Z1 is the x coordinate of Z, Z2 is the y, Z3 is the z .  atan2 (y,x)   is defined as the angle  between the positive x-axis and the ray to the point of coordinate (x,y)
-    //  The other formula does nt depends on Z1 so is wrong for instance for direction = (-1,0,0) along -Ox :  cos(alpha) = -Z_2 / \sqrt{1 - Z_3^2}. acos( - direction.y() / sqrt(1.00000000000001 -direction.z()*direction.z()) )  to avoid 1-1=0
+        alpha = atan2_approximation(direction.x(), - direction.y());
+    // alpha = atan2(direction.x(), - direction.y()); //  alpha  = atan2(Z_1,-Z2); where Z1 is the x coordinate of Z, Z2 is the y, Z3 is the z .  atan2 (y,x)   is defined as the angle  between the positive x-axis and the ray to the point of coordinate (x,y)
+    //  The other formula does not depends on Z1 so is wrong for instance for direction = (-1,0,0) along -Ox :  cos(alpha) = -Z_2 / \sqrt{1 - Z_3^2}. acos( - direction.y() / sqrt(1.00000000000001 -direction.z()*direction.z()) )  to avoid 1-1=0
 
     double beta = acos(direction.z()); // ArcCos(Z3)
     return Vecteur3D(alpha,beta,-pi/2.);

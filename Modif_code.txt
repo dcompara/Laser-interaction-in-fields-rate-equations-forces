@@ -1,8 +1,37 @@
+2020/11/15
+Add a first order block diagonalization for faster manifold study
+Correct a bug in polarization photon in spontaneous emission.
+
+2020/11/08
+For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
+transition we use incoherent summation.
+
+Try to imrove speed by going to float (does not work for 64 bits). Puting Diagonlization in Initialisation. 
+This creates more global variable (Hamiltonina etc..) but may be more flexible for the futur (to read external file). And is slighly faster
+
+10% of the total computational time was taken by atan2!!! So I use an approximation.
+
+
+2020/10/18
+Add a timing dependance for the lasers using Laser_Intensity[#Laser] files. So I remove the switching
+
+The levels and lines files have been simplify (no 2N, 2J, 2Omega neither DE and GAmma of the transition).
+The Lines are now given by their dipole not dipole^2/3 as before
+
+2020/09/13
+Modify real dipoles by complex ones. The eigenvectors phases are "random" (probably depend on the convergence of the diagonaization)
+
+2020/08/15
+V1.3 New diagonalizaiton with Stark effect -d.E given by the dipole matrix. So the Hamiltonian is complex now (hermitian). In addition in case of positronium 
+Improve user guide for this part in appendix. 
+
+
+
 2020/08/10
 V1.2 Put on github the new version. 
-Simplify (a bit) the code. Especially by reoving the Sisyphus forced repumping part, the Franck_Condon part, the velocity scalling
+Simplify (a bit) the code. Removing  Sisyphus forced repumping, Franck_Condon part and the velocity scalling part
 Put new ToDo list
-Comment e bit more the List_Param
+Comment a bit more the List_Param and sortie_donnee with examples
 
 2020/08/10
 V1.0.2 Put on github the new version. 

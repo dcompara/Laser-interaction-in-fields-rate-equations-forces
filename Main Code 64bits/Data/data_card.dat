@@ -1,8 +1,8 @@
- Nb card 144
+ Nb card 142
 DATA 
 @Nb_type_of_Mol 1 
 @Nom_Mol[0] Ps 
- @N_Mol[0] 21 
+ @N_Mol[0] 32 
 @Temp_ini_x[0] 1e-10 
 @Temp_ini_y[0] 1e-10 
 @Temp_ini_z[0] 1e-10 
@@ -16,7 +16,7 @@ DATA
 @offset_y[0] 0 
 @offset_z[0] 0 
   @v0_x[0] 0. 
-  @v0_y[0] 1e5 
+  @v0_y[0] 0. 
   @v0_z[0] 0. 
 @Nom_Mol[1] P_bar 
  @N_Mol[1] 10 
@@ -36,12 +36,12 @@ DATA
   @v0_y[1] 0. 
   @v0_z[1] 0. 
 @dt_dyn_epsilon_param 1e-10 
-    @t_fin 0.1e-9 
+    @t_fin 5e-19 
    @dt_dia 5e-9 
    @dt_out 2e-9 
 @SIZE_affichage 7e-3 
 @t_wait_affichage 1e-1 
- @Graphics 1 
+ @Graphics 0 
 @rot_axe_x 1 
 @rot_axe_y 0 
 @rot_axe_z 0 
@@ -58,9 +58,9 @@ DATA
 @gap_bobines 25e-3 
 @courant_bobines 1 
 @rayon_bobines 25e-3 
-      @B_x 0.0000000001 
+      @B_x 0. 
       @B_y 0. 
-      @B_z 0. 
+      @B_z 1e-10 
  @grad_B_x 0. 
  @grad_B_y 0. 
  @grad_B_z 0. 
@@ -88,19 +88,16 @@ DATA
 @Offset_Detuning_cm 0 
 @scale_Gamma 1 
  @Nb_laser 0 
-@Is_Laser_Switched 0 
-@dt_switch_1 3e-8 
-@dt_switch_2 1e-8 
 @waist_pos_x[0] 0. 
 @waist_pos_y[0] 0. 
 @waist_pos_z[0] 0 
 @direction_x[0] 0. 
-@direction_y[0] 1. 
-@direction_z[0] 0. 
+@direction_y[0] 0. 
+@direction_z[0] 1. 
  @waist[0] 5e-3 
-@Energie_cm[0] 41148.3848 
-@Gamma_L_MHz[0] 1e-3 
- @Power[0] 200 
+@Energie_cm[0] 41148 
+@Gamma_L_MHz[0] 1e5 
+ @Power[0] 1e5 
 @Pol_circulaire_left_sp[0] 1 
 @Pol_circulaire_right_sm[0] 0. 
 @polar_angle_degree[0] 0. 
@@ -126,9 +123,10 @@ DATA
 @coherent_avec_laser_num[1] -1 
 @is_DataCard_out 2 
 @is_param_scanned_out 1 
-@nom_file_Levels Data/Ps/Ps_Levels_21.dat 
-@nom_file_Lines Data/Ps/Ps_Lines_21.dat 
+@nom_file_Levels Data/Ps/Ps_32_Levels_0_1_2_continuum.dat 
+@nom_file_Lines Data/Ps/Ps_32_Lines_0_1_2_continuum.dat 
 @nom_file_Laser_Spectrum Data/Ps/Laser_Spectrum.dat 
+@nom_file_Laser_Intensity Data/Ps/Laser_Intensity.dat 
 @nom_sortie_donnees Data/donnee_Mol.dat 
 @nom_sortie_rate Data/sortie_rate.dat 
 @nom_sortie_donnees_Data Data/data_card.dat 
@@ -143,5 +141,5 @@ DATA
 @SCAN_Offset_Detuning_cm -2.5 -1 5 false false 
 @SCAN_scale_Gamma 0.3 0.6 3 false false 
 @SCAN_Tau_Modif 0.5e-3 2e-3 2 false false 
- @SCAN_B_x 0.0000000001 5 1000 true false 
+ @SCAN_B_z 0 5 1000 true false 
 

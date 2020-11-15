@@ -34,6 +34,13 @@ using namespace std;
 #include <complex>                      // Pour les calculs d'émission spontanée
 
 #include <Eigen/Eigen>  // For matrix manipulation
+
+// Strangely enough here (different form diagonlaization) it slow down the code !!
+//#define EIGEN_DONT_VECTORIZE
+//#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+//#include<Eigen/StdVector>
+
+
 using namespace Eigen;
 
 #include "params.h"     // Pour mettre des paramètres dedans
@@ -82,7 +89,7 @@ double intensity_Convolution_linewidth(const double I, const double delta, const
 double rate_two_level(const double I_loc, const double dip_Debye);
 
 // Rate for (photo-)ionization
-double rate_ionization(const double I_loc, const double dip_Debye, const double delta, const double Energy_transition_cm);
+double rate_ionization(const double I_tot, const double dip_Debye);
 
 // Field ionization rate
 double rate_field_ionization(const Laser& my_laser,  const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE);
@@ -97,7 +104,9 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
 /************************************************************************/
 
 // Calcul de tous les taux d'emission spontanée de la molécule
-int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate, const Molecule &my_mol, const Field &fieldB, const Field &fieldE, const int num_mol, FitParams &params);
+int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate, const Molecule &my_mol, const Field &fieldB,
+                        const Field &fieldE, const int num_mol, FitParams &params,
+                        SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
 
 
 // Calcul of rate (if no interferece between laser)  between level in and out for a given laser and for a given molecule. This add the light shift effect to the dipolar potential (delta_pot_dipolaire)
@@ -105,7 +114,8 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
 int rates_single_molecule_laser_level(const int n_las, double dipole, double &delta, double &eps_pol, double &Gamma_spon_tot, double sqrt_intensity_loc[],
                                       vector <Internal_state> &Level, Internal_state &Internal_state_in, Internal_state &Internal_state_out, vector <type_codage_react> &reaction_list, vector <double> &rate,
                                       const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const Laser &my_laser, const double t, double &delta_pot_dipolaire,
-                                      FitParams &params, bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1, const double Gamma_in=0., MatrixXd d[]= {});
+                                      FitParams &params, MatrixXcd d[], bool is_rate_calculated, int is_bound_transition=1, const int n_level_in =0, const int n_level_out =1,
+                                      const double Gamma_in=0.);
 
 
 // Calcul de tous les taux de la molécule  pour tous les lasers
@@ -114,7 +124,10 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
 // It calculate also the dipole detuning which is just rate * delta/Gamma
 // In this last case we do not necessarily to calculate the rate, as for the dipolar shift, so is_rate_calculated would be false
 int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate,
-                   const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, double &delta_pot_dipolaire, FitParams &params, bool is_rate_calculed = true);
+                   const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t,
+                   double &delta_pot_dipolaire, FitParams &params,
+                   MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[],
+                    bool is_rate_calculed = true);
 
 
 
@@ -122,7 +135,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
 
 // return the decay rate from Level i = sum_j<i Gamma_ij
-double Gamma_Level_from_diagonalized_dipole(vector <Internal_state> &Level, MatrixXd d[], const int i);
+double Gamma_Level_from_diagonalized_dipole(vector <Internal_state> &Level, MatrixXcd d[], const int i);
 
 
 
@@ -134,7 +147,8 @@ int copie_rates_molecules(vector <type_codage_react> &reaction_list, vector <dou
 // Calcul de tous les taux de toutes les molécules si numero_mol = aucune (-1)
 // Sinon on ne recalcule que celui de la molécule numero_mol
 int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algorithme_MC, vector <type_codage_react> &reaction_list, vector <double> &rate, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-                           const double t, const int numero_mol, const int N_Mol, FitParams &params );
+                           const double t, const int numero_mol, const int N_Mol, FitParams &params,
+                            MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
 
 
 
@@ -158,7 +172,7 @@ int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r,  const ve
 // Or (if diagonalized) for a polarization vector e_pol:
 //  e_pol[q] = normalized dipole transition <i|d_(q)|j>; q=-1,0,1. So in the quantification axis e_pol = sum_q epol_q E^q
 // the probability distribution linked with f(r)= (3/8π)[1-|r.e_pol|^2]
-Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_pol_dipole_transition, Vecteur3D quantization_axis, int delta_M, FitParams &params);
+Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, complex<double> e_pol_dipole_transition[3], Vecteur3D quantization_axis, int delta_M, FitParams &params);
 
 
 #endif

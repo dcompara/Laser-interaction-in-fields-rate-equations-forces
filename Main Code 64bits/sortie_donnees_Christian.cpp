@@ -76,8 +76,8 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
             Param &p = **i;
             if (p.is_scanned == true)
             {
-//                 file_out << p.name ;
-//                 file_out << p.val_t0 << " " ;
+                 file_out << p.name ;
+                 file_out << p.val_t0 << " " ;
             }
         }
     }
@@ -111,11 +111,14 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
     //  file_out  << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
     //  file_out << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
 
-//    cout  << (stat_Mol.E_pot/kB)/mK/1.5/nb_mol << "  ";
-//    cout  << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
-//    cout << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
-//
-//    cout << endl;
+    cout << t << "  ";
+    cout << (stat_Mol.E_pot/kB)/mK/1.5/nb_mol << "  ";
+    cout << (stat_Mol.E_cin/kB)/mK/1.5/nb_mol << "  ";
+    cout << (stat_Mol.E_pot+stat_Mol.E_cin)/kB/mK/1.5/nb_mol << "  ";
+
+    cout << number_photons << "  ";
+
+    cout << endl;
 
     for (int i = 0; i < nb_mol; i++)
     {
@@ -125,56 +128,58 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //        file_out  << Mol[i].get_pos().z() << " ";
 //        file_out  << vz_init << " ";
 //        file_out  << Mol[i].get_vel().z() << " ";
-//        file_out << t << " ";
-//        file_out  << Mol[i].get_pos() << " ";
-//        file_out  << Mol[i].get_vel() << " ";
-//        file_out  << Mol[i].deg_number << " ";
-//    file_out << endl;
+        file_out << t << " ";
+        file_out  << Mol[i].get_pos() << " ";
+        file_out  << Mol[i].get_vel() << " ";
+        file_out  << Mol[i].deg_number << " ";
+		file_out << endl;
 
 
         /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization *******/
 
 
-//        MatrixXcd d[3];
-//        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
-//        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
-//
-//        Vecteur3D v;
-//        v = Mol[i].get_vel();
-//        Vecteur3D Bfield,Efield;
-//        Bfield= fieldB.get_Field(Mol[i].get_pos());
-//        Efield= fieldE.get_Field(Mol[i].get_pos());
-//        double B = Bfield.mag();
-//        double E = Efield.mag();
-//        double v_perp= (v.cross(Bfield)).mag()/B;
-//
-//        for (int j=0; j< (int) Level.size(); j++) //  we scan over the levels to calculate the parameter
-//        {
-//            double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
-//
-//            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
-//                // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
-//            {
-//                // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
-//                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
-//                {
-//                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
-//                }
-//            }
-        // file_out << endl;
-        // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
+        MatrixXcd d[3];
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
+        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
+
+        Vecteur3D v;
+        v = Mol[i].get_vel();
+        Vecteur3D Bfield,Efield;
+        Bfield= fieldB.get_Field(Mol[i].get_pos());
+        Efield= fieldE.get_Field(Mol[i].get_pos());
+        double B = Bfield.mag();
+        double E = Efield.mag();
+        double v_perp= (v.cross(Bfield)).mag()/B;
+
+        for (int j=0; j< (int) Level.size(); j++) //  we scan over the levels to calculate the parameter
+        {
+            double tripletness = 0.; //This is the parameter we want to calculate (here the triplet character)
+
+            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
+                // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
+            {
+                // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
+                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
+                {
+                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
+                }
+            }
+            // file_out << endl;
+            // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
 
 // Level[j].write_Level_B(file_out);
 
 
+
+
 //             file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
-//       }
+        }
     }
 
 
 
     /******  The new dipole are given by d[polar] = evec^dag.d0[polar].evec that is
-    d[n_polar+1] =  (es.eigenvectors().adjoint())*d0[n_polar+1]*(Eigen_vectors);
+    d[n_polar+1] =  (es.eigenvectors().adjoint())*d0[n_polar+1]*(es.eigenvectors());
     With d0[q+1]_ij = 0_<i | d^(q) | j>_0
     d[q+1]_ij = <i | d^(q) | j> = sum_|j>_O    <i| d^(q) |j>_0   0_<j | j>
     ********/
@@ -364,8 +369,8 @@ void Sortie_rate_example(ofstream & file_rate, const  vector <double> &rate,  ve
 
         file_rate << " " << n_mol ;
         file_rate << " " << n_laser;
-        file_rate <<  " " << (reaction_list[i].final_internal_state).deg_number;
-        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].deg_number ;
+        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
+        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
         file_rate << endl ;
     }
 }
@@ -377,26 +382,16 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     file_rate<< setprecision(12);
 //   file_rate << " time t = " << t << endl;
 
-    const int nb_levels=32; // Level.size()
+    const int nb_levels=Level.size(); // Level.size()
 
-    double** rate_level_i_vers_level_j = new double*[nb_levels] ;
-    for( int j = 0; j < nb_levels; j++ )
-    {
-        rate_level_i_vers_level_j[j]=new double[nb_levels];
-    }
-    double* rate_level_i_total = new double[nb_levels] ;
-    double* Ecm_i = new double[nb_levels] ;
-
-    for( int i = 0; i < nb_levels; i++ ) // Ligne
-    {
-        for( int j = 0; j < nb_levels; j++ )
-        {
-            rate_level_i_vers_level_j[i][j]=0.;
-        }
-        rate_level_i_total[i]=0. ;
-        Ecm_i[i]=0. ;
-    }
-
+ //         1S00     3S1-1    3S11    3S10
+ // LEvel   3           4       5       6
+    double rate_level_i_vers_level_3[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_vers_level_4[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_vers_level_5[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+     double rate_level_i_vers_level_6[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_total[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double Ecm_i[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
     int nb_rate = rate.size();
     double B, E, current_rate ;
@@ -427,39 +422,53 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         Internal_state_in = Mol[n_mol] ; //  état interne de la molecule
         Internal_state_out = reaction_list[i].final_internal_state ; //  état interne de la molecule après la réaction
 
+//        file_rate  << B;
+//
+//        file_rate  << " " << i;
+//        file_rate  << " " << rate[i];
+//
+//
+//        file_rate <<  "  " << Internal_state_in.deg_number;
+//        file_rate << "  " << Internal_state_in.Energy_cm ;
+//
+//        file_rate <<  "  " << Internal_state_out.deg_number;
+//        file_rate << "  " << Internal_state_out.Energy_cm ;
+
+
         int i_in = Internal_state_in.deg_number;
         int i_out = Internal_state_out.deg_number;
         Ecm_i[i_in] =  Internal_state_in.Energy_cm;
-        rate_level_i_vers_level_j[i_in][i_out] +=  current_rate;
+
+        if (i_out == 3)   rate_level_i_vers_level_3[i_in] +=  current_rate;
+        if (i_out == 4)   rate_level_i_vers_level_4[i_in] +=  current_rate;
+        if (i_out == 5)   rate_level_i_vers_level_5[i_in] +=  current_rate;
+        if (i_out == 6)   rate_level_i_vers_level_6[i_in] +=  current_rate;
         rate_level_i_total[i_in] += current_rate;
+
+
+//        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
+//        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
+
+ //     file_rate << endl ;
     }
 
 
     for (int i = 0; i < (int) Level.size() ; i++)
     {
+
         file_rate <<  " " << B ;
         file_rate <<  " " << E ;
         file_rate <<  " " << v.mag() ;
         file_rate <<  " " << i ;
         file_rate <<  " " << Ecm_i[i] ;
         file_rate <<  " " << Level[i].Energy_cm  ;
-        for( int j = 5; j <= 8; j++ ) // Decay towards n=1 levels
-        {
-            file_rate <<  " " << rate_level_i_vers_level_j[i][j]  ;
-        }
+         file_rate <<  " " << rate_level_i_vers_level_3[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_4[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_5[i] ;
+         file_rate <<  " " << rate_level_i_vers_level_6[i] ;
         file_rate <<  " " << rate_level_i_total[i] ;
         file_rate << endl ;
     }
-
-
-
-    for( int i = 0; i < nb_levels; i++ ) // Ligne
-    {
-        delete[] rate_level_i_vers_level_j[i];
-    }
-    delete[] rate_level_i_vers_level_j;
-    delete[] Ecm_i;
-    delete[] rate_level_i_total;
 
 }
 

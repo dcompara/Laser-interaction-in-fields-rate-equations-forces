@@ -15,7 +15,7 @@ leur paramètres (nb, vitesse, etc.. sont dans le fichier Liste_Param.h) (ce n'es
 Les transtions moléculaires niveaux, transitions (Franck-COndon, Hönl London,...) sont lus
 dans Initialisation_programme qui appelle les fichiers dans Transitions_initialisation
 
-Les taux de transitions proviennent d'une liste qui souvent vient du programme PGOPHER
+Les taux de transitions proviennent d'une liste qui souvent vient du programme
 Ainsi les unités sont
 DEBYE^2 pour force de raie (dipole^2) et
 CM^-1 pour énergie
@@ -64,6 +64,9 @@ DEBUG là où je met des fonctions utilisées pour le débuggage actuel
 #include <numeric>                         // Pour accumulate
 #include <iomanip>
 #include <list>                            // for list
+#include <Eigen/Eigen>  // POur les matrice du hamiltonien
+using namespace Eigen;
+
 
 
 #include <windows.h>
@@ -143,9 +146,10 @@ void RePaint ()
 
     /***  NOM DES FICHIERS ***/
     string nom_sortie_temp_string, nom_sortie_scal_string, nom_file_Levels_string, nom_file_Lines_string, nom_sortie_donnees_string, nom_sortie_rate_string, nom_fichier_random_gen_string,
-           nom_file_Laser_Spectrum_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
+           nom_file_Laser_Spectrum_string, nom_file_Laser_Intensity_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
 
-    const char *nom_sortie_temp, *nom_sortie_scal, *nom_file_Levels, *nom_file_Lines, *nom_sortie_donnees, *nom_sortie_rate, *nom_fichier_random_gen, *nom_file_Laser_Spectrum, *nom_file_Magn_Field_3D, *nom_file_Elec_Field_3D;
+    const char *nom_sortie_temp, *nom_sortie_scal, *nom_file_Levels, *nom_file_Lines, *nom_sortie_donnees, *nom_sortie_rate, *nom_fichier_random_gen,
+          *nom_file_Laser_Spectrum, *nom_file_Laser_Intensity, *nom_file_Magn_Field_3D, *nom_file_Elec_Field_3D;
 
     nom_file_Levels_string =  data.SParam("nom_file_Levels");      // Fichier contenant les Levels (etat, energie, ...)
     nom_file_Lines_string = data.SParam("nom_file_Lines");         // Fichier contenant les transitions
@@ -153,6 +157,7 @@ void RePaint ()
     nom_sortie_rate_string = data.SParam("nom_sortie_rate");
     nom_fichier_random_gen_string = data.SParam("nom_fichier_random_gen");
     nom_file_Laser_Spectrum_string = data.SParam("nom_file_Laser_Spectrum");         // Fichier contenant les transitions
+    nom_file_Laser_Intensity_string = data.SParam("nom_file_Laser_Intensity");         // Fichier contenant les transitions
     nom_file_Magn_Field_3D_string =  data.SParam("nom_file_Magn_Field_3D");
     nom_file_Elec_Field_3D_string =  data.SParam("nom_file_Elec_Field_3D");
 
@@ -162,6 +167,7 @@ void RePaint ()
     nom_sortie_rate = nom_sortie_rate_string.c_str();
     nom_fichier_random_gen = nom_fichier_random_gen_string.c_str();
     nom_file_Laser_Spectrum = nom_file_Laser_Spectrum_string.c_str();         // Fichier contenant les transitions
+    nom_file_Laser_Intensity = nom_file_Laser_Intensity_string.c_str();         // Fichier contenant les transitions
     nom_file_Magn_Field_3D =  nom_file_Magn_Field_3D_string.c_str();
     nom_file_Elec_Field_3D =  nom_file_Elec_Field_3D_string.c_str();
 
@@ -194,8 +200,6 @@ void RePaint ()
     clock_t t_start,t_end; // Pour mesurer le temps de déroulement du programme
     t_start = clock();
 
-    const int NX_out = params.LocateParam("NX_out")->val;
-    const int N_Two_JX_out_max = params.LocateParam("N_Two_JX_out_max")->val;
 
     /*****************************************************************/
     /********************** Initialisation du GSL ********************/
@@ -209,6 +213,7 @@ void RePaint ()
     gsl_rng_env_setup();
     T = gsl_rng_default;  // "Mersenne Twister" generator by default. Plus rapide que RANLUX. cf. chapitre 17.12 de gsl_ref.
     r = gsl_rng_alloc (T);
+
     initialisation_trans_mol(nom_file_Levels, nom_file_Lines, Level, params); // Lecture des fichiers de niveaux et de transitions
 
     bool  test_fin_boucle_param; // Paramètre de fin de boucle sur les paramètres à scanner
@@ -225,7 +230,29 @@ void RePaint ()
         file_out_datacard.close();
     }
 
-    do // boucle sur les paramètres à scannés (voir fonction Modif_Param)
+    /*** Hamiltonian + dipole matrix element ***/
+
+// TODO (Daniel#6#): Use dynamcial size (check fr speed) to avoir this value
+    const int nb_levels=32; //   Level.size();
+    // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
+
+    MatrixXcd E0_cm;
+    MatrixXcd Zeeman_cm_B;
+    MatrixXcd H;     // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
+    MatrixXd d0[3];
+    MatrixXcd d[3];
+
+    Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize the Energy, Zeeman and dipoles matrices
+
+
+
+    /*****************************************************************/
+    /** boucle globale (sur les paramètres scannés   *****************/
+    /*****************************************************************/
+
+
+
+    do
     {
         double t=0.; //temps de début de la simulation en µs
         double t_mise_a_jour=0.; //temps de faire la mise a jour (potentiels, accélération, N corps ..) de toutes les molécules
@@ -237,12 +264,6 @@ void RePaint ()
         double dt_dyn = 0; // temps dynamique
         double dt_dia = params.LocateParam("dt_dia")->val; // time interval between diagnostics (in cout) output
         double dt_out = params.LocateParam("dt_out")->val; // time interval between output of snapshots (draw particles)
-
-        double t_max_vel_scaling=params.LocateParam("time_max_vel_scaling")->val; //duration of the velocity scaling
-        double dt_scal = params.LocateParam("dt_scal")->val;
-        double t_scal=0.;
-        double coupling_efficiency = params.LocateParam("coupling_efficiency")->val;
-
 
         /*****************************************************************/
         /********************** Initialisation du GSL ********************/
@@ -261,46 +282,48 @@ void RePaint ()
         Init_Molecule(r, Mol, champB, champE, Nb_type_of_Mol, params, data); // Position, vitesse
         initialisation_proba(r, Mol, N_Mol[0], Level); // Etat des populations de molécules au départ en fonction de la population voulue
 
-
         const int Nb_laser = data.IParam("Nb_laser");  // number of used laser (we could have more in the Liste_Param file, but this will be the number used in this run)
 
-        Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers
-        // Sortie_laser_spectrum(file_out, lasers[0], params);
-
-        /**
-        on calcul un temps dt_KMC pour l'évolution de l'état interne.
-        Si dt_KMC < temps dt_evol_ext_typ caractéristique de l'évolution des taux (par exemple le temps de transit dans le laser qui modifie les taux d'excitation) on effectue la transition et on bouge les particules
-        Dans le cas contraire on fait évoluer les particules durant dt_dyn qui est d'une fraction de dt_evol_ext_typ et on recommence.
-        **/
+        Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers
+        // Sortie_laser_spectrum(file_out, lasers, params,0); // Debug
+        // Sortie_laser_intensity(file_out, lasers, params,0);
 
         int number_mol = aucune;  // numéro de la molécule affectée par une modification (aucune au début d'où la valeur -1)
-        int nb_repet = (int) params.LocateParam("nb_repet")->val; // nb de répétition du processus. A t_repet on remet à zéro et on recommence
-        double t_repet = params.LocateParam("t_repet")->val;
         int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
 
-        cerr << "GRAVITY ON z-AXIS" << endl;
 
-        //Create_dipole_Lines_from_Matrices("matrice_dipole.dat");
+        /*****************************************************************/
+        /** boucle globale en temps   ************************************/
+        /*****************************************************************/
+cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
 
-        while(true) // Infinit loop untill t_end is reached
+
+        while(true) // Infinite loop untill t_end is reached
         {
+            // cout << "t = " << t << "   " ;
             Init_Field(champB, champE, params);  // Re0-Initialise les champs. Important si scan des paramètres car ils ont changés. We do not add the files because we do not modify them
-            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
+            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
             dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
 
-            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
-
+            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params,  H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
             if (t >= t_dia)
             {
                 /*** Here, or just before if you want to have output all the time, put you output files ***/
                 // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
 
-                // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
+                Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
+                // Sortie_rate_example(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
                 // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;
             }
 
             int n_reac = find_reaction(Algorithme_MC, r, rate,  dt_KMC); // Trouve la réaction KMC
+
+            /**
+            on calcul un temps dt_KMC pour l'évolution de l'état interne.
+            Si dt_KMC < temps dt_dyn_epsilon_param caractéristique de l'évolution des taux (par exemple le temps de transit dans le laser qui modifie les taux d'excitation) on effectue la transition et on bouge les particules
+            Dans le cas contraire on fait évoluer les particules durant dt_dyn qui est d'une fraction de dt_dyn_epsilon_param et on recommence.
+            **/
 
             if (dt_KMC < dt_dyn || Algorithme_MC == Fast_Rough_Method) // L'évolution se fera durant un temps dt_KMC or if Fast_Rough_Method in order to be sure to evolve the internal states (because it is not random)
             {
@@ -313,6 +336,7 @@ void RePaint ()
             }
 
 // On peut peut être améliorer. Ne faut'il pas mettre à jour toujours la molécule modifée surtout dans le cas dipolaire ?
+// TODO (Daniel#6#): May be disociate the dt_dyn and the t _mise_a_jour
             if (t >= t_mise_a_jour || Algorithme_MC == Fast_Rough_Method)
             {
                 number_mol = aucune; // Il faudra faire une mise a jour totale (cf calcul rate) donc que toutes les molécules ont été affectées
@@ -321,29 +345,20 @@ void RePaint ()
             }
 // On pourrait penser accélerer, en faisant évoluer le N_corps jusqu'a dt_KMC sans recalculer dt_KMC à chaque fois. Mais cela est risqué comme on le voit avec un molécule loin d'un waist --> tKMC immense mais qui va diminuer vite et si on ne recalcule pas on va faire une erreur
 
-            if (t >= t_repet) // Remise à zéro au bout d'une seconde. On recommence la séquence temporelle mais avec les molécules comme elles sont
-            {
-                t=0.;
-                t_dia = dt_dia;
-                t_out = dt_out;
-                nb_repet --;
-            }
-
             if (Graphics && t >= t_out)
             {
-                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des point
+                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des points
                 t_out += dt_out;
                 wait(params.LocateParam("t_wait_affichage")->val);   // Permet de ne pas avoir un affichage trop rapide
             }
 
-
-            if (t > t_fin || nb_repet < 0) // FIN DE LA BOUCLE
+            if (t > t_fin) // FIN DE LA BOUCLE
             {
                 for (ParamIterator i=params.begin(); i != params.end(); ++i)
                 {
                     Param &p = **i;
                     if( p.is_scanned == true )
-                        cout << " " << p.val_t0 ;
+                        cout << " " << p.val_t0  ;
                 }
                 cout << endl;
                 break;
@@ -364,6 +379,11 @@ void RePaint ()
     file_out.close();
     file_rate.close();
     t_end = clock();
+
+//    H.resize(0,0);
+//    d0[0].resize(0,0);
+//    d0[1].resize(0,0);
+//    d0[2].resize(0,0);
 
     cout << "durée du programme (s) = " << (t_end - t_start)/double(CLOCKS_PER_SEC) << endl;
 
@@ -392,12 +412,12 @@ int main(int argc, char** argv)
 
     if (Graphics)
     {
-        int size_screen =600;
+        const int size_screen =600;
         glutInit(&argc, argv);                            //Initialisation de la GLUT
         glutInitDisplayMode(GLUT_DEPTH|                   //On active la profondeur
                             GLUT_DOUBLE|                  //Un seul tampon d'affichage
                             GLUT_RGBA);                   //Couleurs au format RGBA
-        glutInitWindowPosition(700, 100);                 // coordonnées de la fenêtre
+        glutInitWindowPosition(200, 200);                 // coordonnées de la fenêtre
         glutInitWindowSize(size_screen, size_screen);                     //taille Fenêtre
         glutCreateWindow("Cooling");   //Création de la fenêtre
         // zprInit();                          //Pour zoomer, translater et tourner avec la souris. NE marche pas

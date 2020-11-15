@@ -41,7 +41,7 @@ void set_random_generator(gsl_rng  * r, int nombre_seed, const char *nom_file);
 void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB, const Field fieldE, const int Nb_of_type_of_different_Mol, FitParams &params, DataCards data);
 
 // Initialise les  lasers
-void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, const char *nom_file);
+void Init_Laser(vector <Laser> &laser, const int Nb_lasers, FitParams &params, const char *nom_file_spectrum, const char *nom_file_intensity);
 
 // Modification temporelle des paramètres
 void Modif_Param(const double t ,  FitParams &params);

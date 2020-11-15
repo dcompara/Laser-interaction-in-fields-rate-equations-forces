@@ -28,7 +28,7 @@ Unités des fichier (cm^-1)
 
 
 // Taux d'emission spontanée d'une transition (sans prendre en compte l'ordre des états:
-// Voir aussi  Internal_state::Einstein_desex_rate() qui lui est zéro si l'ordre est initial en bas!
+// Voir aussi  Internal_state::Einstein_desex_rate() qui lui est zéro (VERY_SMALL_NUMBER en fait) si l'ordre est initial en bas!
 double Gamma_spon(const double dip_Debye, const double energie_cm)
 {
     return dip_Debye*dip_Debye*Spol_Debye_A_s*energie_cm*energie_cm*energie_cm;
@@ -161,17 +161,18 @@ The rates are explained in the appendix of the article
 double rate_two_level(const double I_loc, const double dip_Debye)
 {
     double dipole = dip_Debye*Debye;
-    double rate_0 = dipole*dipole*I_loc*pi/(HBAR*HBAR*epsilon0*C);
+    double rate_0 = (dipole/HBAR)*(dipole/HBAR)*I_loc*pi/(epsilon0*C);
     return rate_0;
 }
 
 // Rate for (photo-)ionization
-double rate_ionization(const double I_tot, const double dip_Debye, const double delta, const double Energy_transition_cm)
+double rate_ionization(const double I, const double dip_Debye)
 {
-    double cross_section = cm*cm*dip_Debye*dip_Debye/3.; // This is how it is implemented in the file containing lines! but we have  dipole_debye = sqrt(3.*my_mol.liste_raies)
-    double nu = 100* C * (Energy_transition_cm) + delta/(2*pi); // Frequency of the laser
-    double flux = I_tot/( hPlanck * nu);
-    return cross_section*flux;
+    // rate I sigma/h nu = 8 pi^2 alpha <r>^2  I/E_hartree = 8 pi^2 alpha (<d>/e)^2  I/(E_hartree)
+    // In principle the cross section is energy dependent but here it is chosen
+    // TODO (daniel#4#): treat energy dependent cross section. May be by few energy levels in the continuum and interpolating
+    double Gamma = 8.*pi*pi*ALPHA*(dip_Debye*Debye/QE)*(dip_Debye*Debye/QE)*I/hartreeJ; // QE^2=e^2
+    return Gamma;
 }
 
 // Field ionization rate
@@ -186,6 +187,7 @@ double rate_field_ionization(const Laser& my_laser, const vector <Molecule> &Mol
     // double Vcoulomb = get_coulomb_potential(Mol, r, n);
 
     E_coulomb = get_coulomb_field(Mol, n_mol, r); // SI on veux ajouter le champ coulombien
+    // get_coulomb_field(const vector <Body> &bod, const int i, const Vecteur3D &ri)
     E = E + E_coulomb;
 
     double Gamma;
@@ -228,7 +230,7 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
     Molecule my_mol = Mol[n_mol];
     double rate_exc = 0.; // rate of excitation
 
-    if ((bool) is_bound_transition) // transition bound-bound (abs; permet de traiter les symmetrie +1 et -1 comme +1 donc true)
+    if ((bool) is_bound_transition) // transition bound-bound (0=false)
         rate_exc = rate_two_level(Itot_loc, dipole_debye);
     else // bound_free transition (potential photo_ionization)
         if (my_laser.get_type_laser() == pseudo_BBR) //If we study BBR
@@ -238,7 +240,7 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
             if (my_laser.get_type_laser() == field_ionization)
                 rate_exc = rate_field_ionization(my_laser, Mol, n_mol, fieldB, fieldE);
             else
-                rate_exc = rate_ionization(Itot, dipole_debye, delta, Energy_transition_cm); // photoionization
+                rate_exc = rate_ionization(Itot, dipole_debye); // photoionization
         }
 
 
@@ -247,7 +249,7 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
 
     if (is_rate_calculated == true)
     {
-        type_codage_react reaction = { n_mol, n_las, k, k, k, Internal_state_out};  // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}. IN this case the quant_axis; pol_vector are not important (we put k but any other values will do )
+        type_codage_react reaction = { n_mol, n_las, k, {k(0),k(1),k(2)}, k, Internal_state_out};   // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}. IN this case the quant_axis; pol_vector are not important (we put k but any other values will do )
         reaction_list.push_back( reaction ); // transition de la molécule n_mol avec l'impulstion k_tot vers l'état out
         rate.push_back(rate_exc);
     }
@@ -262,7 +264,9 @@ double rate_excitation(vector <type_codage_react> &reaction_list, vector <double
 
 
 // Calcul et ajoute de tous les taux d'emission spontanée de la molécule.
-int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate, const Molecule &my_mol, const Field &fieldB, const Field &fieldE, const int num_mol,  FitParams &params)
+int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate,
+                        const Molecule &my_mol, const Field &fieldB, const Field &fieldE, const int num_mol,
+                        FitParams &params,  MatrixXcd &H,  MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[])
 {
     Vecteur3D axe_quant,r,v,k_spon;
     r = my_mol.get_pos();
@@ -285,16 +289,9 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
     /**********  WE DIAGONALIZED THE ENERGY LEVELS so the transition dipole moment are not constant and need to be calculated
     BUt we do not know the real k vector of the sponteneous emission so we do not correct for the recoil energy level **********/
 
-
-
-
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
-        MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(1)|j> in  field
-        SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-          Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);
-
-
+        Diagonalization(Level, my_mol, fieldB, fieldE, params, H, E0_cm, Zeeman_cm_B, d0, d);
         // diagonalized the Hamiltionian for B field and v velocity and give the eigenvectors and eigenvalues and  update all Level[n].Energy_cm
 
         int i = my_mol.deg_number; // The molecules is in the Level number n_level_in.// so Level[ # = deg_number] shall be the Level itself// So in the Level file the deg_number is the Level number (START FROM 0)
@@ -303,22 +300,22 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
         for (int j=0; j<i; j++) // We scan only for levels that are below level i in energy. So we do a transition i-->j
         {
             Gamma =0.;
-            for(int n_polar = -1; n_polar <= 1; n_polar++) // Gamma_ij propto |<i | d | j>|^2  =
+            Energy_transition_cm = Level[i].Energy_cm - Level[j].Energy_cm;
+            k = 2*pi*100.*Energy_transition_cm;
+            for(int n_polar = -1; n_polar <= 1; n_polar++) // Gamma_ij propto |<i | d | j>|^2  = Sum_q |<i | d_q | j>|^2
             {
-                double dipole_ij = d[n_polar+1](i,j);  //   dipole_ij  =   <i | d | j>
-                // <i|d_q|j> is coded here as d[q+1][i][j] (real), i = line, j = column ; that is for a i<-->j transition (with E_i> E_j)
-
-                double S_pol= dipole_ij*dipole_ij/3.;
-                Energy_transition_cm = Level[i].Energy_cm - Level[j].Energy_cm;
-                k = 2*pi*100.*Energy_transition_cm;
-                Gamma +=  3.* S_pol * Spol_Debye_A_s * Energy_transition_cm*Energy_transition_cm*Energy_transition_cm;
+                complex<double> dipole_ij = d[n_polar+1](i,j);  //   dipole_ij  =   <i | d_q | j>
+                // <i|d_q|j> is coded here as d[q+1][i][j] , i = line, j = column ; that is for a i<-->j transition (with E_i> E_j)
+                double dip_square= norm(dipole_ij); // norm(z)=|z|^2
+                Gamma +=  dip_square * Spol_Debye_A_s * Energy_transition_cm*Energy_transition_cm*Energy_transition_cm;
             }
+
             if (Gamma < SMALL_NUMBER_RATE)
                 continue; // Pour une transition trop faible inutile de la calculer
 
             k_spon =  Vecteur3D(k,0.,0.) ; // Will be used to give the proper photon recoil
             rate.push_back(Gamma); // rate[nb_rate]=Gamma
-            type_codage_react reaction = { num_mol, -1, axe_quant, Vecteur3D(d[0](i,j),d[1](i,j),d[2](i,j)), k_spon, Level[j]}; // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}.
+            type_codage_react reaction = { num_mol, -1, axe_quant, {d[0](i,j),d[1](i,j),d[2](i,j)}, k_spon, Level[j]}; // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}.
             reaction_list.push_back (reaction);
             // numéro laser -1=spon_emission pour émission spontanée.
             // for the spontaneous emission we give  the polarization vector to determine the emitted photon (not the  impulsion photon as for stimulated or absorption)
@@ -341,7 +338,7 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
             if (Energy_transition_cm < 0.)
                 continue; // Etat en dessous de l'autre donc pas de photon spontané
 
-            double dipole_debye = sqrt(3.*my_mol.liste_raies[i].second) ; // dipole de la transition en debye
+            double dipole_debye = my_mol.liste_raies[i].second; // dipole de la transition en debye
             Gamma= Gamma_spon(dipole_debye, Energy_transition_cm);
 
             if (Gamma < SMALL_NUMBER_RATE)
@@ -351,7 +348,7 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
             k_spon =  Vecteur3D(k,0.,0.) ; // Will be used to give the proper photon recoil
 
             rate.push_back(Gamma); // rate[nb_rate]=Gamma
-            type_codage_react reaction = { num_mol, -1, axe_quant, axe_quant, k_spon, Internal_state_out};  // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}.
+            type_codage_react reaction = { num_mol, -1, axe_quant, {axe_quant(0),axe_quant(1),axe_quant(2)}, k_spon, Internal_state_out};  // {n_mol; n_laser; quant_axis; pol_vector; k_eff_laser; final_internal_state;}.
             // IN this case the pol_vector, is  not important (the photon will be calculated by the Delta_M given by the Internal_states) so we put axe_quant but any other values will do )
             reaction_list.push_back (reaction); // numéro laser -1=spon_emission pour émission spontanée. Le vecteur impulsion sera calculé plus tard
         }
@@ -363,19 +360,20 @@ int rates_molecule_spon(vector <Internal_state> &Level, vector <type_codage_reac
 
 
 
-// Calcul of rate (if no interferece between laser) between level in and out for a given laser and for a given molecule. This add the light shift effect to the dipolar potential (delta_pot_dipolaire)
+// Calcul of rate (if no interference between laser) between level in and out for a given laser and for a given molecule. This add the light shift effect to the dipolar potential (delta_pot_dipolaire)
 // update the detuning (delta), the polarization vector also updated), Gamma_spot_total, sqrt of the local intensity of the laser
 int rates_single_molecule_laser_level(const int n_las, double dipole, double &delta, double &eps_pol, double &Gamma_spon_tot, double sqrt_intensity_loc[],
                                       vector <Internal_state> &Level, Internal_state &Internal_state_in, Internal_state &Internal_state_out, vector <type_codage_react> &reaction_list,
                                       vector <double> &rate, const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const Laser &my_laser, const double t, double &delta_pot_dipolaire,
-                                      FitParams &params, bool is_rate_calculated, int is_bound_transition, const int n_level_in, const int n_level_out, const double Gamma_in, MatrixXd d[])
+                                      FitParams &params,  MatrixXcd d[], bool is_rate_calculated, int is_bound_transition, const int n_level_in, const int n_level_out,
+                                      const double Gamma_in)
 {
     Molecule my_mol= Mol[n_mol];
 
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         Internal_state_out = Level[n_level_out];
-        is_bound_transition = abs(Internal_state_out.Sym); // To know if the transition is towards continuum for instance
+        is_bound_transition = Internal_state_out.bound_level; // To know if the transition is towards continuum (or annihilation) for instance
     }
 
 
@@ -390,9 +388,10 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
     double Energy_transition_cm = abs(Internal_state_out.Energy_cm - Internal_state_in.Energy_cm)  + k*v/Conv_Ecm_delta; // Il faut mettre le detuning  car c'est la fréquence vue par les particules et donc par le spectre du laser.
     double Energy_transition_laser_cm = cm/my_laser.get_lambda(); // Energie de la transition laser en cm^-1
     delta =(Energy_transition_laser_cm  - Energy_transition_cm)*Conv_Ecm_delta  ;// detuning de la transition en s^-1. delta = omega_L - k.v - omega_transition
-    double I_laser_tot = my_laser.intensity_lab_axis(r) * my_laser.transmission_spectrum(Energy_transition_cm); // Intensité laser à la position de la molécule
+    double I_laser_tot = my_laser.intensity_lab_axis(r) * my_laser.intensity_t_nanosecond(t/ns) *  my_laser.transmission_spectrum(Energy_transition_cm); // Intensité laser à la position de la molécule au temps t
 
-    Vecteur3D axe_quant,dipole_vector(0.,0.,0.);
+    Vecteur3D axe_quant;
+    complex<double> dipole_vector[3]= {0.,0.,0.};
     axe_quant = fieldB.get_Field(r)+ fieldE.get_Field(r); // A priori les deux champs doivent avoir le même axe on choisi. Cela permetra d'orienter l'émission spontanée
 
     double rate_exc=0.;
@@ -402,16 +401,16 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
     // but in reality comes from |<i| d.E|j>|^2 =  |sum_q  E^(q) <i| d_(q) |j>|^2 = E^2  |sum_q  eps^(q) <i| d_(q) |j> |^2.
     // So destructive interference can appears and so the epsilon_vector has to be included in the dipole not in the intensity
 
-
-//  dipole_q_ij <i|d_q|j> is coded here as d[q+1][i][j] (real), i = line, j = column ; that is for a i<-->j transition (WITH E_i> E_j)
+//  dipole_q_ij <i|d_q|j> is coded here as d[q+1][i][j] (complex), i = line, j = column ; that is for a i<-->j transition (WITH E_i> E_j)
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
         for(int q = -1; q <= 1; q++) // scan over the polarization d^(q) sur -1, 0, +1  ;d[0]=dsigma-, d[1] =dpi , d[2]=dsigma+ for polarization in absorption ; d0[q+1]_ij = 0_<i | d^(q) | j>_0
-        { // We choose the proper dipole because d[q+1][i][j] (WITH E_i> E_j to get m_i = m_j+q
+        {
+            // We choose the proper dipole because d[q+1][i][j] (WITH E_i> E_j to get m_i = m_j+q
             if (Internal_state_in.Energy_cm > Internal_state_out.Energy_cm) // EMISSION  up=i=n_level_in   low=j=n_level_out
-                dipole_vector = Vecteur3D( d[0](n_level_in,n_level_out), d[1](n_level_in,n_level_out), d[2](n_level_in,n_level_out));
+                dipole_vector[q+1] =  d[q+1](n_level_in,n_level_out);
             else   // ABSORPTION up=i=n_level_out   low=j=n_level_in
-                dipole_vector = Vecteur3D( d[0](n_level_out,n_level_in), d[1](n_level_out,n_level_in), d[2](n_level_out,n_level_in));
+                dipole_vector[q+1] =  d[q+1](n_level_out,n_level_in);
         }
         Gamma_spon_tot =   Gamma_in +  Gamma_Level_from_diagonalized_dipole(Level, d, n_level_out);
     }
@@ -435,15 +434,15 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
     dipole_debye_trans = effectif_dipole_local(dipole_vector, axe_quant, my_laser);  // (asbolute value of) effectif dipole d.e_laser = sum_p d_p epsilon^p
     sqrt_intensity_loc[n_las] =  sqrt(intensity_Convolution_linewidth(I_laser_tot, delta, Gamma_spon_tot, Gamma_Las, my_laser.get_type_laser(),n_las, Energy_transition_cm, Energy_transition_laser_cm, params)); // Proportional to the Rabi Frequency
 
-    if (dipole_debye_trans < SMALL_DIPOLE_DEBYE && is_bound_transition)  // Pour une transition trop faible inutile de calculer le taux! (les "dipole" sont des "petite section pour la photoinizaiton donc on fait exception)
+    if (dipole_debye_trans < SMALL_DIPOLE_DEBYE )  // Pour une transition trop faible inutile de calculer le taux!
         return rate.size();
 
     if (my_laser.get_coherent_avec_laser_num() == -1)  // Laser seul, pas d'interférence avec les autres, on le calcul maintenant pour ne pas le recalculer ensuite
     {
-
         double Itot_loc =  sqrt_intensity_loc[n_las]* sqrt_intensity_loc[n_las];
-        if (Itot_loc < SMALL_NUMBER)
-            return rate.size();; // Pour une transition trop faible inutile de calculer le taux!
+        //    if ( (Itot_loc < SMALL_NUMBER)  && !((bool) is_bound_transition) )
+        // TEST FOR SPEED IF NEEDED
+        //        return rate.size();; // Pour une transition trop faible inutile de calculer le taux! I removed this because for continuum the detuning is big and so the "intensity" is small but should be calculated
         rate_exc = rate_excitation(reaction_list, rate,my_laser, Mol, n_mol, n_las, k, Itot_loc, I_laser_tot, dipole_debye_trans, delta,Energy_transition_cm, fieldB, fieldE, is_bound_transition, Internal_state_out, is_rate_calculated); // calculate rate and reaction_list for this transition. If we do not wat to calculate the rate we just use reaction_list[0] which is *reaction_list
         delta_pot_dipolaire += sgn(Internal_state_out.Energy_cm - Internal_state_in.Energy_cm) * rate_exc * delta/Gamma_spon_tot;
     }
@@ -459,7 +458,8 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
 //  return nb_rate
 
 int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list,  vector <double> &rate, const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-                   const double t, double &delta_pot_dipolaire, FitParams &params, bool is_rate_calculated )
+                   const double t, double &delta_pot_dipolaire, FitParams &params,
+                   MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[], bool is_rate_calculated)
 {
     Molecule my_mol = Mol[n_mol];
     delta_pot_dipolaire = 0.;
@@ -468,7 +468,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
     double dipole_debye =0.;
     double rate_exc=0;
     double sqrt_intensity_loc[100], delta[100]; // intensities ~sqrt(I), détuning
-    int is_bound_transition ; // Trick to treat the ionization. An ionizing state is of 0 symmetry. All other states are -1 or +1 thus transform to +1 = true
+    int is_bound_transition = 1 ; // Trick to treat the ionization or annihilation (in this case it is 0).
     Internal_state Internal_state_in,Internal_state_out; // State for transitions
 
     Vecteur3D r,v,Bfield;
@@ -479,35 +479,22 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
     double E = fieldE.get_Field(r).mag();
 
     const int Nb_laser = laser.size();
-    int number_las_min = 0 ;  // First laser used (0 by default but can be Nlaser/2 if we switch and t>T1 modulo (T1+T2)
-    int number_las_max_plus_1 = Nb_laser; // Last laser used. Nb_laser by default but can be Nlaser/2 if we switch and t<T1 modulo (T1+T2).  (+1 because the 1st is number 0)
 
     if (Nb_laser>=100)
         cerr << "Nb de laser trop grand: modifier la taille du tableau et recompiler " << endl;
-
-// TO summarize by default we scan between 0 and Nb_laser. But if we switch it is between 0 and N_laser/2 and then (t>T1) N_laser/2+1 and N_laser
-    if ( (params.LocateParam("Is_Laser_Switched")->val) )
-    {
-        int zero_if_t_0_T1_one_if_t_T1_T2 = Is_Switch(params.LocateParam("dt_switch_1")->val, params.LocateParam("dt_switch_2")->val, t);
-        // 0 (DEFAULT) if t is between 0 and T1 (modulo T1+T2); 1 if t is between T1, T1+T2 (modulo T1+T2)
-        number_las_min = zero_if_t_0_T1_one_if_t_T1_T2 * Nb_laser/2;
-        number_las_max_plus_1 =     Nb_laser/2  + zero_if_t_0_T1_one_if_t_T1_T2 * Nb_laser/2;
-    }
 
 
     /**********  WHEN WE DIAGONALIZED THE ENERGY LEVELS,the transition dipole moment are not constant and need to be calculated (we do not treat interference between lasers) **********/
 
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
     {
-        MatrixXd d[3] ; // d[0] = dipole transition for sigma minus <i|d^(-1)|j> = d0_ij  in  field ;  d[1] dipole transition for pi <i|d^(0)|j> in  field and d[2] is dipole transition for sigma plus <i|d^(-1)|j> in  field
-        SelfAdjointEigenSolver<MatrixXd> es; // eigenstates and eigenvalues
-        Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d); // calcul of the new dipole transition for the new levels.
+        Diagonalization(Level, my_mol, fieldB, fieldE, params, H, E0_cm, Zeeman_cm_B, d0, d); // calcul of the new dipole transition for the new levels.
 
         int n_level_in = my_mol.deg_number; //The molecules is in the Level number n_level_in.// so Level[ # = deg_number] shall be the Level itself// So in the Level file the deg_number is the Level number (START FROM 0)
-        Internal_state Internal_state_in = Level[n_level_in]; // Internal_state_in = my_mol ; //  état interne de la molecule
+        Internal_state_in = Level[n_level_in]; // Internal_state_in = my_mol ; //  état interne de la molecule
         double Gamma_in = Gamma_Level_from_diagonalized_dipole(Level, d, n_level_in); // Initial spontaneous decay rate of the state
 
-        for (int n_las = number_las_min ; n_las < number_las_max_plus_1; n_las++) // On scan sur les lasers pour calculer l'intensité sur la transtion // If we switch we add Nb_laser to the number
+        for (int n_las = 0 ; n_las < Nb_laser; n_las++) // On scan sur les lasers pour calculer l'intensité sur la transtion // If we switch we add Nb_laser to the number
         {
             Laser my_laser = laser[n_las];
             Vecteur3D k;
@@ -522,32 +509,33 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
 // TODO (Daniel#9#): this test works only if the lowest level is a dead level. May be remove this part (which is here only for speed reasons
             if (n_level_in>0) // 0 is the dead level so it can not change
-               {
-                   my_mol.set_vel(v-HBAR*k/m); // new volocity for the diagonalization
-                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
-                   my_mol.set_vel(v); // put back as normal value
-               }
+            {
+                my_mol.set_vel(v-HBAR*k/m); // new volocity for the diagonalization
+                Diagonalization(Level, my_mol, fieldB, fieldE, params, H, E0_cm, Zeeman_cm_B, d0, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                my_mol.set_vel(v); // put back as normal value
+            }
             for( int n_level_out = 0; n_level_out < n_level_in; n_level_out++ )  // Emission so we scan only on level below
             {
                 rates_single_molecule_laser_level( n_las, dipole_debye, delta[n_las], eps_pol,  Gamma_spon_tot, sqrt_intensity_loc, Level, Internal_state_in, Internal_state_out,
                                                    reaction_list, rate, Mol, n_mol, fieldB, fieldE, my_laser, t, delta_pot_dipolaire,
-                                                   params, is_rate_calculated, is_bound_transition, n_level_in,  n_level_out, Gamma_in, d);
+                                                   params, d, is_rate_calculated, is_bound_transition, n_level_in,  n_level_out, Gamma_in);
             }
 
             /***** Absorption: v--> v+HBAR*k/m *****/
 
 
-            if (n_level_in< Level.size()) // to make the loop over all levels
-                 {
-                   my_mol.set_vel(v+HBAR*k/m); // new volocity for the diagonalization
-                   Diagonalization(Level, my_mol, fieldB, fieldE, params, es, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
-                   my_mol.set_vel(v); // put back as normal value
-               }
-            for( int n_level_out = n_level_in+1; n_level_out < Level.size(); n_level_out++ ) // Absorption  so we scan only on level above
+            if (n_level_in< (int)  Level.size()) // to make the loop over all levels
             {
-                is_bound_transition = abs(Level[n_level_out].Sym);
+                my_mol.set_vel(v+HBAR*k/m); // new volocity for the diagonalization
+                Diagonalization(Level, my_mol, fieldB, fieldE, params, H, E0_cm, Zeeman_cm_B, d0, d);// calcul of the new dipole transition for the new levels (after the  emission of photons). The energy levels order may have changed
+                my_mol.set_vel(v); // put back as normal value
+            }
+            for( int n_level_out = n_level_in+1; n_level_out < (int)  Level.size(); n_level_out++ ) // Absorption  so we scan only on level above
+            {
+                is_bound_transition = Level[n_level_out].bound_level;
                 rates_single_molecule_laser_level(n_las, dipole_debye, delta[n_las], eps_pol,  Gamma_spon_tot, sqrt_intensity_loc, Level, Internal_state_in, Internal_state_out,
-                                                  reaction_list, rate, Mol, n_mol, fieldB, fieldE, my_laser, t, delta_pot_dipolaire, params, is_rate_calculated, is_bound_transition, n_level_in,  n_level_out, Gamma_in, d);
+                                                  reaction_list, rate, Mol, n_mol, fieldB, fieldE, my_laser, t, delta_pot_dipolaire, params, d,
+                                                  is_rate_calculated, is_bound_transition, n_level_in,  n_level_out, Gamma_in);
             }
         }
     }
@@ -562,25 +550,25 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 // If looking with debugger here this create Segmentaion fault. this is due (but not understood !) by the copy my_mol=Mol[n_mol] and look at my_mol.liste_raies.size()
         for( int n_trans = 0; n_trans < (int) my_mol.liste_raies.size(); n_trans++ ) // Boucle sur les transitions accessibles
         {
-            dipole_debye = sqrt(3.*my_mol.liste_raies[n_trans].second) ; // dipole de la transition en debye
+            dipole_debye = my_mol.liste_raies[n_trans].second ; // dipole de la transition en debye
             Internal_state_out = *(my_mol.liste_raies[n_trans].first) ; //  état interne de la molecule après la réaction
-            is_bound_transition = abs(Internal_state_out.Sym);
+            is_bound_transition = Internal_state_out.bound_level;
 
-            if (dipole_debye < SMALL_DIPOLE_DEBYE && is_bound_transition)
+            if (dipole_debye < SMALL_DIPOLE_DEBYE)
                 continue; // Pour une transition trop faible inutile de calculer le taux! (les "dipole" sont des "petite section pour la photoinizaiton donc on fait exception)
 
             Internal_state_out.Energy_cm = Internal_state_out.Energy0_cm + (Internal_state_out.Energy_Shift_B_cm(B) + Internal_state_out.Energy_Shift_E_cm(E));
 // The dipolar potential is not included in the shift for the transition. ...
 //This avoids accumulatiion, but for some case it may be good to have it
 
-            for (int n_las = number_las_min ; n_las < number_las_max_plus_1; n_las++) // On scan sur les lasers pour calculer l'intensité sur la transtion // If we switch we add Nb_laser to the number
+            for (int n_las = 0 ; n_las < Nb_laser; n_las++) // On scan sur les lasers pour calculer l'intensité sur la transtion // If we switch we add Nb_laser to the number
             {
                 Laser my_laser = laser[n_las];
 
                 //  Calcul les taux dans le cas où il n'y a pas d'interférence lasers
                 if (my_laser.get_coherent_avec_laser_num() == -1)  // Laser seul, pas d'interférence avec les autres
                     rates_single_molecule_laser_level( n_las, dipole_debye, delta[n_las], eps_pol, Gamma_spon_tot, sqrt_intensity_loc, Level,  Internal_state_in, Internal_state_out, reaction_list,
-                                                       rate, Mol, n_mol, fieldB, fieldE, laser[n_las], t, delta_pot_dipolaire, params, is_rate_calculated, is_bound_transition);
+                                                       rate, Mol, n_mol, fieldB, fieldE, laser[n_las], t, delta_pot_dipolaire, params, d, is_rate_calculated, is_bound_transition);
 // Calcul of rate (if no interferece between lasers)  between level in and out for a given laser and for a given molecule. This add the light shift effect to the dipolar potential (delta_pot_dipolaire)
 // update the detuning (delta), the polarization vector also updated), Gamma_spot_total, sqrt of the local intensity of the laser
             }
@@ -596,7 +584,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
             double omegai,omegaj,Itot_loc;
             Vecteur3D ki,kj,I_ktot;
-            for (int n_classe_coh_las =  number_las_min; n_classe_coh_las < number_las_max_plus_1; n_classe_coh_las++) // On scan sur les classes de lasers cohérents. un laser j interfère avec un laser i<=j et le plus petit i interfère avec lui même!
+            for (int n_classe_coh_las =  0; n_classe_coh_las < Nb_laser; n_classe_coh_las++) // On scan sur les classes de lasers cohérents. un laser j interfère avec un laser i<=j et le plus petit i interfère avec lui même!
             {
                 int num_laser_coherent = laser[n_classe_coh_las].get_coherent_avec_laser_num(); // Numéro de la classe (en fait du premier laser de la classe de cohérence)
                 if (n_classe_coh_las != num_laser_coherent)
@@ -605,7 +593,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
                 I_ktot = Vecteur3D(0.,0.,0.);
                 double Energy_transition_class_cm = abs(Internal_state_out.Energy_cm - Internal_state_in.Energy_cm) + laser[num_laser_coherent].wave_vector()*v/Conv_Ecm_delta ;// k.v effet Doppler (à resonnance)
 
-                for (int i = n_classe_coh_las; i < number_las_max_plus_1; i++) // On scan sur les lasers de la classe (qui sont ordonnés donc n_classe_coh_las est le premier
+                for (int i = n_classe_coh_las; i < Nb_laser; i++) // On scan sur les lasers de la classe (qui sont ordonnés donc n_classe_coh_las est le premier
                 {
                     if (laser[i].get_coherent_avec_laser_num() != num_laser_coherent)
                         continue ; // Si pas cohérent on stoppe avec ce laser et on continue avec un autre
@@ -628,7 +616,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
                     **/
 
 
-                    for (int j = i+1; j < number_las_max_plus_1; j++) // On scan les autres lasers j>i et on ne va garder que ceux cohérent avec i
+                    for (int j = i+1; j < Nb_laser; j++) // On scan les autres lasers j>i et on ne va garder que ceux cohérent avec i
                     {
                         if (laser[j].get_coherent_avec_laser_num() != num_laser_coherent)
                             continue ; // Si pas cohérent on stoppe avec ce laser et on continue avec un autre
@@ -640,7 +628,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
                         I_ktot += 2.*sqrt_Ii_Ij*(ki+kj)/2.; //
                     }
                 }
-                double I_laser_tot = laser[num_laser_coherent].intensity_lab_axis(r) * laser[num_laser_coherent].transmission_spectrum(abs(Internal_state_out.Energy_cm - Internal_state_in.Energy_cm)); // Intensité laser à la position de la molécule. WE DO NOT USE THE INTERFERENCE HERE
+                double I_laser_tot = laser[num_laser_coherent].intensity_lab_axis(r) * laser[num_laser_coherent].intensity_t_nanosecond(t/ns)  * laser[num_laser_coherent].transmission_spectrum(abs(Internal_state_out.Energy_cm - Internal_state_in.Energy_cm)); // Intensité laser à la position de la molécule. WE DO NOT USE THE INTERFERENCE HERE
                 double I_tot = I_laser_tot*Itot_loc/(sqrt_intensity_loc[num_laser_coherent]*sqrt_intensity_loc[num_laser_coherent]); // phenomenoligue way to treate I_tot. We take the same rationfor the total laser intensity that for the loca one!
                 if (I_laser_tot < SMALL_NUMBER)
                     continue; // Pour une transition trop faible inutile de calculer le taux!
@@ -656,7 +644,7 @@ int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &r
 
 
 // return the decay rate from Level i = sum_j<i Gamma_ij
-double Gamma_Level_from_diagonalized_dipole(vector <Internal_state> &Level, MatrixXd d[], const int i)
+double Gamma_Level_from_diagonalized_dipole(vector <Internal_state> &Level, MatrixXcd d[], const int i)
 {
     double  Gamma=0.;
 
@@ -664,10 +652,11 @@ double Gamma_Level_from_diagonalized_dipole(vector <Internal_state> &Level, Matr
     {
         for(int n_polar = -1; n_polar <= 1; n_polar++)
         {
-            double dipole_ij = d[n_polar+1](i,j);
-            double S_pol= dipole_ij*dipole_ij/3.;
+            complex<double> dipole_ij;
+            dipole_ij = d[n_polar+1](i,j);
+            double dip_square= norm(dipole_ij); // norm[z]=|z|^2
             double DE_cm = Level[i].Energy_cm - Level[j].Energy_cm;
-            Gamma +=  3.* S_pol * Spol_Debye_A_s * DE_cm*DE_cm*DE_cm;
+            Gamma +=  dip_square * Spol_Debye_A_s * DE_cm*DE_cm*DE_cm;
         }
     }
     return Gamma;
@@ -703,7 +692,8 @@ int copie_rates_molecules(vector <type_codage_react> &reaction_list, vector <dou
 // Calcul de tous les taux de toutes les molécules si numero_mol = aucune
 // Sinon on ne recalcule que celui de la molécule numero_mol
 int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algorithme_MC, vector <type_codage_react> &reaction_list, vector <double> &rate, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t,
-                           const int numero_mol, const int N_Mol, FitParams &params)
+                           const int numero_mol, const int N_Mol, FitParams &params,
+                           MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[])
 {
     if (Algorithme_MC == Aucun_MC)
     {
@@ -714,11 +704,12 @@ int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algori
 
     double delta_pot_dipolaire = 0.; // not used here but needed to call the functions
 
-    if (numero_mol != aucune) // Une molécule a été affectée donc on ne recalcule que ses taux, les autres sont recopiés
+    if ((numero_mol != aucune)&&(Mol[numero_mol].bound_level == 1)) // Une molécule a été affectée donc on ne recalcule que ses taux, les autres sont recopiés
+        //  FOr a state in the continuum there is no transition (back) it stay where it is. So we do not calculate anything
     {
         copie_rates_molecules(reaction_list, rate, numero_mol, rate.size());
-        rates_molecule_spon(Level, reaction_list, rate, Mol[numero_mol], fieldB, fieldE, numero_mol, params); // Emission spontanée
-        rates_molecule(Level, reaction_list, rate, Mol, numero_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params);        // Absorption ou Emission stimulée
+        rates_molecule_spon(Level, reaction_list, rate, Mol[numero_mol], fieldB, fieldE, numero_mol, params, H, E0_cm, Zeeman_cm_B, d0, d); // Emission spontanée
+        rates_molecule(Level, reaction_list, rate, Mol, numero_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params, H, E0_cm, Zeeman_cm_B, d0, d);        // Absorption ou Emission stimulée
     }
     else  //  Si on a (forcé) numero_mol = aucune on recalcule tout
     {
@@ -726,12 +717,13 @@ int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algori
         reaction_list.clear();
         for (int n_mol = 0; n_mol < N_Mol; n_mol++)
         {
-            rates_molecule_spon(Level, reaction_list, rate, Mol[n_mol], fieldB, fieldE, n_mol, params); // Emission spontanée
-            rates_molecule(Level, reaction_list, rate, Mol, n_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params);  // Absorption ou Emission stimulée
+            if (Mol[n_mol].bound_level == 1) // 0=continuum, 1 = bound level //  FOr a state in the continum there is no transition (back) it stay where it is. So we do not calculate anything
+            {
+                rates_molecule_spon(Level, reaction_list, rate, Mol[n_mol], fieldB, fieldE, n_mol, params,  H, E0_cm, Zeeman_cm_B, d0, d); // Emission spontanée
+                rates_molecule(Level, reaction_list, rate, Mol, n_mol, fieldB, fieldE, laser, t, delta_pot_dipolaire,  params,  H, E0_cm, Zeeman_cm_B, d0, d);  // Absorption ou Emission stimulée
+            }
         }
     }
-
-
 
     return rate.size();
 }
@@ -749,7 +741,7 @@ int do_reaction_FastRoughMethod(const MC_algorithmes Algorithme_MC, const gsl_rn
                                 const int n_reac, const vector <Laser> &laser, const double dt_KMC, ofstream & file_rate, int &number_photons, FitParams &params)
 {
     int  nb_rate = rate.size();
-    int nb_molecule_affected = -1; // number of the molecule that has undergone a reaction (none at the begining of this loop)
+    int nb_molecule_affected = -1; // number of the molecule that has undergone a reaction (none at the beginning of this loop)
 
     double random = 1.-gsl_rng_uniform(r); //  uniform random number u \in (0,1]
 
@@ -774,6 +766,7 @@ int do_reaction_FastRoughMethod(const MC_algorithmes Algorithme_MC, const gsl_rn
 int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r, const vector <double> &rate, const vector <type_codage_react> &reaction_list, vector <Molecule> &Mol,
                 const int n_reac, const vector <Laser> &laser, const double dt_KMC, ofstream & file_rate,  bool first_call, int &number_photons, FitParams &params )
 {
+
     if (n_reac == -1)
         return -1; // No Reaction like in Aucun_MC
     if (Algorithme_MC == Fast_Rough_Method && first_call == true)
@@ -789,6 +782,7 @@ int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r, const vec
     Vecteur3D k_laser = reaction_list[n_reac].k_eff_laser; // it can be zero in the case of lattice for instance (no momentum transfer)
     // Is   Vecteur3D(k,0.,0.) in spontaneous emission and laser_wavector for absorption or emission.
 
+
     if (numero_laser != spon_emission) // Absorption or stimulated emission
     {
         if (Internal_state_out.Energy_cm > Internal_state_in.Energy_cm) // TODO (dc#8#): Could be a problem for real diagonalization but here all upper states are above the lower ones so this order is respected
@@ -799,7 +793,7 @@ int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r, const vec
     else  // Il y a de l'emission spontanée
     {
         int delta_M = (Internal_state_out.two_M - Internal_state_in.two_M)/2 ;
-        Vecteur3D e_pol_dipole_transition = reaction_list[n_reac].pol_vector;
+        complex<double> e_pol_dipole_transition[3] = {reaction_list[n_reac].pol_vector[0], reaction_list[n_reac].pol_vector[1], reaction_list[n_reac].pol_vector[2]}  ;
         Vecteur3D  quantization_axis = reaction_list[n_reac].quant_axis;
         Vecteur3D k_photon_unit_vector = get_unit_vector_spontaneous_emission(r, e_pol_dipole_transition, quantization_axis, delta_M, params); // Gives a random unit vector (in the lab frame) for the spontaneous emission
         // double p_trans = 100.*hPlanck*(Internal_state_in.Energy_cm - Internal_state_out.Energy_cm);   // impulsion de recul (i.e. celle du photon pour l'absorption, - celle pour l'émission)  // Impulsion p = hbar*k = 100 h sigma(cm^-1)
@@ -836,7 +830,7 @@ int do_reaction(const MC_algorithmes Algorithme_MC, const gsl_rng * r, const vec
 // Or (if diagonalized) for a polarization vector e_pol:
 //  e_pol[q] = normalized dipole transition <i|d_(q)|j>; q=-1,0,1. So in the quantification axis e_pol = sum_q epol_q E^q
 // the probability distribution linked with f(r)= (3/8π)[1-|r.e_pol|^2]
-Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_pol_dipole_transition, Vecteur3D quantization_axis, int delta_M, FitParams &params)
+Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r,  complex<double> e_pol_dipole_transition[3], Vecteur3D quantization_axis, int delta_M, FitParams &params)
 {
     Vecteur3D point;
     if ( (params.LocateParam("is_Levels_Lines_Diagonalized")->val) )
@@ -871,7 +865,8 @@ Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_po
     {
         double cos_theta,phi,v; // random variables u = cos_theta
         double sin_theta;
-        Vecteur3D e_pol = e_pol_dipole_transition/e_pol_dipole_transition.mag(); // e_pol[q] = normalized dipole transition <i|d^(q)|j>; q=-1,0,1
+        double norm2 =  norm(e_pol_dipole_transition[0])+ norm(e_pol_dipole_transition[1])+ norm(e_pol_dipole_transition[2]);// I use the C++ notation so norm[z]=|z|^2;
+        complex<double> e_pol[3] = {e_pol_dipole_transition[0]/sqrt(norm2), e_pol_dipole_transition[1]/sqrt(norm2), e_pol_dipole_transition[2]/sqrt(norm2)} ;  // e_pol[q] = normalized dipole transition <i|d^(q)|j>; q=-1,0,1
         // e_pol = sum_q epol_q E^q in the quantification frame
         double F; // probability distribution
         do
@@ -881,7 +876,10 @@ Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_po
             v = gsl_ran_flat (r, 0, 1);
             sin_theta = sqrt(1.-cos_theta*cos_theta);
             // f= is ( 3. /(8.*pi) )* F
-            F=   1. - pow((sin_theta)*(e_pol(2)-e_pol(0))*cos(phi)/sqrt(2.)+e_pol(1)*cos_theta,2) -  pow((sin_theta)*(e_pol(0)+e_pol(2))*sin(phi)/sqrt(2.),2) ; // F=1-|r(uφ,),.e_p|^2
+            // F=   1. - pow((sin_theta)*(e_pol(2)-e_pol(0))*cos(phi)/sqrt(2.)+e_pol(1)*cos_theta,2) -  pow((sin_theta)*(e_pol(0)+e_pol(2))*sin(phi)/sqrt(2.),2) ; // F=1-|r(uφ,),.e_p|^2
+            const complex<double> i(0., 1.);
+            F=   1. - norm( (sin_theta)*cos(phi)*(e_pol[0]-e_pol[2])/sqrt(2.)+ e_pol[1]*cos_theta +  i*sin_theta*sin(phi)*(e_pol[0]+e_pol[2])/sqrt(2.) ) ; // F=1-|r(uφ,),.e_p|^2. recall norm[z]=|z|^2
+            // I think the previous expression is wrong (contravariant vs covariant)
         }
         while (v > F);
         point= Vecteur3D(sin_theta*cos(phi),sin_theta*sin(phi),cos_theta);// Vecteur unitaire du vecteur d'émission spontanée dans le repère de l'axe de quantification.
@@ -927,6 +925,7 @@ Vecteur3D get_unit_vector_spontaneous_emission(const gsl_rng * r, Vecteur3D e_po
 
     Vecteur3D  Angles_quantization_labo;
     Angles_quantization_labo = Euler_angles(quantization_axis); // We rotate the axis. because the quantization frame is not the lab frame
+
     return rotation_axis_lab(point, Angles_quantization_labo.x(), Angles_quantization_labo.y(), Angles_quantization_labo.z()); // k_spon_unit_vector
 }
 

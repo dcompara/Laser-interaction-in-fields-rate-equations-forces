@@ -17,7 +17,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // so Mol[0] to Mol[Nom_Mol[0]-1]
 @Nom_Mol[0]	Ps
 // It is the number of molecules that are laser cooled.
-@N_Mol[0]  32
+@N_Mol[0]  10
 @Temp_ini_x[0] 1e-10
 @Temp_ini_y[0] 1e-10
 @Temp_ini_z[0] 1e-10
@@ -84,7 +84,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 //for t> t_scaling_max
 // fin du temps.
 //@t_fin  10e-9
-@t_fin  5e-19
+@t_fin  1e-7
 // time interval between diagnostics (in cout) output
 @dt_dia 5e-9
 // time interval between output of snapshots (draw particles)
@@ -96,7 +96,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Temps d'attende entre 2 affichages. Permet de ne pas avoir un affichage trop rapide
 @t_wait_affichage   1e-1
 // 0 = false ; 1 =  true
-@Graphics 0
+@Graphics 1
 // rotate 90 degree along the vector (rot_axe_x, rot_axe_y, rot_axe_z)
 // if no rotation we would have x (red arrow) toward the right, y (green arrow) up and z (blue arrow) toward the screen.
 // DEFAULT IS (1,0,0) = x right, y  in screen, z up (gravity down)
@@ -128,7 +128,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Are the energy levels diagonalized or simple calculed using the simple analytical formula used in the code (linear, quadratic or two level case)
 //  0 = false (we use the standard simple formulas) ; 1 =  true (we diagonalized)
 // 2 (or any other values) = true (BUT FIRST ORDER). This mean that we use block diagonalization by manifold for Eigenvectors and eigenvalues
-@is_Levels_Lines_Diagonalized   1
+@is_Levels_Lines_Diagonalized   2
 #
 ######### 	CHAMPS EXTERNES SI units (T, T/m, T/m^2 ...)	################################
 #########   FOR MORE COMPLEX CASE  see is_Levels_Lines_Diagonalized    #########
@@ -221,7 +221,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @scale_Gamma 1
 
 // Nb de laser utilisés (pas forcément le nombre ci-après qui peut être plus grand mais ne seront pas utilisés)
-@Nb_laser 0
+@Nb_laser 1
 
 
 # Premier laser. Laser n°1 (called number 0 in the C++ program)
@@ -368,6 +368,6 @@ BEGIN_OF_FITPARAMS
 @SCAN_Offset_Detuning_cm -2.5 -1 5 false false
 @SCAN_scale_Gamma 0.3 0.6 3   false    false
 @SCAN_Tau_Modif 0.5e-3 2e-3 2 false false
-@SCAN_B_z   0   5  1000  true false
+@SCAN_B_z   0   5  1000  false false
 END_OF_FITPARAMS
 
