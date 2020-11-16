@@ -6,7 +6,7 @@
 % Revamped, CG, 18.08.04, adding header, dates,
 %   and name of presenter
 
-\documentclass[amsmath,amssymb]{revtex4-2}
+\documentclass[amsmath,amssymb]{revtex4}
 
 \usepackage[toc,page]{appendix}
 
@@ -91,6 +91,7 @@
 %\usepackage{epstopdf}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert \#1 `basename \#1 .tif`.png}
 
+
 \begin{document}
 
 \title{USER GUIDE For the simulation of Laser cooling of particles}
@@ -109,7 +110,7 @@ The program solves the rate equations to study laser excitation, forces (scatter
 It has been developed under Code::Blocks and Windows.
 The inputs are 2 external files describing the	levels (with information about their energy + linear or quadratic Stark, Zeeman effect) and the
 	transitions		lines (dipole transitions)
-Then a file named Liste\_Param.h contains parameters to run the simulation such as sample size, temperature, magnetic and electric fields and for the  	laser beams  (waist size and position, polarisation, power, linewidth, wavelength, ...).
+Then a file named Liste\_Param.h contains parameters to run the simulation such as sample size, temperature, magnetic fields and for the  	laser beams  (waist size and position, polarisation, power, linewidth, wavelength, ...).
 When running, the program calculates at time t all absorption and emission rates. Then a Kinetic Monte Carlo algorithm gives the exact time t+dt for an event (absorption or emission) compare this time to a typical external motion  time then it evolves in motion and event.
 The output is writen in a file containing relevant information such as population in given levels and statistics about velocities (temperature), potential energy ...
 Output is also performed through 3D snapshots.
@@ -338,7 +339,6 @@ Figure \ref{fig:Class} gives the list of the basic structure or classes used suc
 
 Figure \ref{fig:Program_evolution} is the core of the code with the main evolution summarized in the Main\_laser\_cooling.cpp program, that is usually the only code that you may have to modify (with the output one: sortie\_donnee).
 As you see the code as still some French in it such as:
-\
 
 \begin{itemize}
 	\item donnee = data
@@ -353,7 +353,7 @@ As you see the code as still some French in it such as:
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{evolution}
-	\caption{Schematics of how the code evolve its time. The blocks are the different files (.cpp or .h) present with their names in bold and an quick explanation of what they do. Usually the rate of the molecules are all updated every t\_dyn (dt\_dyn\_epsilon\_param in Liste\_Param.h). Only one molecule has is internal state modified every t\_KMC except if algorithm Fast\_Rough\_Method is used where $N/10$ are updated every t\_KMC=0.1/max(rate)}
+	\caption{Schematics of how the code evolve its time. The blocks are the different files (.cpp or .h) present with their names in bold and an quick explanation of what they do.}
 	\label{fig:Program_evolution}
 \end{figure}
 
@@ -534,11 +534,7 @@ The detail of the columns are(in bold the data that should absolutely be correct
 	\item 	 \textbf{2M}: where  M is the projection of the total angular momentum. We note 2M and not M to be able to use integer in the code for M=1/2 for instance.
 	In the code the particle will be assumed to always follow (adiabatically) the local quantification axis given by the local field.
 
-<<<<<<< HEAD:User Guide/User Guide Laser Cooling_v2.2.tex
 {\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you could impose $M$=0 for all states and use $\pi$ laser polarization. Another common "trick" is to create "dead" levels with proper dipole transition for an annihilation event that will be mostly treated as a spontaneous emission event}	
-=======
-{\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you could impose $M$=0 for all states and use $\pi$ laser polarization. Another common "trick" is to create "dead" levels with proper dipole transition for an annihilation event that will be simply treated as a spontaneous emission event}	
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6:User Guide/User Guide Laser Cooling_v1.5.tex
 	
 \item 	 \textbf{bound\_level}:   it should be +1  to design  bound states and 0 for an continuum state (that is above the continuum threshold such as for photodetachment or photoionization or annihilation).
 
@@ -606,13 +602,8 @@ with  $C_{{\rm Debye},s} = (8\times 10^6 \pi^2 c^3 {\rm Debye}^2 )/(3. \varepsil
 
 
 
-<<<<<<< HEAD:User Guide/User Guide Laser Cooling_v2.2.tex
 For an continuum transition (so with bound\_state' = 0), the idea to treat it, is to put a "fake" level: the energy should be just at the ionisation threshold (thus the program can test if the laser wavelength is enough to ionize). 
 There is only one constant value for the dipole (so for the cross section), no wavelength dependence is included so you have to choose the one adapted to your lasers.
-=======
-For an continuum transition (so with Sym' = 0), the idea to treat it, is to put a "fake" level: the energy should be just at the ionisation threshold (thus the program can test if the laser wavelength is enough to ionize). But, in this case the $S_{\rm pol}$ column is  not $d^2/3$ but $\sigma/$cm$^2$ which is the ionization cross section in cm$^2$.
-There is only one constant value for this cross section, no wavelength dependence is included so you have to choose the one adapted to your lasers.
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6:User Guide/User Guide Laser Cooling_v1.5.tex
 
 
 
@@ -653,21 +644,12 @@ It is important to know that this is a pure intensity effect, no (Fourier-Transf
 
 The code reads a file one file per laser (number).
 Laser\_intensity[i] for laser number i+1
-<<<<<<< HEAD:User Guide/User Guide Laser Cooling_v2.2.tex
 that contains 2 columns: $t_{\rm ns}$  (time in ns) and transmission $T$ (intensity transmission coefficient).
 
 
 When a transition rate is calculated at time $t$, the program look in this file for the line $i$ such as  $t_{\rm ns}[i] \leq t < t_{\rm ns}[i+1]$ and then it interpolate, at first order, the corresponding value between
 $T[i]$ and $T[i+1]$. So $A$ is the transmission value:
 $T = T[i] + \frac{T[i+1]-T[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $T=1$ (or $T=0$) as last point.
-=======
-that contains 2 columns: $t_{\rm ns}$  (time in ns) and Attenuation $A$ (intensity attenuation coefficient).
-
-
-When a transition rate is calculated at time $t$, the program look in this file for the line $i$ such as  $t_{\rm ns}[i] \leq t < t_{\rm ns}[i+1]$ and then it interpolate, at first order, the corresponding value between
-$A[i]$ and $A[i+1]$. So $A$ is the Attenuation value:
-$A = A[i] + \frac{A[i+1]-A[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $A=1$ (or $A=0$) as last point.
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6:User Guide/User Guide Laser Cooling_v1.5.tex
 This will be the multiplicative factor for the laser intensity.
 
 
@@ -930,13 +912,7 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 
 	 \begin{itemize}
 	 	
-<<<<<<< HEAD:User Guide/User Guide Laser Cooling_v2.2.tex
 
-=======
-	 	\item use Dipoles and not $d^2/3$ in the Files 
-	 	
-	 	\item Simplify the Levels file and use only the relevant data used for Lines, plus one extra column for comments
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6:User Guide/User Guide Laser Cooling_v1.5.tex
 	
 	 	\item Use of adaptive time steps (like t\_evol\_ext) for the algorithms (under consideration).
 	 	

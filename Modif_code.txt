@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 2020/11/15
 Add a first order block diagonalization for faster manifold study
 Correct a bug in polarization photon in spontaneous emission.
 
+=======
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 2020/11/08
 For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
 transition we use incoherent summation.

@@ -1,0 +1,966 @@
+Profil plat :
+
+Chaque échantillon compte pour 0.01 seconds.
+  %    cumulatif   auto              auto     total           
+temps   seconds   seconds   appels  s/appel  s/appel  nom     
+ 50.19     21.69    21.69                             __tcf_0
+  9.19     25.66     3.97                             __cosl_internal
+  9.00     29.55     3.89                             __sinl_internal
+  4.19     31.36     1.81    32886     0.00     0.00  Eigen::ComputationInfo Eigen::internal::computeFromTridiagonal_impl<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, long long, bool, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&)
+  4.03     33.10     1.74                             _mcount_private
+  3.15     34.46     1.36    32886     0.00     0.00  Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*)
+  2.75     35.65     1.19                             __fentry__
+  1.99     36.51     0.86 67350529     0.00     0.00  Euler_angles(Vecteur3D)
+  1.97     37.36     0.85  1019466     0.00     0.00  void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*)
+  1.83     38.15     0.79  1019466     0.00     0.00  Eigen::internal::selfadjoint_rank2_update_selector<std::complex<double>, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>, 1>::run(std::complex<double>*, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> const&, std::complex<double> const&)
+  1.62     38.85     0.70 34694730     0.00     0.00  dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&)
+  1.53     39.51     0.66                             sin
+  1.30     40.07     0.56   986580     0.00     0.00  Eigen::internal::general_matrix_vector_product<long long, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1>, 1, false, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0>, true, 0>::run(long long, long long, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1> const&, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0> const&, std::complex<double>*, long long, std::complex<double>)
+  1.27     40.62     0.55                             cos
+  1.02     41.06     0.44  1019466     0.00     0.00  Eigen::internal::selfadjoint_matrix_vector_product<std::complex<double>, long long, 0, 1, false, false, 0>::run(long long, std::complex<double> const*, long long, std::complex<double> const*, std::complex<double>*, std::complex<double>)
+  0.99     41.49     0.43                             csqrt
+  0.97     41.91     0.42 68369995     0.00     0.00  atan2_approximation(float, float)
+  0.69     42.21     0.30    32886     0.00     0.00  void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&)
+  0.49     42.42     0.21   712253     0.00     0.00  FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.42     42.60     0.18 102792748     0.00     0.00  operator/(Vecteur3D const&, double)
+  0.16     42.67     0.07 33675264     0.00     0.00  operator*(Vecteur3D const&, double)
+  0.16     42.74     0.07   345303     0.00     0.00  Gamma_Level_from_diagonalized_dipole(std::vector<Internal_state, std::allocator<Internal_state> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*, int)
+  0.14     42.80     0.06   339822     0.00     0.00  rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*)
+  0.14     42.86     0.06                             sincos
+  0.12     42.91     0.05  1019466     0.00     0.00  void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholder<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1>&, std::complex<double>&, double&) const
+  0.09     42.95     0.04   339822     0.00     0.00  effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&)
+  0.07     42.98     0.03   824222     0.00     0.00  Field::get_Field(Vecteur3D const&) const
+  0.07     43.01     0.03                             ___chkstk_ms
+  0.07     43.04     0.03                             __tcf_0
+  0.07     43.07     0.03                             pow
+  0.05     43.09     0.02    32886     0.00     0.00  void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const
+  0.05     43.11     0.02                             exp2l
+  0.02     43.12     0.01   899966     0.00     0.00  Internal_state::Internal_state(Internal_state const&)
+  0.02     43.13     0.01   559062     0.00     0.00  Eigen::PlainObjectBase<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >::resize(long long, long long)
+  0.02     43.14     0.01   350784     0.00     0.00  Laser::wave_vector() const
+  0.02     43.15     0.01   339822     0.00     0.00  Laser::intensity_lab_axis(Vecteur3D const&) const
+  0.02     43.16     0.01   339822     0.00     0.00  Laser::intensity_repere_sur_waist(Vecteur3D const&) const
+  0.02     43.17     0.01     5481     0.00     0.00  rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool)
+  0.02     43.18     0.01     5481     0.00     0.00  rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&)
+  0.02     43.19     0.01                             cexp
+  0.02     43.20     0.01                             internal_modf
+  0.02     43.21     0.01                             memcpy
+  0.02     43.22     0.01                             memset
+  0.00     43.22     0.00 35220910     0.00     0.00  DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00  1245557     0.00     0.00  Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*)
+  0.00     43.22     0.00  1019466     0.00     0.00  Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholderInPlace(std::complex<double>&, double&)
+  0.00     43.22     0.00  1019466     0.00     0.00  void Eigen::internal::selfadjoint_product_impl<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false>, 17, false, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const>, 0, true>::run<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const> const&, std::complex<double> const&)
+  0.00     43.22     0.00   916574     0.00     0.00  Internal_state::~Internal_state()
+  0.00     43.22     0.00   606361     0.00     0.00  Molecule::~Molecule()
+  0.00     43.22     0.00   600640     0.00     0.00  Atome::Atome(Atome const&)
+  0.00     43.22     0.00   423631     0.00     0.00  operator+(Vecteur3D const&, Vecteur3D const&)
+  0.00     43.22     0.00   412890     0.00     0.00  operator*(double, Vecteur3D const&)
+  0.00     43.22     0.00   394632     0.00     0.00  void Eigen::internal::evaluateProductBlockingSizesHeuristic<std::complex<double>, std::complex<double>, 1, long long>(long long&, long long&, long long&, long long)
+  0.00     43.22     0.00   373744     0.00     0.00  operator-(Vecteur3D const&, Vecteur3D const&)
+  0.00     43.22     0.00   345303     0.00     0.00  Internal_state::operator=(Internal_state const&)
+  0.00     43.22     0.00   339822     0.00     0.00  Pseudo_Voigt(double, double, double)
+  0.00     43.22     0.00   339822     0.00     0.00  rotation_lab_axis(Vecteur3D const&, double, double, double)
+  0.00     43.22     0.00   339822     0.00     0.00  intensity_Convolution_linewidth(double, double, double, double, int, int, double, double, FitParams&)
+  0.00     43.22     0.00   339822     0.00     0.00  Laser::transmission_spectrum(double) const
+  0.00     43.22     0.00   339822     0.00     0.00  Laser::intensity_t_nanosecond(double) const
+  0.00     43.22     0.00   339822     0.00     0.00  operator*(Vecteur3D const&, Vecteur3D const&)
+  0.00     43.22     0.00   243806     0.00     0.00  rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool)
+  0.00     43.22     0.00    47591     0.00     0.00  find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&)
+  0.00     43.22     0.00    32886     0.00     0.00  void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool)
+  0.00     43.22     0.00    23078     0.00     0.00  Laser::~Laser()
+  0.00     43.22     0.00    22960     0.00     0.00  Field::get_grad_field_F2(Vecteur3D const&) const
+  0.00     43.22     0.00    21924     0.00     0.00  Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage()
+  0.00     43.22     0.00    16737     0.00     0.00  Internal_state::Internal_state()
+  0.00     43.22     0.00    12113     0.00     0.00  Laser::~Laser()
+  0.00     43.22     0.00    11539     0.00     0.00  Laser::Laser(Laser const&)
+  0.00     43.22     0.00    11480     0.00     0.00  new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double)
+  0.00     43.22     0.00    11480     0.00     0.00  Internal_state::Grad_Energy_Shift_B(double, Vecteur3D)
+  0.00     43.22     0.00    11480     0.00     0.00  Internal_state::Grad_Energy_Shift_E(double, Vecteur3D)
+  0.00     43.22     0.00    10962     0.00     0.00  Eigen::DenseStorage<std::complex<double>, -1, -1, -1, 0>::~DenseStorage()
+  0.00     43.22     0.00    10080     0.00     0.00  FitParams::LocateOrAddNonConstParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00     6848     0.00     0.00  Internal_state::is_equal(Internal_state const&) const
+  0.00     43.22     0.00     5741     0.00     0.00  Atome::Atome()
+  0.00     43.22     0.00     5741     0.00     0.00  Molecule::Molecule()
+  0.00     43.22     0.00     1492     0.00     0.00  DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00     1152     0.00     0.00  std::pair<std::_Rb_tree_iterator<std::pair<double const, double> >, bool> std::_Rb_tree<double, std::pair<double const, double>, std::_Select1st<std::pair<double const, double> >, std::less<double>, std::allocator<std::pair<double const, double> > >::_M_emplace_unique<std::pair<double, double> >(std::pair<double, double>&&)
+  0.00     43.22     0.00     1152     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00      618     0.00     0.00  Laser::read_Spectrum(char const*)
+  0.00     43.22     0.00      576     0.00     0.00  Laser::read_Intensity(char const*)
+  0.00     43.22     0.00      576     0.00     0.00  Laser::Laser()
+  0.00     43.22     0.00      574     0.00     0.00  void add_acc_N_body_Coulomb<Molecule>(std::vector<Molecule, std::allocator<Molecule> > const&, Vecteur3D*, int)
+  0.00     43.22     0.00      574     0.00     0.00  void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int)
+  0.00     43.22     0.00      560     0.00     0.00  void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00      500     0.00     0.00  DataCards::RemoveCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00      288     0.00     0.00  Init_Field(Field&, Field&, FitParams&, char const*, char const*)
+  0.00     43.22     0.00      287     0.00     0.00  void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&)
+  0.00     43.22     0.00      287     0.00     0.00  binarySearch(double*, int, int, double)
+  0.00     43.22     0.00      287     0.00     0.03  calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&)
+  0.00     43.22     0.00      287     0.00     0.00  tirage_random_discrete(gsl_rng const*, std::vector<double, std::allocator<double> > const&, int, double&)
+  0.00     43.22     0.00      287     0.00     0.00  void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double)
+  0.00     43.22     0.00      286     0.00     0.00  Modif_Param(double, FitParams&)
+  0.00     43.22     0.00      214     0.00     0.00  Internal_state::add_transition(Internal_state*, double)
+  0.00     43.22     0.00      147     0.00     0.00  DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+  0.00     43.22     0.00      135     0.00     0.00  Bicubic_Interpolator::Bicubic_Interpolator(int, int, double, double, double, double)
+  0.00     43.22     0.00      127     0.00     0.00  DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double)
+  0.00     43.22     0.00      125     0.00     0.00  DataCards::HasKey(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00      121     0.00     0.00  void std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > >::_M_realloc_insert<std::pair<Internal_state*, double> const&>(__gnu_cxx::__normal_iterator<std::pair<Internal_state*, double>*, std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > > >, std::pair<Internal_state*, double> const&)
+  0.00     43.22     0.00      107     0.00     0.00  read_Line(std::istream&, Internal_state&, Internal_state&, double&)
+  0.00     43.22     0.00       32     0.00     0.00  Internal_state::read_Level__B(std::istream&)
+  0.00     43.22     0.00       32     0.00     0.00  Internal_state::Einstein_desex_rate()
+  0.00     43.22     0.00       21     0.00     0.00  Molecule::operator=(Internal_state const&)
+  0.00     43.22     0.00       20     0.00     0.00  Vecteur3D::gaussian_initialisation(gsl_rng const*, Vecteur3D)
+  0.00     43.22     0.00        8     0.00     0.00  DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long)
+  0.00     43.22     0.00        8     0.00     0.00  void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&)
+  0.00     43.22     0.00        8     0.00     0.00  void std::vector<Param*, std::allocator<Param*> >::_M_realloc_insert<Param*>(__gnu_cxx::__normal_iterator<Param**, std::vector<Param*, std::allocator<Param*> > >, Param*&&)
+  0.00     43.22     0.00        8     0.00     0.00  void std::vector<double, std::allocator<double> >::_M_realloc_insert<double const&>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double const&)
+  0.00     43.22     0.00        6     0.00     0.00  void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&)
+  0.00     43.22     0.00        6     0.00     0.00  void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&)
+  0.00     43.22     0.00        5     0.00     0.00  get_kin(Molecule const&)
+  0.00     43.22     0.00        5     0.00     0.00  FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00        4     0.00     0.00  DataCards::DoReadFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00        4     0.00     0.00  std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear()
+  0.00     43.22     0.00        2     0.00     0.00  Field::Field(Field const&)
+  0.00     43.22     0.00        2     0.00     0.00  Field::Field()
+  0.00     43.22     0.00        2     0.00     0.00  void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&)
+  0.00     43.22     0.00        1     0.00     0.00  Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&)
+  0.00     43.22     0.00        1     0.00     0.00  do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&)
+  0.00     43.22     0.00        1     0.00     0.00  Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards)
+  0.00     43.22     0.00        1     0.00     0.00  rotation_axis_lab(Vecteur3D const&, double, double, double)
+  0.00     43.22     0.00        1     0.00     0.00  initialisation_Gamma(std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&)
+  0.00     43.22     0.00        1     0.00     0.00  initialisation_proba(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Internal_state, std::allocator<Internal_state> > const&)
+  0.00     43.22     0.00        1     0.00     0.00  save_random_generator(gsl_rng*, char const*)
+  0.00     43.22     0.00        1     0.00     0.00  initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&)
+  0.00     43.22     0.00        1     0.00     0.00  get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&)
+  0.00     43.22     0.00        1     0.00     8.89  RePaint()
+  0.00     43.22     0.00        1     0.00     0.00  Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&)
+  0.00     43.22     0.00        1     0.00     0.00  Eigen::internal::queryCacheSizes(int&, int&, int&)
+  0.00     43.22     0.00        1     0.00     0.00  DataCards::NbCards()
+  0.00     43.22     0.00        1     0.00     0.00  DataCards::DataCards(DataCards const&)
+  0.00     43.22     0.00        1     0.00     0.00  FitParams::Scan_Param()
+  0.00     43.22     0.00        1     0.00     0.00  FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00        1     0.00     0.00  FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00     43.22     0.00        1     0.00     0.00  std::__cxx11::_List_base<DataCards::CrdPF, std::allocator<DataCards::CrdPF> >::_M_clear()
+  0.00     43.22     0.00        1     0.00     0.00  operator<<(std::ostream&, DataCards)
+
+			Graphe d'appel
+
+
+granularité : chaque échantillon recouvre 4 octet(s) pour 0.02% secondes sur 43.22
+
+index % temps   auto  rejetons    appelé     nom
+                                                 <spontanés>
+[1]     50.2   21.69    0.00                 __tcf_0 [1]
+                0.00    0.00 1183896/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+-----------------------------------------------
+                                                 <spontanés>
+[2]     20.6    0.00    8.89                 main [2]
+                0.00    8.89       1/1           RePaint() [3]
+                0.00    0.00       3/618         Laser::read_Spectrum(char const*) [262]
+                0.00    0.00       1/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00       1/8           DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [282]
+-----------------------------------------------
+                0.00    8.89       1/1           main [2]
+[3]     20.6    0.00    8.89       1         RePaint() [3]
+                0.00    8.88     287/287         calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [4]
+                0.00    0.00     288/288         Init_Field(Field&, Field&, FitParams&, char const*, char const*) [53]
+                0.00    0.00     287/287         void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [55]
+                0.00    0.00     292/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00       1/1           FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+                0.00    0.00       1/1           Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00       1/1           FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00       1/1           initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [66]
+                0.00    0.00     288/1245557     Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+                0.00    0.00       1/1           do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00     287/47591       find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [246]
+                0.00    0.00     286/286         Modif_Param(double, FitParams&) [270]
+                0.00    0.00      39/618         Laser::read_Spectrum(char const*) [262]
+                0.00    0.00      11/147         DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [272]
+                0.00    0.00       7/8           DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [282]
+                0.00    0.00       2/2           Field::Field() [289]
+                0.00    0.00       2/2           Field::Field(Field const&) [288]
+                0.00    0.00       2/4           std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear() [287]
+                0.00    0.00       1/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00       1/127         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+                0.00    0.00       1/1           save_random_generator(gsl_rng*, char const*) [294]
+                0.00    0.00       1/1           initialisation_proba(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Internal_state, std::allocator<Internal_state> > const&) [293]
+                0.00    0.00       1/1           FitParams::Scan_Param() [299]
+                0.00    0.00       1/1           DataCards::NbCards() [297]
+                0.00    0.00       1/1           DataCards::DataCards(DataCards const&) [298]
+                0.00    0.00       1/1           operator<<(std::ostream&, DataCards) [301]
+                0.00    0.00       1/1           std::__cxx11::_List_base<DataCards::CrdPF, std::allocator<DataCards::CrdPF> >::_M_clear() [300]
+-----------------------------------------------
+                0.00    8.88     287/287         RePaint() [3]
+[4]     20.6    0.00    8.88     287         calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [4]
+                0.01    7.46    5481/5481        rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.01    1.40    5481/5481        rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00   22106/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.23    1.18    5481/32886       rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                1.13    5.88   27405/32886       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[5]     19.5    1.36    7.05   32886         Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                1.57    5.34 33708150/33708150     dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+                0.07    0.00 33675264/33675264     operator*(Vecteur3D const&, double) [30]
+                0.06    0.00 33675264/102792748     operator/(Vecteur3D const&, double) [29]
+                0.01    0.00  559062/559062      Eigen::PlainObjectBase<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >::resize(long long, long long) [48]
+                0.00    0.00   65772/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.00    0.00  394632/394632      void Eigen::internal::evaluateProductBlockingSizesHeuristic<std::complex<double>, std::complex<double>, 1, long long>(long long&, long long&, long long&, long long) [238]
+                0.00    0.00  394632/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00   32886/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+-----------------------------------------------
+                0.01    7.46    5481/5481        calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [4]
+[6]     17.3    0.01    7.46    5481         rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                1.13    5.88   27405/32886       Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.06    0.39  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+                0.00    0.00    5481/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00    5481/345303      Gamma_Level_from_diagonalized_dipole(std::vector<Internal_state, std::allocator<Internal_state> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*, int) [31]
+                0.00    0.00   10962/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.00    0.00   10962/350784      Laser::wave_vector() const [49]
+                0.00    0.00   10962/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00   21924/102792748     operator/(Vecteur3D const&, double) [29]
+                0.00    0.00   21924/412890      operator*(double, Vecteur3D const&) [237]
+                0.00    0.00   16443/916574      Internal_state::~Internal_state() [233]
+                0.00    0.00   10962/16737       Internal_state::Internal_state() [250]
+                0.00    0.00   10962/11539       Laser::Laser(Laser const&) [252]
+                0.00    0.00   10962/12113       Laser::~Laser() [251]
+                0.00    0.00   10962/373744      operator-(Vecteur3D const&, Vecteur3D const&) [239]
+                0.00    0.00   10962/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00   10962/21924       Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage() [249]
+                0.00    0.00    5481/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00    5481/10962       Eigen::DenseStorage<std::complex<double>, -1, -1, -1, 0>::~DenseStorage() [255]
+                0.00    0.00    5481/606361      Molecule::~Molecule() [234]
+-----------------------------------------------
+[7]     16.0    1.57    5.34 33708150+2071818 <cycle 1 en entier> [7]
+                0.70    3.76 34694730             dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+                0.00    1.58   32886             void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) <cycle 1> [14]
+                0.85    0.00 1019466             void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*) <cycle 1> [18]
+                0.02    0.00   32886             void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const <cycle 1> [42]
+-----------------------------------------------
+                              986580             void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*) <cycle 1> [18]
+                1.57    5.34 33708150/33708150     Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+[8]     10.3    0.70    3.76 34694730         dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+                1.81    0.00   32886/32886       Eigen::ComputationInfo Eigen::internal::computeFromTridiagonal_impl<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, long long, bool, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&) [11]
+                0.86    0.53 67350528/67350529     Euler_angles(Vecteur3D) [16]
+                0.56    0.00  986580/986580      Eigen::internal::general_matrix_vector_product<long long, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1>, 1, false, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0>, true, 0>::run(long long, long long, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1> const&, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0> const&, std::complex<double>*, long long, std::complex<double>) [21]
+                               32886             void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) <cycle 1> [14]
+-----------------------------------------------
+                                                 <spontanés>
+[9]      9.2    3.97    0.00                 __cosl_internal [9]
+-----------------------------------------------
+                                                 <spontanés>
+[10]     9.0    3.89    0.00                 __sinl_internal [10]
+-----------------------------------------------
+                1.81    0.00   32886/32886       dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+[11]     4.2    1.81    0.00   32886         Eigen::ComputationInfo Eigen::internal::computeFromTridiagonal_impl<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, long long, bool, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&) [11]
+-----------------------------------------------
+                                                 <spontanés>
+[12]     4.0    1.74    0.00                 _mcount_private [12]
+-----------------------------------------------
+                0.30    1.28   32886/32886       void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) <cycle 1> [14]
+[13]     3.7    0.30    1.28   32886         void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+                0.79    0.00 1019466/1019466     Eigen::internal::selfadjoint_rank2_update_selector<std::complex<double>, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>, 1>::run(std::complex<double>*, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> const&, std::complex<double> const&) [19]
+                0.00    0.44 1019466/1019466     void Eigen::internal::selfadjoint_product_impl<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false>, 17, false, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const>, 0, true>::run<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const> const&, std::complex<double> const&) [24]
+                0.00    0.05 1019466/1019466     Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholderInPlace(std::complex<double>&, double&) [33]
+                0.00    0.00 1019466/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+-----------------------------------------------
+                               32886             dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+[14]     3.7    0.00    1.58   32886         void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) <cycle 1> [14]
+                0.30    1.28   32886/32886       void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+                               32886             void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const <cycle 1> [42]
+-----------------------------------------------
+                0.01    1.40    5481/5481        calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [4]
+[15]     3.3    0.01    1.40    5481         rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.23    1.18    5481/32886       Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.00    0.00    5481/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00   21924/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.00    0.00   26199/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00    5481/345303      Internal_state::operator=(Internal_state const&) [58]
+                0.00    0.00       2/8           void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&) [63]
+                0.00    0.00   15841/916574      Internal_state::~Internal_state() [233]
+                0.00    0.00   10962/21924       Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage() [249]
+                0.00    0.00    5481/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00    5481/10962       Eigen::DenseStorage<std::complex<double>, -1, -1, -1, 0>::~DenseStorage() [255]
+                0.00    0.00       2/8           void std::vector<double, std::allocator<double> >::_M_realloc_insert<double const&>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double const&) [284]
+-----------------------------------------------
+                0.00    0.00       1/67350529     get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [70]
+                0.86    0.53 67350528/67350529     dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+[16]     3.2    0.86    0.53 67350529         Euler_angles(Vecteur3D) [16]
+                0.41    0.00 67350529/68369995     atan2_approximation(float, float) [27]
+                0.12    0.00 67350529/102792748     operator/(Vecteur3D const&, double) [29]
+-----------------------------------------------
+                                                 <spontanés>
+[17]     2.8    1.19    0.00                 __fentry__ [17]
+-----------------------------------------------
+                             1019466             void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const <cycle 1> [42]
+[18]     2.0    0.85    0.00 1019466         void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*) <cycle 1> [18]
+                              986580             dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+-----------------------------------------------
+                0.79    0.00 1019466/1019466     void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+[19]     1.8    0.79    0.00 1019466         Eigen::internal::selfadjoint_rank2_update_selector<std::complex<double>, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>, 1>::run(std::complex<double>*, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> const&, std::complex<double> const&) [19]
+                0.00    0.00 32622912/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+-----------------------------------------------
+                                                 <spontanés>
+[20]     1.5    0.66    0.00                 sin [20]
+-----------------------------------------------
+                0.56    0.00  986580/986580      dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) <cycle 1> [8]
+[21]     1.3    0.56    0.00  986580         Eigen::internal::general_matrix_vector_product<long long, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1>, 1, false, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0>, true, 0>::run(long long, long long, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1> const&, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0> const&, std::complex<double>*, long long, std::complex<double>) [21]
+-----------------------------------------------
+                                                 <spontanés>
+[22]     1.3    0.55    0.00                 cos [22]
+-----------------------------------------------
+                0.06    0.39  339822/339822      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[23]     1.0    0.06    0.39  339822         rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+                0.20    0.00  679644/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.07    0.00  339822/345303      Gamma_Level_from_diagonalized_dipole(std::vector<Internal_state, std::allocator<Internal_state> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*, int) [31]
+                0.04    0.01  339822/339822      effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&) [35]
+                0.02    0.00  679644/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.01    0.01  339822/339822      Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+                0.01    0.00  339822/350784      Laser::wave_vector() const [49]
+                0.01    0.00  583628/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00  243806/243806      rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.00    0.00  339822/345303      Internal_state::operator=(Internal_state const&) [58]
+                0.00    0.00  339822/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00  339822/339822      operator*(Vecteur3D const&, Vecteur3D const&) [245]
+                0.00    0.00  339822/339822      Laser::intensity_t_nanosecond(double) const [244]
+                0.00    0.00  339822/339822      Laser::transmission_spectrum(double) const [243]
+                0.00    0.00  339822/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00  339822/339822      intensity_Convolution_linewidth(double, double, double, double, int, int, double, double, FitParams&) [242]
+                0.00    0.00  339822/606361      Molecule::~Molecule() [234]
+                0.00    0.00  243806/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.44 1019466/1019466     void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+[24]     1.0    0.00    0.44 1019466         void Eigen::internal::selfadjoint_product_impl<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false>, 17, false, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const>, 0, true>::run<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const> const&, std::complex<double> const&) [24]
+                0.44    0.00 1019466/1019466     Eigen::internal::selfadjoint_matrix_vector_product<std::complex<double>, long long, 0, 1, false, false, 0>::run(long long, std::complex<double> const*, long long, std::complex<double> const*, std::complex<double>*, std::complex<double>) [25]
+-----------------------------------------------
+                0.44    0.00 1019466/1019466     void Eigen::internal::selfadjoint_product_impl<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false>, 17, false, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const>, 0, true>::run<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const> const&, std::complex<double> const&) [24]
+[25]     1.0    0.44    0.00 1019466         Eigen::internal::selfadjoint_matrix_vector_product<std::complex<double>, long long, 0, 1, false, false, 0>::run(long long, std::complex<double> const*, long long, std::complex<double> const*, std::complex<double>*, std::complex<double>) [25]
+-----------------------------------------------
+                                                 <spontanés>
+[26]     1.0    0.43    0.00                 csqrt [26]
+-----------------------------------------------
+                0.00    0.00  339822/68369995     Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+                0.00    0.00  679644/68369995     effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&) [35]
+                0.41    0.00 67350529/68369995     Euler_angles(Vecteur3D) [16]
+[27]     1.0    0.42    0.00 68369995         atan2_approximation(float, float) [27]
+-----------------------------------------------
+                0.00    0.00       1/712253      Init_Field(Field&, Field&, FitParams&, char const*, char const*) [53]
+                0.00    0.00       1/712253      get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [70]
+                0.00    0.00       1/712253      Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00       5/712253      FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [64]
+                0.00    0.00       5/712253      FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00      73/712253      Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00     245/712253      FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+                0.00    0.00     292/712253      RePaint() [3]
+                0.00    0.00    5481/712253      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00    5481/712253      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   10080/712253      FitParams::LocateOrAddNonConstParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [54]
+                0.00    0.00   10944/712253      Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+                0.20    0.00  679644/712253      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[28]     0.5    0.21    0.00  712253         FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+-----------------------------------------------
+                0.00    0.00       1/102792748     do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00   21924/102792748     rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   22960/102792748     new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00   22960/102792748     void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00  679644/102792748     effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&) [35]
+                0.00    0.00 1019466/102792748     Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+                0.06    0.00 33675264/102792748     Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.12    0.00 67350529/102792748     Euler_angles(Vecteur3D) [16]
+[29]     0.4    0.18    0.00 102792748         operator/(Vecteur3D const&, double) [29]
+-----------------------------------------------
+                0.07    0.00 33675264/33675264     Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+[30]     0.2    0.07    0.00 33675264         operator*(Vecteur3D const&, double) [30]
+-----------------------------------------------
+                0.00    0.00    5481/345303      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.07    0.00  339822/345303      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[31]     0.2    0.07    0.00  345303         Gamma_Level_from_diagonalized_dipole(std::vector<Internal_state, std::allocator<Internal_state> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*, int) [31]
+-----------------------------------------------
+                                                 <spontanés>
+[32]     0.1    0.06    0.00                 sincos [32]
+-----------------------------------------------
+                0.00    0.05 1019466/1019466     void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+[33]     0.1    0.00    0.05 1019466         Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholderInPlace(std::complex<double>&, double&) [33]
+                0.05    0.00 1019466/1019466     void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholder<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1>&, std::complex<double>&, double&) const [34]
+-----------------------------------------------
+                0.05    0.00 1019466/1019466     Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholderInPlace(std::complex<double>&, double&) [33]
+[34]     0.1    0.05    0.00 1019466         void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholder<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1>&, std::complex<double>&, double&) const [34]
+-----------------------------------------------
+                0.04    0.01  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[35]     0.1    0.04    0.01  339822         effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&) [35]
+                0.00    0.00  679644/68369995     atan2_approximation(float, float) [27]
+                0.00    0.00  679644/102792748     operator/(Vecteur3D const&, double) [29]
+-----------------------------------------------
+                                                 <spontanés>
+[36]     0.1    0.03    0.00                 pow [36]
+-----------------------------------------------
+                0.00    0.00   10962/824222      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   21924/824222      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00   22960/824222      new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00   22960/824222      void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00   65772/824222      Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.02    0.00  679644/824222      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[37]     0.1    0.03    0.00  824222         Field::get_Field(Vecteur3D const&) const [37]
+-----------------------------------------------
+                                                 <spontanés>
+[38]     0.1    0.03    0.00                 ___chkstk_ms [38]
+-----------------------------------------------
+                                                 <spontanés>
+[39]     0.1    0.03    0.00                 __tcf_0 [39]
+-----------------------------------------------
+                0.01    0.01  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[40]     0.1    0.01    0.01  339822         Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+                0.01    0.00  339822/339822      Laser::intensity_repere_sur_waist(Vecteur3D const&) const [50]
+                0.00    0.00  339822/68369995     atan2_approximation(float, float) [27]
+                0.00    0.00 1019466/102792748     operator/(Vecteur3D const&, double) [29]
+                0.00    0.00  339822/373744      operator-(Vecteur3D const&, Vecteur3D const&) [239]
+                0.00    0.00  339822/339822      rotation_lab_axis(Vecteur3D const&, double, double, double) [241]
+-----------------------------------------------
+                                                 <spontanés>
+[41]     0.0    0.02    0.00                 exp2l [41]
+-----------------------------------------------
+                               32886             void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) <cycle 1> [14]
+[42]     0.0    0.02    0.00   32886         void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const <cycle 1> [42]
+                             1019466             void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*) <cycle 1> [18]
+-----------------------------------------------
+                0.00    0.00       2/899966      do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00      14/899966      Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00      26/899966      Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00      37/899966      void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&) [67]
+                0.00    0.00      37/899966      void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&) [68]
+                0.00    0.00     135/899966      void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&) [63]
+                0.00    0.00   10962/899966      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   11480/899966      new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00   26199/899966      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00  267446/899966      rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.01    0.00  583628/899966      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[43]     0.0    0.01    0.00  899966         Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00  899966/1245557     Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+-----------------------------------------------
+                                                 <spontanés>
+[44]     0.0    0.01    0.00                 cexp [44]
+-----------------------------------------------
+                                                 <spontanés>
+[45]     0.0    0.01    0.00                 internal_modf [45]
+-----------------------------------------------
+                                                 <spontanés>
+[46]     0.0    0.01    0.00                 memcpy [46]
+-----------------------------------------------
+                                                 <spontanés>
+[47]     0.0    0.01    0.00                 memset [47]
+-----------------------------------------------
+                0.01    0.00  559062/559062      Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+[48]     0.0    0.01    0.00  559062         Eigen::PlainObjectBase<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >::resize(long long, long long) [48]
+-----------------------------------------------
+                0.00    0.00   10962/350784      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.01    0.00  339822/350784      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[49]     0.0    0.01    0.00  350784         Laser::wave_vector() const [49]
+                0.00    0.00  350784/412890      operator*(double, Vecteur3D const&) [237]
+-----------------------------------------------
+                0.01    0.00  339822/339822      Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+[50]     0.0    0.01    0.00  339822         Laser::intensity_repere_sur_waist(Vecteur3D const&) const [50]
+-----------------------------------------------
+                0.00    0.00  243806/243806      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[51]     0.0    0.00    0.00  243806         rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.00    0.00  267446/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00       6/8           void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&) [63]
+                0.00    0.00  243806/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00  243806/606361      Molecule::~Molecule() [234]
+                0.00    0.00   11823/916574      Internal_state::~Internal_state() [233]
+                0.00    0.00       6/8           void std::vector<double, std::allocator<double> >::_M_realloc_insert<double const&>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double const&) [284]
+-----------------------------------------------
+                0.00    0.00     288/1245557     RePaint() [3]
+                0.00    0.00  345303/1245557     Internal_state::operator=(Internal_state const&) [58]
+                0.00    0.00  899966/1245557     Internal_state::Internal_state(Internal_state const&) [43]
+[52]     0.0    0.00    0.00 1245557         Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+                0.00    0.00   10944/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00    1152/1152        std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [261]
+                0.00    0.00    1150/12113       Laser::~Laser() [251]
+                0.00    0.00     576/576         Laser::Laser() [264]
+                0.00    0.00     576/618         Laser::read_Spectrum(char const*) [262]
+                0.00    0.00     576/576         Laser::read_Intensity(char const*) [263]
+                0.00    0.00     574/11539       Laser::Laser(Laser const&) [252]
+                0.00    0.00       2/2           void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&) [290]
+-----------------------------------------------
+                0.00    0.00     288/288         RePaint() [3]
+[53]     0.0    0.00    0.00     288         Init_Field(Field&, Field&, FitParams&, char const*, char const*) [53]
+                0.00    0.00   10080/10080       FitParams::LocateOrAddNonConstParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [54]
+                0.00    0.00       1/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+-----------------------------------------------
+                0.00    0.00   10080/10080       Init_Field(Field&, Field&, FitParams&, char const*, char const*) [53]
+[54]     0.0    0.00    0.00   10080         FitParams::LocateOrAddNonConstParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [54]
+                0.00    0.00   10080/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+-----------------------------------------------
+                0.00    0.00     287/287         RePaint() [3]
+[55]     0.0    0.00    0.00     287         void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [55]
+                0.00    0.00     287/287         void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+                0.00    0.00    5740/5741        Molecule::Molecule() [258]
+                0.00    0.00    5740/606361      Molecule::~Molecule() [234]
+-----------------------------------------------
+                0.00    0.00     287/287         void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [55]
+[56]     0.0    0.00    0.00     287         void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+                0.00    0.00   11480/11480       new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00     574/574         void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00   17220/412890      operator*(double, Vecteur3D const&) [237]
+                0.00    0.00   11480/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00     574/574         void add_acc_N_body_Coulomb<Molecule>(std::vector<Molecule, std::allocator<Molecule> > const&, Vecteur3D*, int) [265]
+-----------------------------------------------
+                0.00    0.00   11480/11480       void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+[57]     0.0    0.00    0.00   11480         new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00   22960/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.00    0.00   11480/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00   22960/102792748     operator/(Vecteur3D const&, double) [29]
+                0.00    0.00   22960/22960       Field::get_grad_field_F2(Vecteur3D const&) const [248]
+                0.00    0.00   22960/373744      operator-(Vecteur3D const&, Vecteur3D const&) [239]
+                0.00    0.00   11480/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00   11480/11480       Internal_state::Grad_Energy_Shift_E(double, Vecteur3D) [254]
+                0.00    0.00   11480/11480       Internal_state::Grad_Energy_Shift_B(double, Vecteur3D) [253]
+                0.00    0.00   11480/606361      Molecule::~Molecule() [234]
+-----------------------------------------------
+                0.00    0.00    5481/345303      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00  339822/345303      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[58]     0.0    0.00    0.00  345303         Internal_state::operator=(Internal_state const&) [58]
+                0.00    0.00  345303/1245557     Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+-----------------------------------------------
+                0.00    0.00     574/574         void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+[59]     0.0    0.00    0.00     574         void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00   22960/824222      Field::get_Field(Vecteur3D const&) const [37]
+                0.00    0.00   22960/102792748     operator/(Vecteur3D const&, double) [29]
+                0.00    0.00   22960/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00   22960/412890      operator*(double, Vecteur3D const&) [237]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[60]     0.0    0.00    0.00       1         FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+                0.00    0.00     245/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00     125/125         DataCards::HasKey(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [275]
+                0.00    0.00     125/127         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+                0.00    0.00       4/8           void std::vector<Param*, std::allocator<Param*> >::_M_realloc_insert<Param*>(__gnu_cxx::__normal_iterator<Param**, std::vector<Param*, std::allocator<Param*> > >, Param*&&) [283]
+                0.00    0.00       1/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00       1/4           std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear() [287]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[61]     0.0    0.00    0.00       1         Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00      73/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00       6/6           void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&) [68]
+                0.00    0.00      14/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00      40/423631      operator+(Vecteur3D const&, Vecteur3D const&) [236]
+                0.00    0.00      20/20          Vecteur3D::gaussian_initialisation(gsl_rng const*, Vecteur3D) [281]
+                0.00    0.00      14/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00       1/5741        Molecule::Molecule() [258]
+                0.00    0.00       1/147         DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [272]
+                0.00    0.00       1/606361      Molecule::~Molecule() [234]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[62]     0.0    0.00    0.00       1         FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00       5/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00       5/5           FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [64]
+                0.00    0.00       5/5           get_kin(Molecule const&) [285]
+                0.00    0.00       1/35220910     DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00       1/127         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+                0.00    0.00       1/4           std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear() [287]
+-----------------------------------------------
+                0.00    0.00       2/8           rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00       6/8           rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+[63]     0.0    0.00    0.00       8         void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&) [63]
+                0.00    0.00     135/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00     127/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.00       5/5           FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+[64]     0.0    0.00    0.00       5         FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [64]
+                0.00    0.00       5/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00       4/8           void std::vector<Param*, std::allocator<Param*> >::_M_realloc_insert<Param*>(__gnu_cxx::__normal_iterator<Param**, std::vector<Param*, std::allocator<Param*> > >, Param*&&) [283]
+-----------------------------------------------
+                0.00    0.00       1/1           initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [66]
+[65]     0.0    0.00    0.00       1         Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00       6/6           void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&) [67]
+                0.00    0.00      26/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00       1/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00      32/916574      Internal_state::~Internal_state() [233]
+                0.00    0.00      32/16737       Internal_state::Internal_state() [250]
+                0.00    0.00      32/32          Internal_state::read_Level__B(std::istream&) [278]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[66]     0.0    0.00    0.00       1         initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [66]
+                0.00    0.00       1/1           Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00       1/1           Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+                0.00    0.00       1/1           initialisation_Gamma(std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [292]
+-----------------------------------------------
+                0.00    0.00       6/6           Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+[67]     0.0    0.00    0.00       6         void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&) [67]
+                0.00    0.00      37/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00      31/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.00       6/6           Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+[68]     0.0    0.00    0.00       6         void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&) [68]
+                0.00    0.00      37/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00      37/600640      Atome::Atome(Atome const&) [235]
+                0.00    0.00      31/606361      Molecule::~Molecule() [234]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[69]     0.0    0.00    0.00       1         do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00       1/1           get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [70]
+                0.00    0.00       2/899966      Internal_state::Internal_state(Internal_state const&) [43]
+                0.00    0.00       1/102792748     operator/(Vecteur3D const&, double) [29]
+                0.00    0.00       2/412890      operator*(double, Vecteur3D const&) [237]
+                0.00    0.00       2/916574      Internal_state::~Internal_state() [233]
+                0.00    0.00       1/21          Molecule::operator=(Internal_state const&) [280]
+-----------------------------------------------
+                0.00    0.00       1/1           do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+[70]     0.0    0.00    0.00       1         get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [70]
+                0.00    0.00       1/712253      FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [28]
+                0.00    0.00       1/67350529     Euler_angles(Vecteur3D) [16]
+                0.00    0.00       1/1           rotation_axis_lab(Vecteur3D const&, double, double, double) [291]
+-----------------------------------------------
+                0.00    0.00       1/35220910     RePaint() [3]
+                0.00    0.00       1/35220910     FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00       1/35220910     FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+                0.00    0.00       1/35220910     main [2]
+                0.00    0.00  394632/35220910     Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.00    0.00 1019466/35220910     void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [13]
+                0.00    0.00 1183896/35220910     __tcf_0 [1]
+                0.00    0.00 32622912/35220910     Eigen::internal::selfadjoint_rank2_update_selector<std::complex<double>, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>, 1>::run(std::complex<double>*, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> const&, std::complex<double> const&) [19]
+[232]    0.0    0.00    0.00 35220910         DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+                0.00    0.00       4/4           DataCards::DoReadFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [286]
+-----------------------------------------------
+                0.00    0.00       2/916574      do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00       2/916574      Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+                0.00    0.00      31/916574      void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&) [67]
+                0.00    0.00      32/916574      Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00     127/916574      void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&) [63]
+                0.00    0.00   11823/916574      rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.00    0.00   15841/916574      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00   16443/916574      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   22106/916574      calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [4]
+                0.00    0.00  243806/916574      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+                0.00    0.00  606361/916574      Molecule::~Molecule() [234]
+[233]    0.0    0.00    0.00  916574         Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.00       1/606361      Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00      31/606361      void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&) [68]
+                0.00    0.00    5481/606361      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00    5740/606361      void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [55]
+                0.00    0.00   11480/606361      new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00  243806/606361      rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.00    0.00  339822/606361      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[234]    0.0    0.00    0.00  606361         Molecule::~Molecule() [234]
+                0.00    0.00  606361/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.00      14/600640      Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00      37/600640      void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&) [68]
+                0.00    0.00    5481/600640      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   11480/600640      new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00  243806/600640      rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+                0.00    0.00  339822/600640      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[235]    0.0    0.00    0.00  600640         Atome::Atome(Atome const&) [235]
+-----------------------------------------------
+                0.00    0.00      40/423631      Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00    5481/423631      rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00   10962/423631      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   11480/423631      void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+                0.00    0.00   22960/423631      void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00   32886/423631      Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+                0.00    0.00  339822/423631      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[236]    0.0    0.00    0.00  423631         operator+(Vecteur3D const&, Vecteur3D const&) [236]
+-----------------------------------------------
+                0.00    0.00       2/412890      do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00   17220/412890      void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+                0.00    0.00   21924/412890      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   22960/412890      void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [59]
+                0.00    0.00  350784/412890      Laser::wave_vector() const [49]
+[237]    0.0    0.00    0.00  412890         operator*(double, Vecteur3D const&) [237]
+-----------------------------------------------
+                0.00    0.00  394632/394632      Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [5]
+[238]    0.0    0.00    0.00  394632         void Eigen::internal::evaluateProductBlockingSizesHeuristic<std::complex<double>, std::complex<double>, 1, long long>(long long&, long long&, long long&, long long) [238]
+                0.00    0.00       1/1           Eigen::internal::queryCacheSizes(int&, int&, int&) [296]
+-----------------------------------------------
+                0.00    0.00   10962/373744      rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+                0.00    0.00   22960/373744      new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+                0.00    0.00  339822/373744      Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+[239]    0.0    0.00    0.00  373744         operator-(Vecteur3D const&, Vecteur3D const&) [239]
+-----------------------------------------------
+                0.00    0.00  339822/339822      intensity_Convolution_linewidth(double, double, double, double, int, int, double, double, FitParams&) [242]
+[240]    0.0    0.00    0.00  339822         Pseudo_Voigt(double, double, double) [240]
+-----------------------------------------------
+                0.00    0.00  339822/339822      Laser::intensity_lab_axis(Vecteur3D const&) const [40]
+[241]    0.0    0.00    0.00  339822         rotation_lab_axis(Vecteur3D const&, double, double, double) [241]
+-----------------------------------------------
+                0.00    0.00  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[242]    0.0    0.00    0.00  339822         intensity_Convolution_linewidth(double, double, double, double, int, int, double, double, FitParams&) [242]
+                0.00    0.00  339822/339822      Pseudo_Voigt(double, double, double) [240]
+-----------------------------------------------
+                0.00    0.00  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[243]    0.0    0.00    0.00  339822         Laser::transmission_spectrum(double) const [243]
+-----------------------------------------------
+                0.00    0.00  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[244]    0.0    0.00    0.00  339822         Laser::intensity_t_nanosecond(double) const [244]
+-----------------------------------------------
+                0.00    0.00  339822/339822      rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [23]
+[245]    0.0    0.00    0.00  339822         operator*(Vecteur3D const&, Vecteur3D const&) [245]
+-----------------------------------------------
+                0.00    0.00     287/47591       RePaint() [3]
+                0.00    0.00   23078/47591       Laser::~Laser() [247]
+                0.00    0.00   24226/47591       Laser::~Laser() [251]
+[246]    0.0    0.00    0.00   47591         find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [246]
+                0.00    0.00     287/287         tirage_random_discrete(gsl_rng const*, std::vector<double, std::allocator<double> > const&, int, double&) [269]
+-----------------------------------------------
+                0.00    0.00   23078/23078       Laser::Laser(Laser const&) [252]
+[247]    0.0    0.00    0.00   23078         Laser::~Laser() [247]
+                0.00    0.00   23078/47591       find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [246]
+-----------------------------------------------
+                0.00    0.00   22960/22960       new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+[248]    0.0    0.00    0.00   22960         Field::get_grad_field_F2(Vecteur3D const&) const [248]
+-----------------------------------------------
+                0.00    0.00   10962/21924       rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00   10962/21924       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[249]    0.0    0.00    0.00   21924         Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage() [249]
+-----------------------------------------------
+                0.00    0.00       2/16737       Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+                0.00    0.00      32/16737       Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+                0.00    0.00    5741/16737       Molecule::Molecule() [258]
+                0.00    0.00   10962/16737       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[250]    0.0    0.00    0.00   16737         Internal_state::Internal_state() [250]
+-----------------------------------------------
+                0.00    0.00       1/12113       void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&) [290]
+                0.00    0.00    1150/12113       Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+                0.00    0.00   10962/12113       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[251]    0.0    0.00    0.00   12113         Laser::~Laser() [251]
+                0.00    0.00   24226/47591       find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [246]
+-----------------------------------------------
+                0.00    0.00       3/11539       void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&) [290]
+                0.00    0.00     574/11539       Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+                0.00    0.00   10962/11539       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[252]    0.0    0.00    0.00   11539         Laser::Laser(Laser const&) [252]
+                0.00    0.00   23078/23078       Laser::~Laser() [247]
+-----------------------------------------------
+                0.00    0.00   11480/11480       new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+[253]    0.0    0.00    0.00   11480         Internal_state::Grad_Energy_Shift_B(double, Vecteur3D) [253]
+-----------------------------------------------
+                0.00    0.00   11480/11480       new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [57]
+[254]    0.0    0.00    0.00   11480         Internal_state::Grad_Energy_Shift_E(double, Vecteur3D) [254]
+-----------------------------------------------
+                0.00    0.00    5481/10962       rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00    5481/10962       rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [6]
+[255]    0.0    0.00    0.00   10962         Eigen::DenseStorage<std::complex<double>, -1, -1, -1, 0>::~DenseStorage() [255]
+-----------------------------------------------
+                0.00    0.00    6848/6848        Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+[256]    0.0    0.00    0.00    6848         Internal_state::is_equal(Internal_state const&) const [256]
+-----------------------------------------------
+                0.00    0.00    5741/5741        Molecule::Molecule() [258]
+[257]    0.0    0.00    0.00    5741         Atome::Atome() [257]
+-----------------------------------------------
+                0.00    0.00       1/5741        Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00    5740/5741        void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [55]
+[258]    0.0    0.00    0.00    5741         Molecule::Molecule() [258]
+                0.00    0.00    5741/5741        Atome::Atome() [257]
+                0.00    0.00    5741/16737       Internal_state::Internal_state() [250]
+-----------------------------------------------
+                0.00    0.00    1492/1492        DataCards::DoReadFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [286]
+[259]    0.0    0.00    0.00    1492         DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [259]
+                0.00    0.00     560/560         void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [266]
+                0.00    0.00     500/500         DataCards::RemoveCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [267]
+-----------------------------------------------
+                0.00    0.00    1152/1152        Laser::Laser() [264]
+[260]    0.0    0.00    0.00    1152         std::pair<std::_Rb_tree_iterator<std::pair<double const, double> >, bool> std::_Rb_tree<double, std::pair<double const, double>, std::_Select1st<std::pair<double const, double> >, std::less<double>, std::allocator<std::pair<double const, double> > >::_M_emplace_unique<std::pair<double, double> >(std::pair<double, double>&&) [260]
+-----------------------------------------------
+                0.00    0.00    1152/1152        Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+[261]    0.0    0.00    0.00    1152         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [261]
+-----------------------------------------------
+                0.00    0.00       3/618         main [2]
+                0.00    0.00      39/618         RePaint() [3]
+                0.00    0.00     576/618         Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+[262]    0.0    0.00    0.00     618         Laser::read_Spectrum(char const*) [262]
+-----------------------------------------------
+                0.00    0.00     576/576         Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+[263]    0.0    0.00    0.00     576         Laser::read_Intensity(char const*) [263]
+-----------------------------------------------
+                0.00    0.00     576/576         Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+[264]    0.0    0.00    0.00     576         Laser::Laser() [264]
+                0.00    0.00    1152/1152        std::pair<std::_Rb_tree_iterator<std::pair<double const, double> >, bool> std::_Rb_tree<double, std::pair<double const, double>, std::_Select1st<std::pair<double const, double> >, std::less<double>, std::allocator<std::pair<double const, double> > >::_M_emplace_unique<std::pair<double, double> >(std::pair<double, double>&&) [260]
+-----------------------------------------------
+                0.00    0.00     574/574         void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [56]
+[265]    0.0    0.00    0.00     574         void add_acc_N_body_Coulomb<Molecule>(std::vector<Molecule, std::allocator<Molecule> > const&, Vecteur3D*, int) [265]
+-----------------------------------------------
+                0.00    0.00     560/560         DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [259]
+[266]    0.0    0.00    0.00     560         void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [266]
+-----------------------------------------------
+                0.00    0.00     500/500         DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [259]
+[267]    0.0    0.00    0.00     500         DataCards::RemoveCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [267]
+-----------------------------------------------
+                0.00    0.00     287/287         tirage_random_discrete(gsl_rng const*, std::vector<double, std::allocator<double> > const&, int, double&) [269]
+[268]    0.0    0.00    0.00     287         binarySearch(double*, int, int, double) [268]
+-----------------------------------------------
+                0.00    0.00     287/287         find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [246]
+[269]    0.0    0.00    0.00     287         tirage_random_discrete(gsl_rng const*, std::vector<double, std::allocator<double> > const&, int, double&) [269]
+                0.00    0.00     287/287         binarySearch(double*, int, int, double) [268]
+-----------------------------------------------
+                0.00    0.00     286/286         RePaint() [3]
+[270]    0.0    0.00    0.00     286         Modif_Param(double, FitParams&) [270]
+-----------------------------------------------
+                0.00    0.00     214/214         Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+[271]    0.0    0.00    0.00     214         Internal_state::add_transition(Internal_state*, double) [271]
+                0.00    0.00     121/121         void std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > >::_M_realloc_insert<std::pair<Internal_state*, double> const&>(__gnu_cxx::__normal_iterator<std::pair<Internal_state*, double>*, std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > > >, std::pair<Internal_state*, double> const&) [276]
+-----------------------------------------------
+                0.00    0.00       1/147         Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+                0.00    0.00       8/147         DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [282]
+                0.00    0.00      11/147         RePaint() [3]
+                0.00    0.00     127/147         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+[272]    0.0    0.00    0.00     147         DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [272]
+-----------------------------------------------
+                0.00    0.00       8/135         DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [282]
+                0.00    0.00     127/135         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+[273]    0.0    0.00    0.00     135         Bicubic_Interpolator::Bicubic_Interpolator(int, int, double, double, double, double) [273]
+-----------------------------------------------
+                0.00    0.00       1/127         RePaint() [3]
+                0.00    0.00       1/127         FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00     125/127         FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+[274]    0.0    0.00    0.00     127         DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [274]
+                0.00    0.00     127/147         DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [272]
+                0.00    0.00     127/135         Bicubic_Interpolator::Bicubic_Interpolator(int, int, double, double, double, double) [273]
+-----------------------------------------------
+                0.00    0.00     125/125         FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+[275]    0.0    0.00    0.00     125         DataCards::HasKey(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [275]
+-----------------------------------------------
+                0.00    0.00     121/121         Internal_state::add_transition(Internal_state*, double) [271]
+[276]    0.0    0.00    0.00     121         void std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > >::_M_realloc_insert<std::pair<Internal_state*, double> const&>(__gnu_cxx::__normal_iterator<std::pair<Internal_state*, double>*, std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > > >, std::pair<Internal_state*, double> const&) [276]
+-----------------------------------------------
+                0.00    0.00     107/107         Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+[277]    0.0    0.00    0.00     107         read_Line(std::istream&, Internal_state&, Internal_state&, double&) [277]
+-----------------------------------------------
+                0.00    0.00      32/32          Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [65]
+[278]    0.0    0.00    0.00      32         Internal_state::read_Level__B(std::istream&) [278]
+-----------------------------------------------
+                0.00    0.00      32/32          initialisation_Gamma(std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [292]
+[279]    0.0    0.00    0.00      32         Internal_state::Einstein_desex_rate() [279]
+-----------------------------------------------
+                0.00    0.00       1/21          do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [69]
+                0.00    0.00      20/21          initialisation_proba(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Internal_state, std::allocator<Internal_state> > const&) [293]
+[280]    0.0    0.00    0.00      21         Molecule::operator=(Internal_state const&) [280]
+-----------------------------------------------
+                0.00    0.00      20/20          Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [61]
+[281]    0.0    0.00    0.00      20         Vecteur3D::gaussian_initialisation(gsl_rng const*, Vecteur3D) [281]
+-----------------------------------------------
+                0.00    0.00       1/8           main [2]
+                0.00    0.00       7/8           RePaint() [3]
+[282]    0.0    0.00    0.00       8         DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [282]
+                0.00    0.00       8/147         DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [272]
+                0.00    0.00       8/135         Bicubic_Interpolator::Bicubic_Interpolator(int, int, double, double, double, double) [273]
+-----------------------------------------------
+                0.00    0.00       4/8           FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [64]
+                0.00    0.00       4/8           FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+[283]    0.0    0.00    0.00       8         void std::vector<Param*, std::allocator<Param*> >::_M_realloc_insert<Param*>(__gnu_cxx::__normal_iterator<Param**, std::vector<Param*, std::allocator<Param*> > >, Param*&&) [283]
+-----------------------------------------------
+                0.00    0.00       2/8           rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [15]
+                0.00    0.00       6/8           rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [51]
+[284]    0.0    0.00    0.00       8         void std::vector<double, std::allocator<double> >::_M_realloc_insert<double const&>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double const&) [284]
+-----------------------------------------------
+                0.00    0.00       5/5           FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+[285]    0.0    0.00    0.00       5         get_kin(Molecule const&) [285]
+-----------------------------------------------
+                0.00    0.00       4/4           DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [232]
+[286]    0.0    0.00    0.00       4         DataCards::DoReadFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [286]
+                0.00    0.00    1492/1492        DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [259]
+-----------------------------------------------
+                0.00    0.00       1/4           FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [62]
+                0.00    0.00       1/4           FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [60]
+                0.00    0.00       2/4           RePaint() [3]
+[287]    0.0    0.00    0.00       4         std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear() [287]
+-----------------------------------------------
+                0.00    0.00       2/2           RePaint() [3]
+[288]    0.0    0.00    0.00       2         Field::Field(Field const&) [288]
+-----------------------------------------------
+                0.00    0.00       2/2           RePaint() [3]
+[289]    0.0    0.00    0.00       2         Field::Field() [289]
+-----------------------------------------------
+                0.00    0.00       2/2           Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [52]
+[290]    0.0    0.00    0.00       2         void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&) [290]
+                0.00    0.00       3/11539       Laser::Laser(Laser const&) [252]
+                0.00    0.00       1/12113       Laser::~Laser() [251]
+-----------------------------------------------
+                0.00    0.00       1/1           get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [70]
+[291]    0.0    0.00    0.00       1         rotation_axis_lab(Vecteur3D const&, double, double, double) [291]
+-----------------------------------------------
+                0.00    0.00       1/1           initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [66]
+[292]    0.0    0.00    0.00       1         initialisation_Gamma(std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [292]
+                0.00    0.00      32/32          Internal_state::Einstein_desex_rate() [279]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[293]    0.0    0.00    0.00       1         initialisation_proba(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Internal_state, std::allocator<Internal_state> > const&) [293]
+                0.00    0.00      20/21          Molecule::operator=(Internal_state const&) [280]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[294]    0.0    0.00    0.00       1         save_random_generator(gsl_rng*, char const*) [294]
+-----------------------------------------------
+                0.00    0.00       1/1           initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [66]
+[295]    0.0    0.00    0.00       1         Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [295]
+                0.00    0.00    6848/6848        Internal_state::is_equal(Internal_state const&) const [256]
+                0.00    0.00     214/214         Internal_state::add_transition(Internal_state*, double) [271]
+                0.00    0.00     107/107         read_Line(std::istream&, Internal_state&, Internal_state&, double&) [277]
+                0.00    0.00       2/16737       Internal_state::Internal_state() [250]
+                0.00    0.00       2/916574      Internal_state::~Internal_state() [233]
+-----------------------------------------------
+                0.00    0.00       1/1           void Eigen::internal::evaluateProductBlockingSizesHeuristic<std::complex<double>, std::complex<double>, 1, long long>(long long&, long long&, long long&, long long) [238]
+[296]    0.0    0.00    0.00       1         Eigen::internal::queryCacheSizes(int&, int&, int&) [296]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[297]    0.0    0.00    0.00       1         DataCards::NbCards() [297]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[298]    0.0    0.00    0.00       1         DataCards::DataCards(DataCards const&) [298]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[299]    0.0    0.00    0.00       1         FitParams::Scan_Param() [299]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[300]    0.0    0.00    0.00       1         std::__cxx11::_List_base<DataCards::CrdPF, std::allocator<DataCards::CrdPF> >::_M_clear() [300]
+-----------------------------------------------
+                0.00    0.00       1/1           RePaint() [3]
+[301]    0.0    0.00    0.00       1         operator<<(std::ostream&, DataCards) [301]
+-----------------------------------------------
+
+Index par nom de fonction
+
+  [53] Init_Field(Field&, Field&, FitParams&, char const*, char const*) [273] Bicubic_Interpolator::Bicubic_Interpolator(int, int, double, double, double, double) [42] void Eigen::HouseholderSequence<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::CwiseUnaryOp<Eigen::internal::scalar_conjugate_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const>, 1>::evalTo<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) const
+  [52] Init_Laser(std::vector<Laser, std::allocator<Laser> >&, int, FitParams&, char const*, char const*) [235] Atome::Atome(Atome const&) [248] Field::get_grad_field_F2(Vecteur3D const&) const
+  [65] Level_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [257] Atome::Atome() [37] Field::get_Field(Vecteur3D const&) const
+ [270] Modif_Param(double, FitParams&) [33] Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholderInPlace(std::complex<double>&, double&) [49] Laser::wave_vector() const
+  [69] do_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, std::vector<type_codage_react, std::allocator<type_codage_react> > const&, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Laser, std::allocator<Laser> > const&, double, std::basic_ofstream<char, std::char_traits<char> >&, bool, int&, FitParams&) [18] void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> const, -1, 1, false> const&, std::complex<double> const&, std::complex<double>*) [40] Laser::intensity_lab_axis(Vecteur3D const&) const
+  [55] void evolve_step<Molecule>(N_Body_algorithmes, std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double, FitParams&) [255] Eigen::DenseStorage<std::complex<double>, -1, -1, -1, 0>::~DenseStorage() [243] Laser::transmission_spectrum(double) const
+  [16] Euler_angles(Vecteur3D) [249] Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage() [244] Laser::intensity_t_nanosecond(double) const
+ [240] Pseudo_Voigt(double, double, double) [48] Eigen::PlainObjectBase<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >::resize(long long, long long) [50] Laser::intensity_repere_sur_waist(Vecteur3D const&) const
+ [268] binarySearch(double*, int, int, double) [296] Eigen::internal::queryCacheSizes(int&, int&, int&) [67] void std::vector<Internal_state, std::allocator<Internal_state> >::_M_realloc_insert<Internal_state const&>(__gnu_cxx::__normal_iterator<Internal_state*, std::vector<Internal_state, std::allocator<Internal_state> > >, Internal_state const&)
+  [61] Init_Molecule(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, Field, Field, int, FitParams&, DataCards) [24] void Eigen::internal::selfadjoint_product_impl<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false>, 17, false, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const>, 0, true>::run<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> >(Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, -1, false> const&, Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<std::complex<double>, std::complex<double> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<std::complex<double> >, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> const> const, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const> const&, std::complex<double> const&) [63] void std::vector<type_codage_react, std::allocator<type_codage_react> >::_M_realloc_insert<type_codage_react const&>(__gnu_cxx::__normal_iterator<type_codage_react*, std::vector<type_codage_react, std::allocator<type_codage_react> > >, type_codage_react const&)
+ [246] find_reaction(MC_algorithmes, gsl_rng const*, std::vector<double, std::allocator<double> > const&, double&) [13] void Eigen::internal::tridiagonalization_inplace<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>&) [290] void std::vector<Laser, std::allocator<Laser> >::_M_realloc_insert<Laser const&>(__gnu_cxx::__normal_iterator<Laser*, std::vector<Laser, std::allocator<Laser> > >, Laser const&)
+   [6] rates_molecule(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, double&, FitParams&, bool) [11] Eigen::ComputationInfo Eigen::internal::computeFromTridiagonal_impl<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, long long, bool, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&) [68] void std::vector<Molecule, std::allocator<Molecule> >::_M_realloc_insert<Molecule const&>(__gnu_cxx::__normal_iterator<Molecule*, std::vector<Molecule, std::allocator<Molecule> > >, Molecule const&)
+   [5] Diagonalization(std::vector<Internal_state, std::allocator<Internal_state> >&, Molecule const&, Field const&, Field const&, FitParams&, Eigen::SelfAdjointEigenSolver<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [21] Eigen::internal::general_matrix_vector_product<long long, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1>, 1, false, std::complex<double>, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0>, true, 0>::run(long long, long long, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 1> const&, Eigen::internal::const_blas_data_mapper<std::complex<double>, long long, 0> const&, std::complex<double>*, long long, std::complex<double>) [266] void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  [51] rate_excitation(std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Laser const&, std::vector<Molecule, std::allocator<Molecule> > const&, int, int, Vecteur3D, double, double, double, double, double, Field const&, Field const&, int, Internal_state, bool) [25] Eigen::internal::selfadjoint_matrix_vector_product<std::complex<double>, long long, 0, 1, false, false, 0>::run(long long, std::complex<double> const*, long long, std::complex<double> const*, std::complex<double>*, std::complex<double>) [283] void std::vector<Param*, std::allocator<Param*> >::_M_realloc_insert<Param*>(__gnu_cxx::__normal_iterator<Param**, std::vector<Param*, std::allocator<Param*> > >, Param*&&)
+ [291] rotation_axis_lab(Vecteur3D const&, double, double, double) [19] Eigen::internal::selfadjoint_rank2_update_selector<std::complex<double>, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false>, 1>::run(std::complex<double>*, long long, Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> const&, Eigen::Block<Eigen::Matrix<std::complex<double>, -1, 1, 0, -1, 1>, -1, 1, false> const&, std::complex<double> const&) [276] void std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > >::_M_realloc_insert<std::pair<Internal_state*, double> const&>(__gnu_cxx::__normal_iterator<std::pair<Internal_state*, double>*, std::vector<std::pair<Internal_state*, double>, std::allocator<std::pair<Internal_state*, double> > > >, std::pair<Internal_state*, double> const&)
+ [241] rotation_lab_axis(Vecteur3D const&, double, double, double) [14] void Eigen::internal::tridiagonalization_inplace_selector<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, true>::run<Eigen::Matrix<double, -1, 1, 0, -1, 1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, bool) [284] void std::vector<double, std::allocator<double> >::_M_realloc_insert<double const&>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double const&)
+  [27] atan2_approximation(float, float) [238] void Eigen::internal::evaluateProductBlockingSizesHeuristic<std::complex<double>, std::complex<double>, 1, long long>(long long&, long long&, long long&, long long) [287] std::__cxx11::_List_base<DataCards::Card, std::allocator<DataCards::Card> >::_M_clear()
+  [15] rates_molecule_spon(std::vector<Internal_state, std::allocator<Internal_state> >&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, Molecule const&, Field const&, Field const&, int, FitParams&) [288] Field::Field(Field const&) [300] std::__cxx11::_List_base<DataCards::CrdPF, std::allocator<DataCards::CrdPF> >::_M_clear()
+ [292] initialisation_Gamma(std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [289] Field::Field() [260] std::pair<std::_Rb_tree_iterator<std::pair<double const, double> >, bool> std::_Rb_tree<double, std::pair<double const, double>, std::_Select1st<std::pair<double const, double> >, std::less<double>, std::allocator<std::pair<double const, double> > >::_M_emplace_unique<std::pair<double, double> >(std::pair<double, double>&&)
+ [293] initialisation_proba(gsl_rng const*, std::vector<Molecule, std::allocator<Molecule> >&, int, std::vector<Internal_state, std::allocator<Internal_state> > const&) [262] Laser::read_Spectrum(char const*) [261] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  [35] effectif_dipole_local(std::complex<double> const*, Vecteur3D const&, Laser const&) [263] Laser::read_Intensity(char const*) [29] operator/(Vecteur3D const&, double)
+ [294] save_random_generator(gsl_rng*, char const*) [252] Laser::Laser(Laser const&) [301] operator<<(std::ostream&, DataCards)
+ [265] void add_acc_N_body_Coulomb<Molecule>(std::vector<Molecule, std::allocator<Molecule> > const&, Vecteur3D*, int) [264] Laser::Laser() [239] operator-(Vecteur3D const&, Vecteur3D const&)
+   [4] calcul_rates_molecules(std::vector<Internal_state, std::allocator<Internal_state> >&, MC_algorithmes, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double, int, int, FitParams&) [247] Laser::~Laser() [245] operator*(Vecteur3D const&, Vecteur3D const&)
+ [269] tirage_random_discrete(gsl_rng const*, std::vector<double, std::allocator<double> > const&, int, double&) [251] Laser::~Laser() [30] operator*(Vecteur3D const&, double)
+  [66] initialisation_trans_mol(char const*, char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [258] Molecule::Molecule() [237] operator*(double, Vecteur3D const&)
+  [59] void add_acc_Charged_particles<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Vecteur3D*, Field const&, Field const&, int) [234] Molecule::~Molecule() [236] operator+(Vecteur3D const&, Vecteur3D const&)
+   [8] dipole_dot_Electric_Ffield(Vecteur3D const&, Vecteur3D const&, Vecteur3D const&, std::complex<double>&) [280] Molecule::operator=(Internal_state const&) [38] ___chkstk_ms
+  [56] void evolve_step_Verlet_via_acc<Molecule>(std::vector<Molecule, std::allocator<Molecule> >&, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, int, double&, double) [259] DataCards::AppendCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [9] __cosl_internal
+ [242] intensity_Convolution_linewidth(double, double, double, double, int, int, double, double, FitParams&) [286] DataCards::DoReadFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [17] __fentry__
+  [23] rates_single_molecule_laser_level(int, double, double&, double&, double&, double*, std::vector<Internal_state, std::allocator<Internal_state> >&, Internal_state&, Internal_state&, std::vector<type_codage_react, std::allocator<type_codage_react> >&, std::vector<double, std::allocator<double> >&, std::vector<Molecule, std::allocator<Molecule> > const&, int, Field const&, Field const&, Laser const&, double, double&, FitParams&, bool, int, int, int, double, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*) [267] DataCards::RemoveCard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [10] __sinl_internal
+  [31] Gamma_Level_from_diagonalized_dipole(std::vector<Internal_state, std::allocator<Internal_state> >&, Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>*, int) [274] DataCards::DParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, double) [39] __tcf_0
+  [70] get_unit_vector_spontaneous_emission(gsl_rng const*, std::complex<double>*, Vecteur3D, int, FitParams&) [275] DataCards::HasKey(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [1] __tcf_0
+   [3] RePaint()             [282] DataCards::IParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, long) [12] _mcount_private
+ [285] get_kin(Molecule const&) [272] DataCards::SParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) [44] cexp
+  [57] new_acc(std::vector<Molecule, std::allocator<Molecule> >&, int, Field const&, Field const&, std::vector<Laser, std::allocator<Laser> > const&, double) [297] DataCards::NbCards() [22] cos
+ [295] Line_List(char const*, std::vector<Internal_state, std::allocator<Internal_state> >&, FitParams&) [298] DataCards::DataCards(DataCards const&) [26] csqrt
+ [277] read_Line(std::istream&, Internal_state&, Internal_state&, double&) [232] DataCards::DataCards(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [41] exp2l
+ [278] Internal_state::read_Level__B(std::istream&) [299] FitParams::Scan_Param() [45] internal_modf (pow.def.h)
+ [271] Internal_state::add_transition(Internal_state*, double) [60] FitParams::init_value(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [46] memcpy
+ [279] Internal_state::Einstein_desex_rate() [28] FitParams::LocateParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [47] memset
+ [253] Internal_state::Grad_Energy_Shift_B(double, Vecteur3D) [64] FitParams::LocateOrAddParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [36] pow
+ [254] Internal_state::Grad_Energy_Shift_E(double, Vecteur3D) [54] FitParams::LocateOrAddNonConstParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [20] sin
+  [43] Internal_state::Internal_state(Internal_state const&) [62] FitParams::read(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [32] sincos
+ [250] Internal_state::Internal_state() [281] Vecteur3D::gaussian_initialisation(gsl_rng const*, Vecteur3D) [7] <cycle 1>
+ [233] Internal_state::~Internal_state() [256] Internal_state::is_equal(Internal_state const&) const
+  [58] Internal_state::operator=(Internal_state const&) [34] void Eigen::MatrixBase<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false> >::makeHouseholder<Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1> >(Eigen::VectorBlock<Eigen::Block<Eigen::Block<Eigen::Matrix<std::complex<double>, -1, -1, 0, -1, -1>, -1, 1, true>, -1, 1, false>, -1>&, std::complex<double>&, double&) const

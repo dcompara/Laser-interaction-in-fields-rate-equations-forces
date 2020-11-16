@@ -161,14 +161,23 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
 //                }
 //            }
+<<<<<<< HEAD
         // file_out << endl;
         // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
+=======
+            // file_out << endl;
+            // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 // Level[j].write_Level_B(file_out);
 
 
 //             file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
+<<<<<<< HEAD
 //       }
+=======
+ //       }
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     }
 
 
@@ -377,6 +386,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     file_rate<< setprecision(12);
 //   file_rate << " time t = " << t << endl;
 
+<<<<<<< HEAD
     const int nb_levels=32; // Level.size()
 
     double** rate_level_i_vers_level_j = new double*[nb_levels] ;
@@ -397,6 +407,18 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         Ecm_i[i]=0. ;
     }
 
+=======
+    const int nb_levels=Level.size(); // Level.size()
+
+ //         1S00     3S1-1    3S11    3S10
+ // LEvel   3           4       5       6
+    double rate_level_i_vers_level_3[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_vers_level_4[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_vers_level_5[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+     double rate_level_i_vers_level_6[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double rate_level_i_total[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    double Ecm_i[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
     int nb_rate = rate.size();
     double B, E, current_rate ;
@@ -426,12 +448,43 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 
         Internal_state_in = Mol[n_mol] ; //  état interne de la molecule
         Internal_state_out = reaction_list[i].final_internal_state ; //  état interne de la molecule après la réaction
+<<<<<<< HEAD
+=======
+
+//        file_rate  << B;
+//
+//        file_rate  << " " << i;
+//        file_rate  << " " << rate[i];
+//
+//
+//        file_rate <<  "  " << Internal_state_in.deg_number;
+//        file_rate << "  " << Internal_state_in.Energy_cm ;
+//
+//        file_rate <<  "  " << Internal_state_out.deg_number;
+//        file_rate << "  " << Internal_state_out.Energy_cm ;
+
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
         int i_in = Internal_state_in.deg_number;
         int i_out = Internal_state_out.deg_number;
         Ecm_i[i_in] =  Internal_state_in.Energy_cm;
+<<<<<<< HEAD
         rate_level_i_vers_level_j[i_in][i_out] +=  current_rate;
         rate_level_i_total[i_in] += current_rate;
+=======
+
+        if (i_out == 3)   rate_level_i_vers_level_3[i_in] +=  current_rate;
+        if (i_out == 4)   rate_level_i_vers_level_4[i_in] +=  current_rate;
+        if (i_out == 5)   rate_level_i_vers_level_5[i_in] +=  current_rate;
+        if (i_out == 6)   rate_level_i_vers_level_6[i_in] +=  current_rate;
+        rate_level_i_total[i_in] += current_rate;
+
+
+//        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
+//        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
+
+ //     file_rate << endl ;
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     }
 
 
@@ -443,10 +496,17 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         file_rate <<  " " << i ;
         file_rate <<  " " << Ecm_i[i] ;
         file_rate <<  " " << Level[i].Energy_cm  ;
+<<<<<<< HEAD
         for( int j = 5; j <= 8; j++ ) // Decay towards n=1 levels
         {
             file_rate <<  " " << rate_level_i_vers_level_j[i][j]  ;
         }
+=======
+         file_rate <<  " " << rate_level_i_vers_level_3[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_4[i] ;
+        file_rate <<  " " << rate_level_i_vers_level_5[i] ;
+         file_rate <<  " " << rate_level_i_vers_level_6[i] ;
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
         file_rate <<  " " << rate_level_i_total[i] ;
         file_rate << endl ;
     }
@@ -478,6 +538,23 @@ void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, Fi
 
     return;
 }
+
+// Sortie de la variation temporelle de l'intensité  laser
+void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser)
+{
+    Laser my_laser = laser[num_laser];
+    file_out<< setprecision(8);
+
+    for (double t_ps = -100e3; t_ps < 100e3; t_ps++)
+    {
+        double I_shape = my_laser.intensity_t_nanosecond(t_ps/1000.); // Intensité laser façonnée
+        file_out << t_ps/1000. << " " << I_shape << endl;
+        // cout << t_ns << " " << I_shape << endl;
+    }
+
+    return;
+}
+
 
 
 

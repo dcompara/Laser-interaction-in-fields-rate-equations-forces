@@ -287,17 +287,55 @@ void RePaint ()
         Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers
         // Sortie_laser_spectrum(file_out, lasers, params,0); // Debug
         // Sortie_laser_intensity(file_out, lasers, params,0);
+<<<<<<< HEAD
+=======
+
+        /**
+        on calcul un temps dt_KMC pour l'évolution de l'état interne.
+        Si dt_KMC < temps dt_evol_ext_typ caractéristique de l'évolution des taux (par exemple le temps de transit dans le laser qui modifie les taux d'excitation) on effectue la transition et on bouge les particules
+        Dans le cas contraire on fait évoluer les particules durant dt_dyn qui est d'une fraction de dt_evol_ext_typ et on recommence.
+        **/
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
         int number_mol = aucune;  // numéro de la molécule affectée par une modification (aucune au début d'où la valeur -1)
         int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
 
 
+<<<<<<< HEAD
         /*****************************************************************/
         /** boucle globale en temps   ************************************/
         /*****************************************************************/
 cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
 
 
+=======
+        /*** Hamiltonian + dipole matrix element ***/
+
+// TODO (Daniel#6#): Use dynamcial size (check fr speed) to avoir this value
+        const int nb_levels=32; //   Level.size();
+        // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
+
+        MatrixXcd E0_cm(nb_levels,nb_levels);
+        MatrixXcd Zeeman_cm_B(nb_levels,nb_levels);
+
+        MatrixXd d0[3];
+        d0[0] = MatrixXd(nb_levels,nb_levels);
+        d0[1] = MatrixXd(nb_levels,nb_levels);
+        d0[2] = MatrixXd(nb_levels,nb_levels);
+
+        MatrixXcd d[3];
+        d[0] = MatrixXcd(nb_levels,nb_levels);
+        d[1] = MatrixXcd(nb_levels,nb_levels);
+        d[2] = MatrixXcd(nb_levels,nb_levels);
+
+        MatrixXcd H(nb_levels,nb_levels);     // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
+        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
+
+        Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize the Energy, Zeeman and dipoles matrices
+
+
+
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
         while(true) // Infinite loop untill t_end is reached
         {
             // cout << "t = " << t << "   " ;
@@ -305,13 +343,21 @@ cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
             Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
             dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
 
+<<<<<<< HEAD
             calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params,  H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
+=======
+            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params, es, H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
             if (t >= t_dia)
             {
                 /*** Here, or just before if you want to have output all the time, put you output files ***/
                 // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
 
+<<<<<<< HEAD
                 Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
+=======
+                // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
                 // Sortie_rate_example(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
                 // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
                 t_dia += dt_dia;

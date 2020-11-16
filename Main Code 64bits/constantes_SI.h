@@ -36,8 +36,13 @@ using namespace std;
 const double  VERY_LARGE_NUMBER = 1.e90;
 const double VERY_SMALL_NUMBER = 1./VERY_LARGE_NUMBER;
 const double SMALL_NUMBER = 1.e-10; // Utile pour les différences finies (pour éviter les erreurs d'arrondis)
+<<<<<<< HEAD
 const double LARGE_NUMBER = 1./SMALL_NUMBER;
 const double SMALL_NUMBER_RATE = 10000. ; // Rate smaller than this (1 second) will not be considered
+=======
+const double  LARGE_NUMBER = 1./SMALL_NUMBER;
+const double SMALL_NUMBER_RATE = 1.; // Rate smaller than this (1 second) will not be considered
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 const double SMALL_DIPOLE_DEBYE = 1.e-8; // Rate smaller than this (~1 second) will not be considered
 
 

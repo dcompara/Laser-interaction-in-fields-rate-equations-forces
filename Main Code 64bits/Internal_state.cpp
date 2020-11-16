@@ -6,7 +6,11 @@
 
 Internal_state::Internal_state()                    // Constructeur par défaut
 {
+<<<<<<< HEAD
     exc = 0;         // manifold
+=======
+    exc = 0;        // 0 est l'état fondamental
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     v =0;
     two_M = 0;
     two_J =0;

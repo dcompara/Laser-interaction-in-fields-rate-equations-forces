@@ -57,7 +57,11 @@ using namespace std;
 class Internal_state
 {
 public:
+<<<<<<< HEAD
     int exc;                 // manifold
+=======
+    int exc;                 // état excité ou non (0 est l'état fondamental)
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     int bound_level;                  // Parity
     int two_J;  // 2J
     int two_M;  // 2M

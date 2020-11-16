@@ -17,17 +17,10 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // so Mol[0] to Mol[Nom_Mol[0]-1]
 @Nom_Mol[0]	Ps
 // It is the number of molecules that are laser cooled.
-<<<<<<< HEAD
-@N_Mol[0]  32
+@N_Mol[0]  10
 @Temp_ini_x[0] 1e-10
 @Temp_ini_y[0] 1e-10
 @Temp_ini_z[0] 1e-10
-=======
-@N_Mol[0]  20
-@Temp_ini_x[0] 680
-@Temp_ini_y[0] 680
-@Temp_ini_z[0] 680
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 
 // Choice in position: fixed size (sigma_pos) or from density
@@ -41,13 +34,13 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // 5 effusive beam. Meaning as in 0 but we keep only the positive velocities
 
 #
-@Procedure_init_x[0]   5
+@Procedure_init_x[0]   0
 @Procedure_init_y[0]   0
 @Procedure_init_z[0]   0
 // Taille (x,y,z) si on choisit taille fixe
-@size_x[0]  0.1e-3
-@size_y[0]	2e-3
-@size_z[0]  2e-3
+@size_x[0]  0.1e-6
+@size_y[0]	0.1e-6
+@size_z[0]  0.1e-6
 // Initial position added to the random one
 @offset_x[0]	0
 @offset_y[0]	0
@@ -60,23 +53,23 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #2nd type of particle
 #
 // so Mol[Nom_Mol[0]] to Mol[Nom_Mol[0]+Nom_Mol[1]-1]
-//@Nom_Mol[1]	P_bar
-//@N_Mol[1]  10
-//@Temp_ini_x[1] 4
-//@Temp_ini_y[1] 4
-//@Temp_ini_z[1] 4
-//@Procedure_init_x[1]   0
-//@Procedure_init_y[1]   0
-//@Procedure_init_z[1]   0
-//@size_x[1]	1e-4
-//@size_y[1]	1e-4
-//@size_z[1]	6e-4
-//@offset_x[1]	0.
-//@offset_y[1]	0.
-//@offset_z[1]	0.
-//@v0_x[1]	0.
-//@v0_y[1]	0.
-//@v0_z[1]	0.
+@Nom_Mol[1]	P_bar
+@N_Mol[1]  10
+@Temp_ini_x[1] 4
+@Temp_ini_y[1] 4
+@Temp_ini_z[1] 4
+@Procedure_init_x[1]   0
+@Procedure_init_y[1]   0
+@Procedure_init_z[1]   0
+@size_x[1]	1e-4
+@size_y[1]	1e-4
+@size_z[1]	6e-4
+@offset_x[1]	0.
+@offset_y[1]	0.
+@offset_z[1]	0.
+@v0_x[1]	0.
+@v0_y[1]	0.
+@v0_z[1]	0.
 #
 ##########   Temps KMC, paramètres de sortie ####################
 #
@@ -87,19 +80,15 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // A good test is to remove lasers and check Energy conservation
 
 //for t< t_scaling_max
-@dt_dyn_epsilon_param  7e-11
+@dt_dyn_epsilon_param  1e-10
 //for t> t_scaling_max
 // fin du temps.
 //@t_fin  10e-9
-<<<<<<< HEAD
-@t_fin  5e-19
-=======
-@t_fin  2e-9
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
+@t_fin  1e-7
 // time interval between diagnostics (in cout) output
-@dt_dia 1e-9
+@dt_dia 5e-9
 // time interval between output of snapshots (draw particles)
-@dt_out 1e-9
+@dt_out 2e-9
 #
 ###################### GRAPHICS and OUTPUT ###############################
 #
@@ -107,7 +96,7 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Temps d'attende entre 2 affichages. Permet de ne pas avoir un affichage trop rapide
 @t_wait_affichage   1e-1
 // 0 = false ; 1 =  true
-@Graphics 0
+@Graphics 1
 // rotate 90 degree along the vector (rot_axe_x, rot_axe_y, rot_axe_z)
 // if no rotation we would have x (red arrow) toward the right, y (green arrow) up and z (blue arrow) toward the screen.
 // DEFAULT IS (1,0,0) = x right, y  in screen, z up (gravity down)
@@ -138,7 +127,6 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 #
 // Are the energy levels diagonalized or simple calculed using the simple analytical formula used in the code (linear, quadratic or two level case)
 //  0 = false (we use the standard simple formulas) ; 1 =  true (we diagonalized)
-// 2 (or any other values) = true (BUT FIRST ORDER). This mean that we use block diagonalization by manifold for Eigenvectors and eigenvalues
 @is_Levels_Lines_Diagonalized   1
 #
 ######### 	CHAMPS EXTERNES SI units (T, T/m, T/m^2 ...)	################################
@@ -190,13 +178,8 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 // Champ magn selon x,y et z. se décompose par composante: Example selon Ox: B_x + grad_B_x x + grad_grad_B_x x^2 + Bn x^n
 // NEVER put 0 but something small like 1e-10 to keep a quantization axis
 @B_x	0.
-<<<<<<< HEAD
 @B_y	0.
 @B_z	1e-10
-=======
-@B_y	0.0180
-@B_z	0.
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 @grad_B_x	0.
 @grad_B_y	0.
 @grad_B_z   0.
@@ -231,14 +214,13 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @scale_Power 1
 
 // Paramètre additif de la fréquence de tous les lasers
-@Offset_Detuning_cm  -5
+@Offset_Detuning_cm  0
 
 // Parametre multiplivatif de la largeur spectrale laser
 @scale_Gamma 1
 
 // Nb de laser utilisés (pas forcément le nombre ci-après qui peut être plus grand mais ne seront pas utilisés)
-@Nb_laser 2
-
+@Nb_laser 1
 
 
 # Premier laser. Laser n°1 (called number 0 in the C++ program)
@@ -251,15 +233,9 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 
 // waist in SI units
 @waist[0]	5e-3
-<<<<<<< HEAD
 @Energie_cm[0] 41148
 @Gamma_L_MHz[0] 1e5
 @Power[0]	1e5
-=======
-@Energie_cm[0] 41148.23871
-@Gamma_L_MHz[0] 20e3
-@Power[0]	20000.
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 // Vector laser polarization (in the laser propagation frame) See User Guide
 // Polarization can be purely circular (sigma+ or sigma -). Example: sigma + --> Pol_circulaire_left_sp = 1 and @Pol_circulaire_right_sm =-1
@@ -292,17 +268,17 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @waist_pos_y[1]	0.
 @waist_pos_z[1]	0
 @direction_x[1]	0.
-@direction_y[1]	-1.
-@direction_z[1]	0.
+@direction_y[1]	0.
+@direction_z[1]	-1.
 
-@waist[1]	5e-3
-@Energie_cm[1] 41148.23871
+@waist[1]	10e-3
+@Energie_cm[1] 41148.3848
 
-@Gamma_L_MHz[1]	20e3
-@Power[1]	20000.
-@Pol_circulaire_left_sp[1]    0.
-@Pol_circulaire_right_sm[1]   1.
-@polar_angle_degree[1]  0.
+@Gamma_L_MHz[1]	1e5
+@Power[1]	1
+@Pol_circulaire_left_sp[1]    0.7071067812
+@Pol_circulaire_right_sm[1]   -0.7071067812
+@polar_angle_degree[1]  45
 
 @type_laser[1]  5
 
@@ -387,14 +363,10 @@ double Name_Parameter = params.LocateParam("Name_Parameter")->val
 @is_Scan_Random    false
 # name  minv    maxv    nbstep  is_scanned  is_time tau
 BEGIN_OF_FITPARAMS
-@SCAN_scale_Power  4 10 6   false    false
-@SCAN_Offset_Detuning_cm -10 10 20 false false
-@SCAN_scale_Gamma 2.355 23.55 9   false    false
+@SCAN_scale_Power  5 40 4   false    false
+@SCAN_Offset_Detuning_cm -2.5 -1 5 false false
+@SCAN_scale_Gamma 0.3 0.6 3   false    false
 @SCAN_Tau_Modif 0.5e-3 2e-3 2 false false
-<<<<<<< HEAD
-@SCAN_B_z   0   5  1000  true false
-=======
 @SCAN_B_z   0   5  1000  false false
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 END_OF_FITPARAMS
 

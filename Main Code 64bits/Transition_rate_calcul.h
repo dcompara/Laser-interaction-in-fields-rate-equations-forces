@@ -126,7 +126,11 @@ int rates_single_molecule_laser_level(const int n_las, double dipole, double &de
 int rates_molecule(vector <Internal_state> &Level, vector <type_codage_react> &reaction_list, vector <double> &rate,
                    const vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t,
                    double &delta_pot_dipolaire, FitParams &params,
+<<<<<<< HEAD
                    MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[],
+=======
+                  SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[],
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
                     bool is_rate_calculed = true);
 
 
@@ -148,7 +152,11 @@ int copie_rates_molecules(vector <type_codage_react> &reaction_list, vector <dou
 // Sinon on ne recalcule que celui de la molécule numero_mol
 int calcul_rates_molecules(vector <Internal_state> &Level, MC_algorithmes Algorithme_MC, vector <type_codage_react> &reaction_list, vector <double> &rate, const vector <Molecule> &Mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
                            const double t, const int numero_mol, const int N_Mol, FitParams &params,
+<<<<<<< HEAD
                             MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
+=======
+                            SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
+>>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 
 
