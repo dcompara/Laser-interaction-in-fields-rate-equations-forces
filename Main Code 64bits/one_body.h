@@ -1,34 +1,54 @@
+
 /*
 Name:
-Copyright:
-Author:
+Author: Daniel Comparat
 Date: 12/10/06 21:38
 Description: Algorithm for the N or 1 body dynamics
 
+Reference:
+N-body simulations of gravitational dynamics
+(http://arxiv.org/pdf/1105.1082.pdf)
 
-see: N-body simulations of gravitational dynamics (http://arxiv.org/pdf/1105.1082.pdf)
+Description:
+Calculations for positions, velocities, and accelerations of n particles with mass.
+Particles are represented as Vecteur3D objects (see Vecteur3D.h).
 
-For the N-body I use nbody_sh1WD.C:  an N-body integrator with a shared but variable time step
-by Walter Dehnen
+Key Features:
+- Uses algorithms like Verlet, Yoshida, and Boris-Buneman for integration.
+- Supports various external forces including Coulomb, Lorentz, and laser fields.
+- Includes methods for potential and kinetic energy calculations.
 
-Elle est effectue les calcul sur les positions, vitesses, accélération de n particules ayant une masse
-qui sont des Vecteur3D (c.f. classe Vecteur3D.h)
+Important Notes:
+- Acceleration calculations depend on magnetic, electric, and laser potentials.
+- Potentials must be updated separately after motion calculations.
+- Particles too far (LARGE_NUMBER) are not evolved further.
 
-     bod.get_vel  pour avoir la  vitesse, il faut aussi la pos, acc, jerk
-     bod.inc_vel(d_vel) et pos pour augmenter la vitesse (et la position)
-     bod.set_vel(d_vel) et pos, acc, jerk pour mettre la vitesse (et la position, acc, jerk)
 
-On utilise une fonction new_acc_pot(bod) qui calcule l'accélération via new_pot(bod) qui recalcule (et non lit ça c'est get_pot!) le potentiel
-Mais si l'accélération est mise à jour ailleurs ou peut être calculé directement on utilise plutôt new_acc(bod).
 
-Pour l'instant si on veut la force dipolaire on utilise les potentiels (Verlet_pot) et sinon l'accélération ((Verlet_acc)
 
-Comme l'accélération dépent des forces, elle dépends des potentiels magnétique, électrique et laser qui peuvent démendre du temps
+For the N-body simulation, I use `nbody_sh1WD.C`, an N-body integrator with a shared but variable time step by Walter Dehnen.
 
-ATTENTION: Elle ne met pas à jour les potentiels une fois le mouvement fait. Il faut le faire à part.
+This implementation calculates positions, velocities, and accelerations for `n` particles with a mass, represented as `Vecteur3D` objects (see the `Vecteur3D.h` class).
 
-Si la particule est trop loin (LARGE_NUMBER) on ne la fait pas évoluer
+- Use `bod.get_vel` to retrieve the velocity; similarly, you also need `pos`, `acc`, and `jerk`.
+- Use `bod.inc_vel(d_vel)` and `bod.inc_pos(d_pos)` to increment velocity and position.
+- Use `bod.set_vel(d_vel)` to set velocity, and `bod.set_pos`, `bod.set_acc`, `bod.set_jerk` for position, acceleration, and jerk updates.
+
+The `new_acc_pot(bod)` function calculates acceleration by using `new_pot(bod)`, which recalculates (not reads — that is done by `get_pot`) the potential.
+If acceleration is updated elsewhere or can be calculated directly, the `new_acc(bod)` function is preferred.
+
+Currently:
+- To compute the dipolar force, potentials are used (`Verlet_pot`).
+- Otherwise, accelerations are used (`Verlet_acc`).
+
+Since acceleration depends on forces, it also depends on magnetic, electric, and laser potentials, which can vary over time.
+
+**Important:** This implementation does not automatically update the potentials after the motion is computed. Updating potentials must be done separately.
+
+
 */
+
+
 
 #ifndef one_body_SEEN
 #define one_body_SEEN
@@ -60,81 +80,113 @@ enum N_Body_algorithmes  // Hermite = 0, // NOT USED
 };
 
 
-
-template <class Body> void evolve_step(const N_Body_algorithmes Algorithme_N_body,
-                                       vector <Body> &bod,  const Field &fieldB, const Field &fieldE, const  vector <Laser> &my_laser,
-                                       const int n, double & t,const double dt, FitParams &params);
-
-// Juste l'accélération
-template <class Body>  void  evolve_step_Aucun_N_corps(vector <Body> &bod, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-        const int n, double & t,const double dt);
-
-
-template <class Body> void evolve_step_Verlet_via_acc(vector <Body> &bod,  const Field &fieldB, const Field &fieldE, const  vector <Laser> &my_laser,
-        const int n, double & t,const double dt);
-
-// Accélération calculée avec new_acc_pot qui utilise les potentiel des champs.
-// C'est plus lent car l'accélération est évaluée par pot(x+dx)-pot(x-dx)/2dx ...
-template <class Body>  void  evolve_step_Verlet_via_pot(vector <Body> &bod, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-        const int n, double & t,const double dt, FitParams &params);
-
-
-// Yoshida 6 using LeapForg with acceleration
+// Evolves the system one step using the specified N-body algorithm.
 template <class Body>
-void  evolve_step_Yoshida6_acc(vector <Body> &bod,  const Field &fieldB, const Field &fieldE, const  vector <Laser> &my_laser,
-                               const int n, double & t,const double dt);
+void evolve_step(const N_Body_algorithmes Algorithme_N_body,
+                 vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                 const vector<Laser>& my_laser, const int n,
+                 double& t, const double dt, FitParams& params);
 
-// Yoshida 6 using LeapForg with potentials
+// Basic acceleration-only evolution step (no N-body interactions).
 template <class Body>
-void  evolve_step_Yoshida6_pot(vector <Body> &bod, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-                               const int n, double & t,const double dt, FitParams &params);
+void evolve_step_Aucun_N_corps(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                               const vector<Laser>& laser, const int n,
+                               double& t, const double dt);
+
+// Verlet integration using direct acceleration calculations.
+template <class Body>
+void evolve_step_Verlet_via_acc(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                                const vector<Laser>& my_laser, const int n,
+                                double& t, const double dt);
+
+// Verlet integration using potentials for acceleration calculations.
+// Slower because acceleration is derived using finite differences:
+// acc = [pot(x + dx) - pot(x - dx)] / (2 * dx)
+template <class Body>
+void evolve_step_Verlet_via_pot(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                                const vector<Laser>& laser, const int n,
+                                double& t, const double dt, FitParams& params);
+
+// Yoshida 6th-order integration using Leapfrog with acceleration.
+template <class Body>
+void evolve_step_Yoshida6_acc(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                              const vector<Laser>& my_laser, const int n,
+                              double& t, const double dt);
+
+// Yoshida 6th-order integration using Leapfrog with potentials.
+template <class Body>
+void evolve_step_Yoshida6_pot(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                              const vector<Laser>& laser, const int n,
+                              double& t, const double dt, FitParams& params);
+
+// Boris–Buneman integration scheme (see Journal of Computational Physics 273 (2014) 255).
+template <class Body>
+void evolve_step_Boris(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                       const vector<Laser>& laser, const int n,
+                       double& t, const double dt);
+
+// Computes the potential energy of particle i.
+// Defined externally in the Molecule class as:
+// double get_pot(const Molecule& mol, const Field& fieldB, const Field& fieldE);
+template <class Body>
+double get_pot(vector<Body>& bod, const int i, const Field& fieldB, const Field& fieldE);
+
+// Computes acceleration: a_i = Force / mass = -Grad(E_pot) / mass.
+// Updates acceleration for particle i.
+template <class Body>
+Vecteur3D new_acc_pot(vector<Body>& bod, const int i, const Field& fieldB,
+                      const Field& fieldE, const vector<Laser>& laser,
+                      const double t, FitParams& params);
+
+// Computes the gradient using first-order finite differences.
+template <class Body>
+Vecteur3D new_acc_pot_second_order(vector<Body>& bod, const int i, const Field& fieldB,
+                                   const Field& fieldE, const vector<Laser>& laser,
+                                   const double t, FitParams& params);
+
+// Computes the gradient using higher-order finite differences.
+template <class Body>
+Vecteur3D new_acc_pot_fourth_order(vector<Body>& bod, const int i, const Field& fieldB,
+                                   const Field& fieldE, const vector<Laser>& laser,
+                                   const double t, FitParams& params);
+
+// Computes Coulombian acceleration for N-body interactions (adapted from Walter Dehnen).
+// Acceleration is added to the array `accell`.
+template <class Body>
+void add_acc_N_body_Coulomb(const vector<Body>& bod, Vecteur3D* accell, const int n);
+
+// Computes the Coulombian potential for a particle at position `ri`.
+// Includes contributions from all other particles in the system.
+// Used mainly for energy conservation statistics and not fully optimized.
+template <class Body>
+double get_coulomb_potential(const vector<Body>& bod, const Vecteur3D& ri, const int n);
+
+// Adds the Lorentz force for charged particles (q * (E + v x B)).
+template <class Body>
+void add_acc_Charged_particles(vector<Body>& bod, Vecteur3D* accell, const Field& fieldB,
+                               const Field& fieldE, const int n);
+
+// Computes the kinetic energy of a single particle.
+template <class Body>
+double get_kin(Body& bod);
+
+// Estimates the typical evolution time of forces or potentials.
+// Approximated as a fraction of waist size divided by velocity.
+// Can be improved with consideration of fields, lasers, and temperature.
+template <class Body>
+double t_evol_ext(vector<Body>& bod, const Field& fieldB, const Field& fieldE,
+                  const vector<Laser>& my_laser, const double Temp_estime);
 
 
-// Boris–Buneman integration scheme (notation of Journal of Computational Physics 273 (2014) 255)
-template <class Body>  void  evolve_step_Boris(vector <Body> &bod, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser,
-        const int n, double & t,const double dt);
 
-// Energie potentielle de la particle i
-// Définie en extern (pour nous dans la classe Molecule) cf double  get_pot(const Molecule &mol, const Field &fieldB, const Field &fieldE);
-template <class Body> double get_pot(vector <Body> &bod, const int i, const Field &fieldB, const Field &fieldE);
-
-
-// Pour calcul a_i= Force/masse = -Grad(E_pot)/mass et met à jour l'accélération
-template <class Body>  Vecteur3D new_acc_pot(vector <Body> &bod, const int i,  const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, FitParams &params);
-// Calcul du gradient au premier ordre
-template <class Body>  Vecteur3D new_acc_pot_second_order(vector <Body> &bod, const int i, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, FitParams &params);
-// Calcul du gradient à l'ordre d'après
-template <class Body>  Vecteur3D new_acc_pot_fourth_order(vector <Body> &bod, const int i, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, FitParams &params);
-
-// Calculate the Coulombian acceleration (adapted from Walter Dehnen)
-// Is added to accell
-template <class Body>  void  add_acc_N_body_Coulomb(const vector <Body> &bod, Vecteur3D *accell, const int n);
-
-
-// Calculate the Coulombian potential for the sum_j=1^n not i  qj/(r_ij)/4 pi epsilon_0
-// Is used only for statistics to check the energy conservation. So it is not fully optimized
-template <class Body>  double  get_coulomb_potential(const vector <Body> &bod, const Vecteur3D &ri, const int n);
-
-// add Lorentz force for charged particles
-template <class Body>  void  add_acc_Charged_particles(vector <Body> &bod, Vecteur3D *accell, const Field &fieldB, const Field &fieldE, const int n);
-
-// kinetic energy
-template <class Body> double get_kin(Body &bod);
-
-// temps d'évolution typique des forces (ou potentiels) ~ fraction de waist/vitesse
-// A améliorer avec les champs, différents lasers ...
-template <class Body> double t_evol_ext(vector <Body> &bod,  const Field &fieldB, const Field &fieldE, const  vector <Laser> &my_laser, const double Temp_estime);
 
 
 /**************************************
-JE MET ICI L'equivalent du .cpp car "On peut pas séparer un .h et .cpp pour les template".
-
-Si un symbole template est utilisé uniquement dans un .cpp (fichier source), il peut être implémenté dans ce .cpp
-Sinon, il doit être implémenté dans un .hpp (header).
-
-cf http://www.commentcamarche.net/faq/11194-les-templates-en-c
+Note I put here the .cpp part.
+Indeed Templates must be implemented in the header file.
+If a template is used in multiple files, it cannot be separated into .h and .cpp.
+For more details: http://www.commentcamarche.net/faq/11194-les-templates-en-c
 ***************************************/
-
 
 
 template <class Body> void evolve_step(const N_Body_algorithmes Algorithme_N_body,

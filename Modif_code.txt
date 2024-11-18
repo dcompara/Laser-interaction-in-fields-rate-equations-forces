@@ -1,10 +1,15 @@
-<<<<<<< HEAD
+2024/18/11 (v3.0
+Trasnlate the .h in English (with GPT4-o) and start to deply the laser_param.h as an App (cf Bolt.new)
+
+2021/01/10 (v2.4)
+Debug intereference for non diagonalized levels + comment on Jacobi diagonalization
+Better effusive beam (real one!)
+
+
 2020/11/15
 Add a first order block diagonalization for faster manifold study
 Correct a bug in polarization photon in spontaneous emission.
 
-=======
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 2020/11/08
 For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
 transition we use incoherent summation.

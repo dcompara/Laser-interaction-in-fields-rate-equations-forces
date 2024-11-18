@@ -32,8 +32,8 @@ void Sortie_donnee_example(ofstream & file_out,  vector <Molecule> &Mol,  vector
             Param &p = **i;
             if (p.is_scanned == true)
             {
-                file_out << p.name ;
-                file_out << p.val_t0 << " " ;
+                //  file_out << p.name ;
+                //  file_out << p.val_t0 << " " ;
             }
         }
     }
@@ -49,13 +49,23 @@ void Sortie_donnee_example(ofstream & file_out,  vector <Molecule> &Mol,  vector
     for (int i = 0; i < nb_mol; i++)
     {
         set_pot_mol(Mol, i, fieldB, fieldE, laser, t, params); //Met à jour de tous les potentiels (gravité, PAS dipolaire, magnétique, electrique, ...) avec la nouvelle position pour une sortie
+        for (ParamIterator i=params.begin(); i != params.end(); ++i) // boucle sur les paramètres
+        {
+            Param &p = **i;
+            if (p.is_scanned == true)
+            {
+                //  file_out << p.name ;
+                file_out << p.val_t0 << " " ;
+            }
+        }
         file_out  << t << " ";
         file_out << stat_Mol.Temp_3D_50 << " ";
-        file_out  << stat_Mol.population << " ";
-        file_out  << Mol[i].get_pos() << " ";
+        file_out << stat_Mol.Temp_1D_50 << " ";
+        //   file_out  << stat_Mol.population << " ";
+        //   file_out  << Mol[i].get_pos() << " ";
         file_out  << Mol[i].get_vel() << " ";
-        file_out  << Mol[i].deg_number << " ";
-        cout << endl;
+        //   file_out  << Mol[i].deg_number << " ";
+        file_out << endl;
     }
     return;
 }
@@ -100,7 +110,7 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 
 
 
-//    file_out  << t << " ";
+ //    file_out  << t << " ";
 //    file_out << number_photons << " ";
 //    file_out << stat_Mol.Temp_3D_50 << " ";
 //    file_out  << stat_Mol.population << " ";
@@ -125,24 +135,28 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //        file_out  << Mol[i].get_pos().z() << " ";
 //        file_out  << vz_init << " ";
 //        file_out  << Mol[i].get_vel().z() << " ";
-//        file_out << t << " ";
-//        file_out  << Mol[i].get_pos() << " ";
-//        file_out  << Mol[i].get_vel() << " ";
+       file_out << t << " ";
+        file_out  << Mol[i].get_pos() << " ";
+ //        file_out  << sqrt(Mol[i].get_pos().y()*Mol[i].get_pos().y()+Mol[i].get_pos().z()*Mol[i].get_pos().z()) << " ";
+        file_out  << Mol[i].get_vel() << " ";
+        file_out  << Mol[i].get_vel().mag() << " ";
 //        file_out  << Mol[i].deg_number << " ";
 //    file_out << endl;
 
 
         /*****   CALCUL of parameters for the dipoles (in Debye)or diagonalization *******/
 
-
+//
 //        MatrixXcd d[3];
 //        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
 //        Diagonalization(Level, Mol[i], fieldB, fieldE, params, es, d);
 //
 //        Vecteur3D v;
 //        v = Mol[i].get_vel();
-//        Vecteur3D Bfield,Efield;
-//        Bfield= fieldB.get_Field(Mol[i].get_pos());
+       Vecteur3D Bfield,Efield;
+        Bfield= fieldB.get_Field(Mol[i].get_pos());
+          file_out << Bfield.mag() << " ";
+                     file_out << i << endl;
 //        Efield= fieldE.get_Field(Mol[i].get_pos());
 //        double B = Bfield.mag();
 //        double E = Efield.mag();
@@ -155,29 +169,20 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 //            for (int j0=0; j0< (int)  Level.size(); j0++) //  | j> =  sum_|j>_O   0_<j | j>  |j>_0  so we scan over |j>_0 hat is the order in the Level file
 //                // 0_<j | j>  is given by   es.eigenvectors()(j0,j) . This is the coefficient of the |j> level (ordered in Energy) on the |j>_0 Level (the order in the Level file). We round it to 100%
 //            {
-//                // file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
+//                file_out << B << " " << v_perp << " " << i << " " << j  << "  " << j0 << " " << Level[j0].two_M << " " << abs(round(100.*es.eigenvectors()(j0,j)))/100 << endl;
 //                if (Level[j0].v == 2) // If the state is triplet (2S+1=3 so S=1 coded in v) we look on the decomposition, |0_<i | i>|^2 , and sum them
 //                {
 //                    tripletness += abs( pow((es.eigenvectors()(j0,j)),2) ); // sum_|triple, j>_O   |0_<j | j>|^2.
 //                }
 //            }
-<<<<<<< HEAD
-        // file_out << endl;
+//         file_out << endl;
         // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
-=======
-            // file_out << endl;
-            // PARAMETER THAT GIVE THE TRIPLETNESS OF THE STATE //
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 // Level[j].write_Level_B(file_out);
 
 
 //             file_out << B << " " << E << " " << v_perp << " " << j << " " << Level[j].Energy_cm << " " << tripletness << endl;
-<<<<<<< HEAD
 //       }
-=======
- //       }
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     }
 
 
@@ -251,6 +256,8 @@ void Sortie_donnee(ofstream & file_out,  vector <Molecule> &Mol,  vector <Intern
 }
 
 
+
+
 // Toutes à la suites en temps
 void Sortie_donnee_pop_vJ(ofstream & file_out, const vector <Molecule> &Mol, const int nb_Mol, const double t, const int NX, const int N_two_JX, FitParams &params)
 {
@@ -308,6 +315,129 @@ void Sortie_donnee_pop_vJ(ofstream & file_out, const vector <Molecule> &Mol, con
     return;
 
 }
+
+
+
+
+
+// code pop[2N+Fi-1][N_two_JX+2M]
+void Sortie_donnee_pop_NJ2M(ofstream & file_out, const vector <Molecule> &Mol, const int nb_Mol, const double t, const int NX, const int N_two_JX, FitParams &params)
+{
+    if( ((int) params.LocateParam("is_param_scanned_out")->val) == ((int) true) )
+    {
+        for (ParamIterator i=params.begin(); i != params.end(); ++i) // boucle sur les paramètres
+        {
+            Param &p = **i;
+            if (p.is_scanned == true)
+            {
+                // file_out << p.name ;
+                file_out <<  "  " << p.val_t0 << " " ;
+            }
+        }
+    }
+
+// vX= 2N + 0 si F1 et 2N+1 si F2
+    int **pX=new int*[2*N_two_JX+1];
+    for (int i_rot = 0; i_rot < N_two_JX; i_rot++) // i = 2N_plus_F_moins_un  or F1 si J=N+1/2 et F2 si J=N-1/2 donc J=N-(le i de F_i)+3/2
+    {
+        pX[i_rot]=new int[2*N_two_JX+1];
+
+    }
+
+    for (int i_rot = 0; i_rot < N_two_JX; i_rot++)
+        for (int two_MX = -N_two_JX; two_MX < N_two_JX; two_MX++)
+            pX[i_rot][N_two_JX+two_MX] = 0;
+
+    for (int i_rot = 0; i_rot < nb_Mol; i_rot++) // Calcul des populations dans 2N_plus_F_moins_un,JX
+        if (Mol[i_rot].exc == 0)
+        {
+            int two_N= Mol[i_rot].v/100; // Mol[i].v = 100*(2N) + (1 si F1 +2 si F2) donc 2N = Mol[i].v/100 (par l'arrondi des entiers)
+            int Fi = Mol[i_rot].v - 100*two_N;
+            pX[two_N+Fi-1][N_two_JX+Mol[i_rot].two_M]++;     // 2N_plus_F_moins_un= 2N + 0 si F1 et 2N+1 si F2
+            // donc 2N_plus_F_moins_un = Mol[i].v/100  + (Mol[i].v-100
+        }
+
+
+
+    // cout << "    time t =  " << t << endl << endl ;
+    // file_out << "    time t =  " << t << endl << endl ;
+
+    file_out << t  << " ";
+
+    for (int i_rot = 0; i_rot < N_two_JX; i_rot++)
+        for (int two_MX = -(i_rot+2); two_MX < (i_rot+2); two_MX++)
+        {
+            file_out << pX[i_rot][N_two_JX+two_MX] << " ";
+        }
+
+
+    file_out <<  endl ;
+    for (int i_rot = 0; i_rot < N_two_JX; i_rot++)
+    {
+        delete[] pX[i_rot];
+    }
+    delete[] pX;
+
+
+    return;
+
+}
+
+
+
+// code pop[2N+Fi-1][N_two_JX+2M]
+void Sortie_donnee_pop_N(ofstream & file_out, const vector <Molecule> &Mol, const int nb_Mol, const double t, const int NX, const int N_two_JX, FitParams &params)
+{
+    if( ((int) params.LocateParam("is_param_scanned_out")->val) == ((int) true) )
+    {
+        for (ParamIterator i=params.begin(); i != params.end(); ++i) // boucle sur les paramètres
+        {
+            Param &p = **i;
+            if (p.is_scanned == true)
+            {
+                // file_out << p.name ;
+                file_out <<  "  " << p.val_t0 << " " ;
+            }
+        }
+    }
+
+
+// vX= 2N + 0 si F1 et 2N+1 si F2
+    int *pX=new int[2*N_two_JX+1];
+
+
+    for (int i = 0; i < 2*N_two_JX+1; i++)
+        pX[i] = 0;
+
+    for (int i = 0; i < nb_Mol; i++) // Calcul des populations dans 2N_plus_F_moins_un,JX
+        if (Mol[i].exc == 0)
+        {
+            int two_N= Mol[i].v/100; // Mol[i].v = 100*(2N) + (1 si F1 +2 si F2) donc 2N = Mol[i].v/100 (par l'arrondi des entiers)
+            int Fi = Mol[i].v - 100*two_N;
+            pX[two_N+Fi-1]++;     // 2N_plus_F_moins_un= 2N + 0 si F1 et 2N+1 si F2
+            // donc 2N_plus_F_moins_un = Mol[i].v/100  + (Mol[i].v-100
+        }
+
+
+
+    // cout << "    time t =  " << t << endl << endl ;
+    // file_out << "    time t =  " << t << endl << endl ;
+
+    file_out << t  << " ";
+
+    for (int i = 0; i < 2*N_two_JX+1; i++)
+        file_out << pX[i]<< " ";
+
+
+    file_out <<  endl ;
+
+    delete[] pX;
+
+    return;
+
+}
+
+
 
 
 
@@ -386,8 +516,7 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
     file_rate<< setprecision(12);
 //   file_rate << " time t = " << t << endl;
 
-<<<<<<< HEAD
-    const int nb_levels=32; // Level.size()
+    const int nb_levels=Level.size(); //
 
     double** rate_level_i_vers_level_j = new double*[nb_levels] ;
     for( int j = 0; j < nb_levels; j++ )
@@ -395,6 +524,8 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         rate_level_i_vers_level_j[j]=new double[nb_levels];
     }
     double* rate_level_i_total = new double[nb_levels] ;
+    double* rate_level_i_annihilation = new double[nb_levels] ;
+    double* nb_photon_scattered = new double[nb_levels] ;
     double* Ecm_i = new double[nb_levels] ;
 
     for( int i = 0; i < nb_levels; i++ ) // Ligne
@@ -404,21 +535,11 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
             rate_level_i_vers_level_j[i][j]=0.;
         }
         rate_level_i_total[i]=0. ;
+        rate_level_i_annihilation[i]=0.;
+        nb_photon_scattered[i]=0.;
         Ecm_i[i]=0. ;
     }
 
-=======
-    const int nb_levels=Level.size(); // Level.size()
-
- //         1S00     3S1-1    3S11    3S10
- // LEvel   3           4       5       6
-    double rate_level_i_vers_level_3[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-    double rate_level_i_vers_level_4[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-    double rate_level_i_vers_level_5[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-     double rate_level_i_vers_level_6[nb_levels] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-    double rate_level_i_total[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
-    double Ecm_i[nb_levels] =  {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
     int nb_rate = rate.size();
     double B, E, current_rate ;
@@ -448,44 +569,24 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
 
         Internal_state_in = Mol[n_mol] ; //  état interne de la molecule
         Internal_state_out = reaction_list[i].final_internal_state ; //  état interne de la molecule après la réaction
-<<<<<<< HEAD
-=======
-
-//        file_rate  << B;
-//
-//        file_rate  << " " << i;
-//        file_rate  << " " << rate[i];
-//
-//
-//        file_rate <<  "  " << Internal_state_in.deg_number;
-//        file_rate << "  " << Internal_state_in.Energy_cm ;
-//
-//        file_rate <<  "  " << Internal_state_out.deg_number;
-//        file_rate << "  " << Internal_state_out.Energy_cm ;
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
         int i_in = Internal_state_in.deg_number;
         int i_out = Internal_state_out.deg_number;
         Ecm_i[i_in] =  Internal_state_in.Energy_cm;
-<<<<<<< HEAD
         rate_level_i_vers_level_j[i_in][i_out] +=  current_rate;
         rate_level_i_total[i_in] += current_rate;
-=======
-
-        if (i_out == 3)   rate_level_i_vers_level_3[i_in] +=  current_rate;
-        if (i_out == 4)   rate_level_i_vers_level_4[i_in] +=  current_rate;
-        if (i_out == 5)   rate_level_i_vers_level_5[i_in] +=  current_rate;
-        if (i_out == 6)   rate_level_i_vers_level_6[i_in] +=  current_rate;
-        rate_level_i_total[i_in] += current_rate;
-
-
-//        file_rate <<  " " << (reaction_list[i].final_internal_state).two_M ;
-//        file_rate <<  " " <<  Mol[reaction_list[i].n_mol].two_M << endl;
-
- //     file_rate << endl ;
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
     }
+
+
+    for (int i = 0; i < (int) Level.size() ; i++)
+    {
+        double rate_spont_total_i=0.;
+        for( int j = 5; j <= 8; j++ ) // Decay towards n=1 levels
+            rate_spont_total_i += rate_level_i_vers_level_j[i][j];
+
+        rate_level_i_annihilation[i] += rate_level_i_total[i]-rate_spont_total_i;
+    }
+
 
 
     for (int i = 0; i < (int) Level.size() ; i++)
@@ -496,28 +597,27 @@ void Sortie_rate(ofstream & file_rate, const  vector <double> &rate,  vector <In
         file_rate <<  " " << i ;
         file_rate <<  " " << Ecm_i[i] ;
         file_rate <<  " " << Level[i].Energy_cm  ;
-<<<<<<< HEAD
-        for( int j = 5; j <= 8; j++ ) // Decay towards n=1 levels
+        // for( int j = 7; j <= 10; j++ ) // Decay towards n=1 levels
+        for( int j = 0; j < nb_levels; j++ )
         {
             file_rate <<  " " << rate_level_i_vers_level_j[i][j]  ;
+            nb_photon_scattered[i] +=  rate_level_i_vers_level_j[i][j]/(rate_level_i_annihilation[i]+ rate_level_i_annihilation[j]);
         }
-=======
-         file_rate <<  " " << rate_level_i_vers_level_3[i] ;
-        file_rate <<  " " << rate_level_i_vers_level_4[i] ;
-        file_rate <<  " " << rate_level_i_vers_level_5[i] ;
-         file_rate <<  " " << rate_level_i_vers_level_6[i] ;
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
+        file_rate <<  " " << rate_level_i_annihilation[i] ;
         file_rate <<  " " << rate_level_i_total[i] ;
+        file_rate <<  " " <<  nb_photon_scattered[i] ;
         file_rate << endl ;
     }
 
 
-
+// Delete dynamical array
     for( int i = 0; i < nb_levels; i++ ) // Ligne
     {
         delete[] rate_level_i_vers_level_j[i];
     }
     delete[] rate_level_i_vers_level_j;
+    delete[] rate_level_i_annihilation;
+    delete[] nb_photon_scattered;
     delete[] Ecm_i;
     delete[] rate_level_i_total;
 
@@ -538,23 +638,6 @@ void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, Fi
 
     return;
 }
-
-// Sortie de la variation temporelle de l'intensité  laser
-void Sortie_laser_intensity(ofstream & file_out, const vector <Laser> &laser, FitParams &params, int num_laser)
-{
-    Laser my_laser = laser[num_laser];
-    file_out<< setprecision(8);
-
-    for (double t_ps = -100e3; t_ps < 100e3; t_ps++)
-    {
-        double I_shape = my_laser.intensity_t_nanosecond(t_ps/1000.); // Intensité laser façonnée
-        file_out << t_ps/1000. << " " << I_shape << endl;
-        // cout << t_ns << " " << I_shape << endl;
-    }
-
-    return;
-}
-
 
 
 

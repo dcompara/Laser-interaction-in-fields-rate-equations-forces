@@ -5,9 +5,12 @@
 		<Option title="Laser_interaction_in_fields" />
 		<Option pch_mode="2" />
 		<Option compiler="msys2_mingw64" />
-		<Option show_notes="0">
+		<Option show_notes="1">
 			<notes>
-				<![CDATA[Read the Todo list]]>
+				<![CDATA[Read the User guide ;-)
+Check the convergences parameters( epsilon, ..) as well as the limits is dipoles or intensities values
+
+Check the Todo list !]]>
 			</notes>
 		</Option>
 		<MakeCommands>

@@ -13,7 +13,6 @@
 using namespace Eigen;
 using namespace std;
 
-<<<<<<< HEAD
 // diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues (stored in in Level[n].Energy_cm) and dipoles (in Debye)
 // Some dipoles (for annihilation or photoionization) are calculated using incoherent sum d_incoh[q+1]_ij^2 = Sum i0,j0   | <i |i0>0 0<i0| d_q | j0>0 0<j0|j> |^2.
 // the other are d[q+1]_ij = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j>
@@ -21,16 +20,6 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
                      FitParams &params,  MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
 
 
-=======
-
-// diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm
-// Some dipoles (for annihilation or photoionization) are calculated using incoherent sum d_incoh[q+1]_ij^2 = Sum i0,j0   | <i |i0>0 0<i0| d_q | j0>0 0<j0|j> |^2.
-// the other are d[q+1]_ij = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j>
-void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, const Field &fieldB, const Field &fieldE,
-                     FitParams &params,  SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[]);
-
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 
 //   d.E (for the Stark effect that is -d.E)
