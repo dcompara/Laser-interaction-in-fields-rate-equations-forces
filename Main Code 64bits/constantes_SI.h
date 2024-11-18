@@ -36,13 +36,14 @@ using namespace std;
 const double  VERY_LARGE_NUMBER = 1.e90;
 const double VERY_SMALL_NUMBER = 1./VERY_LARGE_NUMBER;
 const double SMALL_NUMBER = 1.e-10; // Utile pour les différences finies (pour éviter les erreurs d'arrondis)
-const double  LARGE_NUMBER = 1./SMALL_NUMBER;
-const double SMALL_NUMBER_RATE = 1.; // Rate smaller than this (1 second) will not be considered
-const double SMALL_DIPOLE_DEBYE = 1.e-8; // Rate smaller than this (1 second) will not be considered
+const double LARGE_NUMBER = 1./SMALL_NUMBER;
+const double SMALL_NUMBER_RATE = 1. ; // Rate smaller than this (1 second) will not be considered
+const double SMALL_DIPOLE_DEBYE = 1.e-8; // Dipole smaller than this  will not be considered
 
 
 const int aucune = -1; // numéro pour indiquer aucune molécule
-const int all = -1; // numéro pour indiquer toute les molécule
+const int all = -1; // numéro pour indiquer toute les molécules
+const int all_levels = -1;
 
 static const double     pi  = 3.14159265358979323846;
 static const double  twopi  = 2*pi;
@@ -67,6 +68,7 @@ static const double MCs = 132.905442*MAU;
 static const double MRb87 = 86.90918052*MAU;
 static const double MRb85 = 84.911789732*MAU;
 static const double MNa = 22.98976928*MAU;
+static const double Mn = 1.0086649*MAU;
 static const double MH = 1.00794*MAU;
 static const double MCs2 = 2.*132.905442*MAU;
 static const double MCO = 28.*MAU;
@@ -101,14 +103,16 @@ static const double CenCm =QE*A0*A0/(ALPHA*C); // MHz -> C*m
 static const double kB = 1.380658*1e-23;
 static const double MUKMHZ = 1e-6*kB/(1e6*H);
 static const double mW = 1e-3;
+static const double milliK = 1e-3;
 static const double nW = 1e-9;
 static const double MICRON = 1e-6;
+static const double microK = 1e-6;
 static const double Mus = MICRON; // microseconde
 // static const double conversionUAEnergieMHz=pow(QE*A0,2)/(H*pow(MICRON,3)*MHz);// utilisé dans les calculs de potentiels
 static const double Debye = 1.e-21/C;
 static const double Spol_Debye_A_s = (8e6*pi*pi*C*C*C*Debye*Debye)/(3.*EPSILON0*C*C*C*HBAR); // 3.13618932*10^-7 = Conversion HonlLondon (en Debye) en A Einstein (s^-1) si energie en cm^-1
 static const double Conv_Ecm_delta = 2.*pi*MHz*MHzcm ;//  cm^(-1) -> s^-1;
-static const double  sigmaSB = 5.670367e-8 ; // Stefan–Boltzmann
+static const double sigmaSB = 5.670367e-8 ; // Stefan–Boltzmann
 
 
 

@@ -1,167 +1,166 @@
-/** Classe Paramètre (Param) et Liste de Paramètre (FitParams)
+/*
+  Name: Parameter Class (Param) and Parameter List (FitParams)
+  Description:
+  This file defines:
+  1. The `Param` class, which represents a named parameter with attributes like value,
+     minimum/maximum bounds, step count, and temporal dependence.
+  2. The `FitParams` class, which is a collection of `Param` objects, providing utilities
+     for parameter management and manipulation.
 
-Un paramètre est:
-un nom
-un booléan is_scanned disant si il est fixé ou non. Par défaut false
-un booléan is_time_dependent disant si il est varie dans le temps ou pas. Par défaut false
-Une liste de:
- val,  minv, maxv, nbstep, tau, val_t0;
- // val_t0 = minv + steps * (maxv - minv )/nbstep
- // tau =   taux de variation temporelle --> val = val_t0 exp^(-t/tau)
+  Key Features:
+  - Supports parameter scanning and random parameter modifications.
+  - Handles both time-dependent and fixed parameters.
+  - Allows reading and initializing parameters from external files.
 
+  Example Usage of `FitParams`:
+    FitParams &params; // Vector of Param pointers.
+    Param *pDayMax;
+    pDayMax = params.LocateOrAddNonConstParam("DayMax");
 
-Exemple d'utilisation de FitParam
+  To set a parameter value:
+    Param* param_to_set = params.LocateOrAddParam("ParamName");
+    param_to_set->val = value;
 
-
-  FitParams &params; // this is a vector<Param *>
-  Param *pDayMax;
-  pDayMax  = params.LocateOrAddNonConstParam("DayMax");
-
-
-// fixer un parametre  de nom paramname
-  param_a_fixer->is_scanned = false;
-
-// mettre un parametre de nom paramname a une certaine valeur value
-  Param* param_to_set =  params.LocateOrAddParam(paramname);
-    param_to_set->val = value; //peut rajouter  pour vérifier si il est fixé: if(!param_to_set->is_scanned)
-
-
-// pour initialiser tout d'un coup avec un tableau tab de la bonne taille :
- for(size_t i=0; i<params.size(); ++i) params[i]->val=tab[i];
-
-
-
-// boucle sur les parametres de params :
-  for (ParamIterator i=params.begin(); i != params.end(); ++i)
-    {
-      Param &p = **i;
-	if (p.is_scanned) continue;
-	// faire la boucle sur la valeur de param ici
-	for (int n = 0 ; n < p.nstep ; n++)
-	// etc.
-
-      }
-
-****************************/
+  Looping through parameters:
+    for (ParamIterator i = params.begin(); i != params.end(); ++i) {
+        Param &p = **i;
+        if (p.is_scanned) continue;
+        // Perform operations on the parameter.
+    }
+*/
 
 #ifndef PARAM__H
 #define PARAM__H
 
 #include <iostream>
 #include <vector>
-#include <iostream>
 #include <string>
-
-#include <gsl/gsl_rng.h>                   // for random generator
-#include <gsl/gsl_randist.h>               // for flat random generator
+#include <gsl/gsl_rng.h>                   // For random number generator
+#include <gsl/gsl_randist.h>               // For uniform random distribution
 
 using namespace std;
 
-//! Named parameters (i.e. what estimation theory call parameters).
-class Param
-{
-public :
+//----------------------------------
+// Parameter Class
+//----------------------------------
 
-    double val,  minv, maxv,  val_t0, tau;
-    int nbstep;
-    bool is_scanned, is_time_dependent;
-    std::string name;
-    Param() : val(0.), minv(0.), maxv (0.), val_t0(0.), tau(1e100), nbstep(1), is_scanned(false), is_time_dependent(false), name("UNKNOWN") {};
-    Param(const string &Name) : val(0.),  minv(0.), maxv (0.), val_t0(0.),  tau(1e100), nbstep(1), is_scanned(false), is_time_dependent(false), name(Name) {};
+/**
+ * Represents a named parameter with attributes like value, bounds, and temporal behavior.
+ */
+class Param {
+public:
+    double val;            // Current value of the parameter.
+    double minv;           // Minimum value.
+    double maxv;           // Maximum value.
+    double val_t0;         // Initial value at t = 0.
+    double tau;            // Temporal variation rate.
+    int nbstep;            // Number of steps for scanning.
+    bool is_scanned;       // Indicates if the parameter is being scanned.
+    bool is_time_dependent; // Indicates if the parameter changes over time.
+    string name;           // Parameter name.
 
-//  Donne le nom.
-    std::string Name() const
-    {
-        return name;
-    }
+    // Constructors
+    Param() : val(0.), minv(0.), maxv(0.), val_t0(0.), tau(1e100),
+              nbstep(1), is_scanned(false), is_time_dependent(false), name("UNKNOWN") {}
 
-// Sortie du paramètre (val, minv , ...)
-    void dump(ostream &stream = cout, bool nice_formated_output=false) const;
+    Param(const string &Name) : val(0.), minv(0.), maxv(0.), val_t0(0.), tau(1e100),
+                                nbstep(1), is_scanned(false), is_time_dependent(false), name(Name) {}
 
-    friend ostream& operator << (ostream &stream, const Param &p)
-    {
+    // Returns the parameter name.
+    string Name() const { return name; }
+
+    // Outputs the parameter's details.
+    void dump(ostream &stream = cout, bool nicely_formatted = false) const;
+
+    // Overloaded output operator for the parameter.
+    friend ostream& operator<<(ostream &stream, const Param &p) {
         p.dump(stream);
         return stream;
     }
 };
 
+//----------------------------------
+// Parameter List Class
+//----------------------------------
 
-//! the ensemble of all parameters of the fit
-// It is vector of pointers, in order to keep always the proper allocation.
+/**
+ * Represents a collection of parameters for fitting or simulation.
+ * Provides utilities for parameter management.
+ */
+class FitParams : public vector<Param *> {
+    string name; // Name of the parameter set.
 
-class FitParams : public vector<Param *>
-{
-    string name;
-
-public :
-
-    FitParams(const string &Name) : name(Name) {};
-    FitParams() : name("NoName") {};
-    void SetName(const string &Name)
-    {
-        name=Name;
-    }
-
+public:
+    // Constructors
+    FitParams(const string &Name) : name(Name) {}
+    FitParams() : name("NoName") {}
     FitParams(const FitParams &);
 
-//pour atteindre un param Retourne le pointeur Param* vers le param qui à le nom ParamName
+    // Sets the name of the parameter set.
+    void SetName(const string &Name) { name = Name; }
+
+    // Finds a parameter by name (const version).
     const Param* LocateParam(const string &ParamName) const;
+
+    // Finds a parameter by name (modifiable version).
     Param* LocateParam(const string &ParamName);
 
-//fait un vecteur de class Param
+    // Locates or adds a parameter to the list (const version).
     const Param* LocateOrAddParam(const string &ParamName);
+
+    // Locates or adds a parameter to the list (modifiable version).
     Param* LocateOrAddNonConstParam(const string &ParamName);
 
-//Elimine le param qui à le nom ParamName. Retourne true si trouvé et false sinon
+    // Deletes a parameter by name if it exists.
     bool DeleteParamIfExists(const string &ParamName);
 
-// return the number of variable, scanned, parameters (not the fixed ones)
+    // Returns the number of variable (scanned) parameters.
     size_t VariableParamCount() const;
 
+    // Outputs the parameters and their details.
+    void dump(ostream &stream = cout, const string &Message = "", bool nicely_formatted = false) const;
 
-    //Sort dans "stream" le message et les paramètres (cf dump):val, val_t0
-    void dump(ostream &stream = cout, const string &Message = "",bool nice_formated_output=false) const;
-
-    //Sort dans "stream" les paramètres: nom val
+    // Outputs the parameter names and values in a model format.
     void dump_model(ostream &stream = cout, const string &Message = "") const;
 
-
-    friend ostream& operator << (ostream &stream, const FitParams &p)
-    {
+    // Overloaded output operator for the parameter list.
+    friend ostream& operator<<(ostream &stream, const FitParams &p) {
         p.dump(stream);
         return stream;
     }
 
-    /*! if FitParam has a name, read the block with the same name else reads the first block and assigns name */
-// L'ordre dans le fichier doit être name_scanned, minvalue, maxvalue, nombrestep, bool_is_scann, bool_is_time_dependent, tau_var, erro
-    void read(const std::string &FileName);
-//    void read(istream &S);
+    // Reads parameters from a file.
+    void read(const string &FileName);
 
-// Initialise les paramètres selon la valeur non scannée de la dataCard (cf datacards.h) ou à la valeur min si scannée
-    void init_value(const std::string &FileName);
+    // Initializes parameters based on external data.
+    void init_value(const string &FileName);
 
-// Modification des paramètres
-// Nb_steps = 1 signifie que l'on va prendre 2 valeurs min et max. nb_step=2 on prend 3 valeurs: min, moitié et max  .
-// On retourne la condition de fin: false s'il faut encore continuer à modifier et true si on a fini les boucles.
-// C'est à dire à priori on ne modifie qu'un paramètre à la fois dans l'ordre d'apparition dans la liste des scans
-    bool  Scan_Param();
+    // Scans through the parameters.
+    bool Scan_Param();
 
+    // Randomly modifies parameters during a scan.
+    bool Scan_Param_aleatoire(const gsl_rng *r);
 
-// Modification des paramètres aléatoirement
-    bool  Scan_Param_aleatoire(const gsl_rng * r);
-
-    ~FitParams()
-    {
-        for (FitParams::iterator i=begin(); i != end(); ++i) delete *i;
+    // Destructor
+    ~FitParams() {
+        for (FitParams::iterator i = begin(); i != end(); ++i) {
+            delete *i;
+        }
     }
 
-    void operator = (const FitParams &);
+    // Assignment operator for copying parameter lists.
+    void operator=(const FitParams &);
 };
 
+//----------------------------------
+// Helper Functions
+//----------------------------------
+
+// Iterators for looping through parameters.
 typedef FitParams::iterator ParamIterator;
 typedef FitParams::const_iterator ParamCIterator;
 
-
+// Extracts parameter names from a file.
 vector<string> FitParamNames(const string &FileName);
 
 #endif /* PARAM__H */

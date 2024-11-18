@@ -1,3 +1,4 @@
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
 % Template article for preprint document class `elsart'
 % SP 2001/01/05
 %  and 2 sets of keywords - 21.05.03 - file called phys-english.tex
@@ -7,78 +8,14 @@
 %   and name of presenter
 
 \documentclass[amsmath,amssymb]{revtex4}
+========
+\documentclass[amsmath,amssymb,nofootinbib]{revtex4-2}
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 
 \usepackage[toc,page]{appendix}
-
 \usepackage{xcolor}
-
-
-%\def\journal@prl{prl}%
-%$@$ifx{$@$journal\journal@prl}{%
-
-
-\def\cpl{Chem. Phys. Lett.}
-\def\aj{{AJ}}
-\def\araa{{ARA\&A}}
-\def\apj{{ApJ}}
-\def\apjl{{ApJ}}
-\def\apjs{{ApJS}}
-\def\ao{{Appl.~Opt.}}
-\def\apss{{Ap\&SS}}
-\def\aap{{A\&A}}
-\def\aapr{{A\&A~Rev.}}
-\def\aaps{{A\&AS}}
-\def\azh{{AZh}}
-\def\baas{{BAAS}}
-\def\jrasc{{JRASC}}
-\def\memras{{MmRAS}}
-\def\mnras{{MNRAS}}
-\def\pra{{Phys.~Rev.~A}}
-\def\prb{{Phys.~Rev.~B}}
-\def\prc{{Phys.~Rev.~C}}
-\def\prd{{Phys.~Rev.~D}}
-\def\pre{{Phys.~Rev.~E}}
-\def\prl{{Phys.~Rev.~Lett.}}
-\def\pasp{{PASP}}
-\def\pasj{{PASJ}}
-\def\qjras{{QJRAS}}
-\def\skytel{{S\&T}}
-\def\solphys{{Sol.~Phys.}}
-\def\sovast{{Soviet~Ast.}}
-\def\ssr{{Space~Sci.~Rev.}}
-\def\zap{{ZAp}}
-\def\nat{{Nature}}
-\def\iaucirc{{IAU~Circ.}}
-\def\aplett{{Astrophys.~Lett.}}
-\def\apspr{{Astrophys.~Space~Phys.~Res.}}
-\def\bain{{Bull.~Astron.~Inst.~Netherlands}}
-\def\fcp{{Fund.~Cosmic~Phys.}}
-\def\gca{{Geochim.~Cosmochim.~Acta}}
-\def\grl{{Geophys.~Res.~Lett.}}
-\def\jcp{{J.~Chem.~Phys.}}
-\def\jgr{{J.~Geophys.~Res.}}
-\def\jqsrt{{J.~Quant.~Spec.~Radiat.~Transf.}}
-\def\memsai{{Mem.~Soc.~Astron.~Italiana}}
-\def\nphysa{{Nucl.~Phys.~A}}
-\def\physrep{{Phys.~Rep.}}
-\def\physscr{{Phys.~Scr}}
-\def\planss{{Planet.~Space~Sci.}}
-\def\procspie{{Proc.~SPIE}}
-\def\icarus{{Icarus}}
-\let\astap=\aap
-\let\apjlett=\apjl
-\let\apjsupp=\apjs
-\let\applopt=\ao
-
-
 \usepackage{isomath}
-% Scientific organisations like IUPAP\_, IUPAC\_, NIST\_, BIPM\_, and others recommend typesetting math according to the International Standard ISO 31`Quantities and units` [ISO-31]
-
 \usepackage{upgreek} % to have roman greek letter 
-
-
-
-
 \usepackage{graphicx}% Include figure files
 \usepackage{mathtools}% For \MoveEqLeft
 \usepackage{dcolumn}% Align table columns on decimal point
@@ -87,8 +24,7 @@
 \usepackage{color}
 \usepackage{amssymb}
 \usepackage[latin1]{inputenc}
-%\nofiles
-%\usepackage{epstopdf}
+
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert \#1 `basename \#1 .tif`.png}
 
 
@@ -101,11 +37,14 @@
 \date{\today}
              
 
-
-
 \begin{abstract}
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
 This document gives an introduction to the use of the C++ Laser Cooling code described in PHYSICAL REVIEW A 89, 043410 (2014) 
  and available on git: https://github.com/dcompara/Laser-interaction-in-fields.
+========
+This document gives an introduction to the use of the C++ Laser Cooling code described in Ref. \cite{comparat2014molecular}
+ and available on git: https://github.com/dcompara/Laser-interaction-in-fields-rate-equations-forces.
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 The program solves the rate equations to study laser excitation, forces (scattering + dipolar + magnetic + electric + coulombian interactions).
 It has been developed under Code::Blocks and Windows.
 The inputs are 2 external files describing the	levels (with information about their energy + linear or quadratic Stark, Zeeman effect) and the
@@ -370,6 +309,108 @@ Run the Command Prompt in administrator mode (type "cmd" on the start menu + cli
 \end{enumerate}
 
 
+\subsection{Parallelization by means of OpenMP}
+
+Additionally, the execution of the code, especially parameter scans can be accelerated by parallelizing the program onto all CPUs available on the according computer in use. The number of CPUs or threads can be found for example in the Windows Task Manager (In the following it will be described for a quad-core processor, in case of a different number of available CPUs the number 4 in the following example of course has to be adjusted accordingly.).
+
+For the purpose of parallelization the application programming interface called OpenMP (Open Multi-Processing) has to be configured in the corresponding CodeBlocks installation. Additionally the two files \textit{main\_Laser\_Cooling.cpp} as well as \textit{Liste\_Param.h} have to be modified accordingly. We detaield in great details how to do it if needed.
+
+Step by step, the configuration should be carried out in the following way:
+
+\begin{enumerate}
+	\item Modification of CodeBlocks compiler settings:
+	
+	\begin{itemize}
+		\item Add the flag \textit{-fopenmp} under \textit{Settings} $\rightarrow$ \textit{Compiler} $\rightarrow$ \textit{Global compiler settings} $\rightarrow$ Tab \textit{Compiler settings} $\rightarrow$ Sub-Tab \textit{Other compiler settings}
+		
+		\item Add the flags \textit{-lgomp -pthread} under \textit{Settings} $\rightarrow$ \textit{Compiler} $\rightarrow$ \textit{Global compiler settings} $\rightarrow$ Tab \textit{Linker settings} $\rightarrow$ Sub-Tab \textit{Other linker options}
+		
+		\item Add the path \textit{\path{C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\10.2.0\include}} (or respective path to the folder containing the header file \textit{omp.h}) under \textit{Settings} $\rightarrow$ \textit{Compiler} $\rightarrow$ \textit{Global compiler settings} $\rightarrow$ Tab \textit{Toolchain executables} $\rightarrow$ Sub-Tab \textit{Additional Paths}.
+	\end{itemize}
+	
+	\item Modifications in \textit{main\_Laser\_Cooling.cpp}:
+	
+	The idea for parallelization here is to run one instance of the code on each available CPU core but with different simulation parameters, such as laser power, detuning, bandwidth or any other variable which is set in the \textit{Liste\_Param.h}. This is achieved by creating several \textit{Liste\_Param.h} files, namely each per core, defining the parameters for this instance. Therefore the following changes have to be made in the main code file \textit{main\_Laser\_Cooling.cpp}:
+	
+	\begin{itemize}
+		\item First of all, \textit{include <omp.h>} has to be included right in the beginning of the file in order to include the OpenMP header file.
+		
+		\item Under \textit{\/***  NOM DES FICHIERS ***\/} the new variables and files for the separate instances have to be defined and packed into vectors. Code examples in case of the implementation on a quadcore CPU and with the four new parameter files called \textit{Liste\_Param1-4.h} can be found in Figures \ref{fig:Parallelization_Mod1_main.cpp} and  \ref{fig:Parallelization_Mod2_main.cpp}.
+		
+		The references to the according non-vector variables which have been used previously in the code have to commented of course. Namely these are the following lines:
+		
+		\textit{nom\_sortie\_donnees\_string = data.SParam("nom\_sortie\_donnees");}
+		
+		\textit{nom\_sortie\_rate\_string = data.SParam("nom\_sortie\_rate");}
+		
+		\textit{nom\_sortie\_donnees = nom\_sortie\_donnees\_string.c\_str();}
+		
+		\textit{nom\_sortie\_rate = nom\_sortie\_rate\_string.c\_str();}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.9\linewidth]{Modifications main_Laser_Cooling 1.jpg}
+			\caption{Definition of new variables for parallelization.}
+			\label{fig:Parallelization_Mod1_main.cpp}
+		\end{figure}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.35\linewidth]{Modifications main_Laser_Cooling 2.jpg}
+			\includegraphics[width=0.35\linewidth]{Modifications main_Laser_Cooling 3.jpg}
+			\caption{Definition of new variables for parallelization.}
+			\label{fig:Parallelization_Mod2_main.cpp}
+		\end{figure}
+		
+		\item Finally, the main program has to be enclosed in a control sequence in order to initialize the instances one each of the cores and while looping over the different parameter files. This control sequence is introduced by inserting the three lines shown in Figure \ref{fig:Parallelization_Mod3_main.cpp}.
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.65\linewidth]{Modifications main_Laser_Cooling 4.jpg}
+			\caption{Introduction of additional control sequence.}
+			\label{fig:Parallelization_Mod3_main.cpp}
+		\end{figure}
+		
+		Of course this loop needs to be closed finally, as shown in Figure \ref{fig:Parallelization_Mod4_main.cpp} for example.
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.8\linewidth]{Modifications main_Laser_Cooling 5.jpg}
+			\caption{End of additional control sequence.}
+			\label{fig:Parallelization_Mod4_main.cpp}
+		\end{figure}
+		
+	\end{itemize}
+	
+	\item Modifications in \textit{Liste\_Param.h}:
+	
+	Each of the four parameter files has to be adjusted by adding the additional output files here as well under \textit{	NOM\_FICHIERS 	 } and by defining their names, for example in the following way: 
+	
+	\textit{\path{@nom_sortie_donnees} \ \ \ \ \path{Data/donnee_Mol.dat}} \\
+	\textit{\path{@nom_sortie_donnees1} \ \ \ \ \path{Data/donnee_Mol1.dat}} \\
+	\textit{\path{@nom_sortie_donnees2} \ \ \ \ \path{Data/donnee_Mol2.dat}} \\
+	\textit{\path{@nom_sortie_donnees3} \ \ \ \ \path{Data/donnee_Mol3.dat}} \\
+	\textit{\path{@nom_sortie_rate} \ \ \ \ \path{Data/sortie_rate.dat}} \\
+	\textit{\path{@nom_sortie_rate1} \ \ \ \ \path{Data/sortie_rate1.dat}} \\
+	\textit{\path{@nom_sortie_rate2} \ \ \ \ \path{Data/sortie_rate2.dat}} \\
+	\textit{\path{@nom_sortie_rate3} \ \ \ \ \path{Data/sortie_rate3.dat}} \\
+	\textit{\path{@nom_fichier_random_gen} \ \ \ \ \path{Data/random_gen.txt}} \\
+	\textit{\path{@nom_sortie_donnees_Data} \ \ \ \ \path{Data/data_card1.dat}} \\
+	
+	
+\end{enumerate}
+
+% https://instincttechies.blogspot.com/2013/06/how-to-use-openmp-in-codeblocks.html
+% https://www.youtube.com/watch?v=IQdZwIM8r_c
+
+
+
+
+
+
+
+
+
 
 \section{Short overview}
 
@@ -582,7 +623,11 @@ The detail of the columns are(in bold the data that should absolutely be correct
 	\item 	 \textbf{2M}: where  M is the projection of the total angular momentum. We note 2M and not M to be able to use integer in the code for M=1/2 for instance.
 	In the code the particle will be assumed to always follow (adiabatically) the local quantification axis given by the local field.
 
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
 {\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you coudld impose $M$=0 for all states and use $\pi$ laser polarization.}	
+========
+{\it If you want to simulate states without sub-structure like pure ro-vibrational transition in zero field you could impose $M$=0 for all states and use $\pi$ laser polarization. Another common "trick" is to create "dead" levels with proper dipole transition for an annihilation event that will be mostly treated as a spontaneous emission event}	
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 	
 \item 	 \textbf{Sym}:  Originally it was the parity of the state but this not the case but it should be +1 or -1 to design  bound states and 0 for an continuumm state (that is above the continuum threshold such as for photodetachment or photoionization).
 
@@ -657,7 +702,12 @@ with  $C_{{\rm Debye},s} = (8\times 10^6 \pi^2 c^3 {\rm Debye}^2 )/(3. \varepsil
 
 
 
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
 For an continuum transition (so with Sym' = 0), the idea to treat it, is to put a "fake" level: the energy should be just at the ionisation threshold (thus the program can test if the laser wavelength is enough to ionize). But, in this case the $S_{\rm pol}$ column is  not $d^2/3$ but $\sigma/$cm$^2$ which is the ionization cross section in cm$^2$.
+========
+For an continuum transition (so with bound\_state' = 0), the idea to treat it, is to put a "fake" level: the energy should be just at the ionisation threshold (thus the program can test if the laser wavelength is enough to ionize). 
+There is only one constant value for the dipole (so for the cross section), no wavelength dependence is included so you have to choose the one adapted to your lasers.
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 
 
 
@@ -678,6 +728,35 @@ Attenuation$[i]$. This will be the multiplicative factor for the laser intensity
 So in summary the energy in the file is the energy just below yours and the intensity would thus just be multiplied by the amplitude factor.
 
 
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
+========
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{shaping}
+	\caption{Shaping examples. Left  shaping for the laser intensity versus time: the code (solid black line) interpolate linearly between (red) points, if the point is before or after the points we kept the nearest value. Right: shaping for the laser spectrum: the value of the interpolation is the lower one in the file (no interpolation between red points). The example illustrate a gaussian laser, 100 GHz broad. In Red is the final (relative) intensity.}
+	\label{fig:shaping}
+\end{figure}
+
+
+
+\subsection{LASER\_INTENSITY} 
+
+This file is used only if you want to  shape the intensity in time for a given a laser. 
+It is important to know that this is a pure intensity effect, no (Fourier-Transform) spectral effect is liked to it (so we can not create a broadband femtosecond laser just using this for instance).
+ If you do not create such a file a default one (containing only one line: 0 1) is created which does not affect the laser intensity.
+
+
+The code reads a file one file per laser (number).
+Laser\_intensity[i] for laser number i+1
+that contains 2 columns: $t_{\rm ns}$  (time in ns) and transmission $T$ (intensity transmission coefficient).
+
+
+When a transition rate is calculated at time $t$, the program look in this file for the line $i$ such as  $t_{\rm ns}[i] \leq t < t_{\rm ns}[i+1]$ and then it interpolate, at first order, the corresponding value between
+$T[i]$ and $T[i+1]$. So $A$ is the transmission value:
+$T = T[i] + \frac{T[i+1]-T[i]}{t[i+1]-t[i]}(t-t[i])$. After the last point the intensity is kept constant, so it is wise to put $T=1$ (or $T=0$) as last point.
+This will be the multiplicative factor for the laser intensity.
+
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 
 
 \section{Troubleshooting}
@@ -815,8 +894,17 @@ transition Lorentzian $L(\delta) = \frac{\Gamma_{ij}}{2\pi}\frac{1}{\left( \frac
 For instance for a laser with a Lorentzian spectrum of FWHM $\Gamma_L$ we have, for the Doppler induced detuning $\delta = \omega+\bm k.\bm v-\omega_{ij}$, the rate:
 $\gamma=
 I \frac{\pi ({\bm d}.{\bm \epsilon})^2  }{\hbar^2 \epsilon_ 0 c}
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
  \frac{\Gamma_{ij}+\Gamma_L}{2\pi}\frac{1}{\left( \frac{\Gamma_{ij}+\Gamma_L}{2}\right)^2 + \delta^2}$  where $I= \varepsilon_0 E^2 c /2$ is the total laser irradiance (intensity).
 
+========
+ \frac{\Gamma_{ij}+\Gamma_L}{2\pi}\frac{1}{\left( \frac{\Gamma_{ij}+\Gamma_L}{2}\right)^2 + \delta^2}$  where $I= \varepsilon_0 E^2 c /2 = \int I_\upomega (\omega) {\rm d} \omega$ is the total laser irradiance (intensity).
+ 
+ 
+This last formula helps also to understand how to treat bound-bound and bound-free rates in a similar manner because at resonnance
+$\gamma = \frac{\Omega_{ij}^2}{\Gamma_{ij}+\Gamma_L} = 4 \pi^2 \alpha \frac{d_{ij}^2}{e^2} \frac{2 I}{\hbar (\Gamma_{ij}+\Gamma_L)} $ whereas for a photoionization we find 
+$\gamma  = 4 \pi^2 \alpha \frac{d_{ij}^2}{e^2} \frac{ 2 I}{E_h} $ like if it was a  bound-bound transition but  with a "linewidth" given by the Rydberg constant $E_h/2$.
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 
 
 	\subsection{Calcul (external) motion}
@@ -839,8 +927,7 @@ This is controled using the is\_Levels\_Lines\_Diagonalized parameter
 
 	\section{Performance test}
 	
-	 N=100 Hydrogen atoms during 50 microsecond and plot every microsecond.  64.571s with graphics versus 57.502 without and 55.826 without any output
-	 \footnote{ Depending on what the computer is doing meanwhile those times can fluctuate within few percent}.
+	 N=100 Hydrogen atoms during 50 microsecond and plot every microsecond.  64.571s with graphics versus 57.502 without and 55.826 without any output (depending on what the computer is doing meanwhile those times can fluctuate within few percent).
 	 
 	 
 	 \subsection{Nb of molecules}
@@ -932,13 +1019,19 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 Despite the fact that the code could largely be improved to use more C++ spirit (like maps between reaction and rates, ...), a long list of possible improvements exists among them are:
 	 
 	 \begin{itemize}
-	
-	 	\item Use of adaptive time steps (like t\_evol\_ext) for the algorithms (under consideration).
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
+========
 	 	
-	 	\item Possibilities to use more general laser beam (Laguerre Gauss, others polarizations). 	Put the phase given by the polarizations to take into account linear polarisation in the interference lattice case.
+
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
+	
+	 	\item Use of adaptive time steps (like t\_evol\_ext) for the algorithms.
+	 	
+	 	\item Possibilities to use more general laser beam (Laguerre Gauss, others polarizations). 	Put the Gouy's type of  phase given by the polarizations.
 	 	
 	 	\item Optimize the link between the renew of the rates, the KMC steps and the external evolution steps. For instance if the acceleration is known we do not need to recalculate each time in the evolution algorithms ...
 	 	
+<<<<<<<< Updated upstream:User Guide/User Guide Laser Cooling_old.tex
 	 	\item Parallelization of the code. Using  OpenMP for multiprocessor seems quite easy: If needed, download the last MinGW 64bits version.
 	 	Copy-paste and erase the old one in Codeblock directory. Then in Global Compiler setting (or simply in your project) use in Other option -fopenmp.
 	 	Linker settings: Adds the MinGW/bin libgomp-1.dll. Then test using simple program
@@ -947,6 +1040,10 @@ Random Selection Method  has probably a problem in the code to be this slow!
 	 	
 	 	
 	 	\item Combine electric and magnetic field of arbitrary orientations. This is partially done using the diagonalization cf section \ref{diagonalization}
+========
+	 
+	 
+>>>>>>>> Stashed changes:User Guide/User_Guide_Laser_Cooling_v2.4.tex
 	 	
 	 	\item Treat chemical reactions during collisions.
 	 	

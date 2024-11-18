@@ -20,14 +20,10 @@ Molecule::~Molecule()
 Molecule & Molecule::operator = (const Internal_state & Intern)
 {
     exc = Intern.exc;
-    two_Spin = Intern.two_Spin;
-    two_Lambda = Intern.two_Lambda;
-    two_Omega = Intern.two_Omega;
     v = Intern.v;
     two_J = Intern.two_J;
-    two_N = Intern.two_N;
     two_M = Intern.two_M;
-    Sym = Intern.Sym;
+    bound_level = Intern.bound_level;
     deg_number = Intern.deg_number;
     Energy0_cm = Intern.Energy0_cm;
     Delta_FieldB = Intern.Delta_FieldB;

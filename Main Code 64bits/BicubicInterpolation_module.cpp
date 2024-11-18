@@ -359,6 +359,7 @@ double Bicubic_Interpolator::GetValueInterpolated(const vector<vector<double> > 
 //        ans = xd*(ans)+((m_coefficients[ij_to_index(3,i)]*yd + m_coefficients[ij_to_index(2,i)])*yd + m_coefficients[ij_to_index(1,i)])*yd + m_coefficients[ij_to_index(0,i)];
     }
     return ans;
+    cerr << " the Bicubic_Interpolator::GetValueInterpolated function is not working (to be done) " << endl;
 };
 
 

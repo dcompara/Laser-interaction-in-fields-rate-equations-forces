@@ -1,22 +1,25 @@
-// Classe Vecteur à 3 dimensions
-// Basée sur ThreeVector.h,
+
+// Class: 3D Vector
+// Based on ThreeVector.h,
 // as part of the CLHEP - a Class Library for High Energy Physics.
 // http://wwwinfo.cern.ch/asd/lhc++/clhep/index.html*
 
-// Cette classe était assez incomplète par exemple l'operator / qui manque ...
-// Je l'ai en partie completée
-// Il y a en fait beaucoup de fonction en ligne qui ne sont pas définie ensuite
+// This class was originally quite incomplete, for example, it lacked the operator `/`.
+// I have partially completed it.
+// There are, in fact, many inline functions that are not defined elsewhere.
+
+// See also the class "vecteur_" (example from the C++ course)
+//         Patrick TRAU, ULP-IPST Strasbourg, November 2004
+// For stream manipulations.
+
+// In summary:
+// Once a `Vecteur3D` is defined, for example:
+// `Vecteur3D point = Vecteur3D(0, 1, 2);` or
+// `Vecteur3D point(0, 1, 2);`
+// You can access the X coordinate with `point.x()`.
 
 
-// Voir aussi la classe « vecteur_ » (exemple du cours C++)
-//         Patrick TRAU ULP-IPST Strasbourg novembre 04
-// Pour les stream
 
-
-// En gros
-// Une fois défini un Vecteur3D point=Vecteur3D(0,1,2); ou
-// Vecteur3D point(0,1,2);
-// point.x() pour prendre la coordonnée X
 
 #ifndef VECTOR3D_SEEN
 #define VECTOR3D_SEEN
@@ -114,6 +117,9 @@ public:
         {
             return dz;
         }
+        cerr << "use double & operator () (int i)  with inot 0,1,2 " << endl;
+        return dx; // To avoid warning in the compiler that "reaches end of non-void function [-Wreturn-type]"
+
     }
 
 

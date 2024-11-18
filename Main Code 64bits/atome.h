@@ -1,235 +1,127 @@
 /*
-  Name:  classe « Atome »
-  Copyright:
+  Name:  Class "Atome"
   Author: Daniel Comparat
   Date: 15/10/06 11:01
   Description:
 
+This class represents the external state of a particle.
+Class `Atome` contains a 3D vector for position, velocity, and acceleration,
+as well as properties like mass, charge, and name.
+ * Properties are initialized to 0.
+ * Values can be set using, e.g., `at.set_pos(new_pos)`.
+ * Values can be read using, e.g., `at.get_pos()`.
+ * Values can be incremented using, e.g., `at.inc_pos(d_pos)`.
+ * The `==` and `!=` operators are overridden but note that they compare doubles,
+   which may cause inaccuracies due to rounding errors.
+ * The `write` and `read` methods allow writing to and reading from a stream
+   (e.g., `cout` or a file).
 
-EN FAIT C'EST L'ETAT EXTERNE D'UNE PARTICULE
- Classe Atome at contenant un vecteur3D pos, vel, acc and mass + charge  + name
- * Elles sont initialisée à 0.
- * On peut leur mettre des valeurs par (exemple) at.set_pos(new_pos)
- * On peut lire les valeurs par (exemple) at.get_pos()
- * On peut incrémenter les valeurs par  at.inc_pos(d_pos)
- * == et != sont surdéfinis ATTENTION ILS COMPARENT DES DOUBLES (avec les erreurs d'arrondis cela doit être faux)
- * write et read permettent d'écrire et de lire dans un flux (cout (pas cerr ou clog) ou fichier)
- * FONCTIONS
-            at1.dist2(at2) est distance carrée entre at1 et at2
-            at1.dist(at2) est distance  entre at1 et at2
-            at1.cosTheta(at2)
-            at1.cos2Theta(at2) cos and cos^2 of the angle between MM2 and axe Oz (axe Oz est theta=0).
-
-  */
-
-
-
+FUNCTIONS:
+ - `at1.dist2(at2)` returns the squared distance between `at1` and `at2`.
+ - `at1.dist(at2)` returns the distance between `at1` and `at2`.
+ - `at1.cosTheta(at2)` computes the cosine of the angle between MM2 and the z-axis.
+ - `at1.cos2Theta(at2)` computes the square of the cosine of the angle between MM2 and the z-axis.
+*/
 
 #ifndef Atom_SEEN
 #define Atom_SEEN
 
 #include <iostream>
-using namespace std;
-
-#include "Vecteur3D.h"
+#include "Vecteur3D.h"  // Handles 3D vectors
 
 class Atome
 {
 protected:
-    Vecteur3D pos;             // (X,Y,Z) position
-    Vecteur3D vel;             // (X,Y,Z) velocity
-    Vecteur3D acc;             // (X,Y,Z) acceleration
-    double mass;              // mass
-    double charge;            // coulombian charge
-    string name;
+    Vecteur3D pos;             // (X, Y, Z) position
+    Vecteur3D vel;             // (X, Y, Z) velocity
+    Vecteur3D acc;             // (X, Y, Z) acceleration
+    double mass;               // Mass of the particle
+    double charge;             // Coulomb charge
+    std::string name;          // Particle name
 
-public:                // Forme canonique d'une classe
-    Atome();                        //constructeur
-    Atome(const Atome&);            // Constructeur de copie
-    Atome& operator = (const Atome&);       // Affectation par recopie
-    virtual ~Atome() {};                       // Destructeur par defaut
+public:
+    // Canonical form of a class
+    Atome();                               // Constructor
+    Atome(const Atome&);                   // Copy constructor
+    Atome& operator=(const Atome&);        // Copy assignment operator
+    virtual ~Atome() {};                   // Virtual destructor
 
-//--------------------------------------------
-// Surcharge des opérateurs +,-,*,/
-// +  = addition  membre à membre.
-// *  = multiplication  membre à membre (et même sous membres à sous membre. pos_x*pos_x
-// On peut aussi le faire avec un réel
-//--------------------------------------------
+    // Overloaded operators
+    friend Atome operator+(const Atome, const Atome);  // Overloaded addition operator
 
+    // Getters
+    Vecteur3D get_pos() const { return pos; }
+    Vecteur3D get_vel() const { return vel; }
+    Vecteur3D get_acc() const { return acc; }
+    double get_mass() const { return mass; }
+    double get_charge() const { return charge; }
+    std::string get_name() const { return name; }
 
-    friend Atome operator +(const Atome , const Atome);    // surcharge de l'opérateur +
+    // Setters
+    void set_pos(const Vecteur3D& new_pos) { pos = new_pos; }
+    void set_vel(const Vecteur3D& new_vel) { vel = new_vel; }
+    void set_acc(const Vecteur3D& new_acc) { acc = new_acc; }
+    void set_mass(const double& new_mass) { mass = new_mass; }
+    void set_charge(const double& new_charge) { charge = new_charge; }
+    void set_name(const std::string& new_name) { name = new_name; }
 
-    // Get components
-     Vecteur3D  get_pos()  const
-    {
-        return pos;
-    }
-    Vecteur3D  get_vel()  const
-    {
-        return vel;
-    }
-    Vecteur3D  get_acc()  const
-    {
-        return acc;
-    }
-    double get_mass()   const
-    {
-        return mass;
-    }
-    double get_charge()   const
-    {
-        return charge;
-    }
-    string get_name()   const
-    {
-        return name;
-    }
+    // Clear properties
+    void clear_pos() { pos = Vecteur3D(0., 0., 0.); }
+    void clear_vel() { vel = Vecteur3D(0., 0., 0.); }
+    void clear_acc() { acc = Vecteur3D(0., 0., 0.); }
+    void clear_mass() { mass = 0.; }
+    void clear_charge() { charge = 0.; }
 
+    // Increment properties
+    void inc_pos(const Vecteur3D& d_pos) { pos += d_pos; }
+    void inc_vel(const Vecteur3D& d_vel) { vel += d_vel; }
+    void inc_acc(const Vecteur3D& d_acc) { acc += d_acc; }
 
-    // Set components
-    void  set_pos(const Vecteur3D& new_pos)
+    // Comparison operators
+    bool operator==(const Atome& at) const;
+    bool operator!=(const Atome& at) const;
+
+    // Output the atom's data
+    virtual void write(std::ostream& flux)
     {
-        pos = new_pos;
-    }
-    void  set_vel(const Vecteur3D& new_vel)
-    {
-        vel = new_vel;
-    }
-    void  set_acc(const Vecteur3D& new_acc)
-    {
-        acc = new_acc;
-    }
-    void  set_mass(const double& new_mass)
-    {
-        mass = new_mass;
-    }
-    void  set_charge(const double& new_charge)
-    {
-        charge = new_charge;
-    }
-      void  set_name(const string& new_name)
-    {
-        name = new_name;
+        flux << "mass: " << mass << "\t"
+             << "charge: " << charge << "\t"
+             << "position: " << pos << "\t"
+             << "velocity: " << vel << "\t"
+             << "acceleration: " << acc << "\t"
+             << "name: " << name << "\t";
     }
 
-    // Clear components
-    void  clear_pos()
+    // Read atom data from a stream
+    virtual void read(std::istream& flux)
     {
-        pos = Vecteur3D(0.,0.,0.);
-    }
-    void  clear_vel()
-    {
-        vel = Vecteur3D(0.,0.,0.);
-    }
-    void  clear_acc()
-    {
-        acc = Vecteur3D(0.,0.,0.);
-    }
-    void  clear_mass()
-    {
-        mass = 0.;
-    }
-    void  clear_charge()
-    {
-        charge = 0.;
-    }
-// I did not put for name it is useless
-
-    void  inc_pos(const Vecteur3D& d_pos)
-    {
-        pos += d_pos;
-    }
-    void  inc_vel(const Vecteur3D& d_vel)
-    {
-        vel += d_vel;
-    }
-    void  inc_acc(const Vecteur3D& d_acc)
-    {
-        acc += d_acc;
-    }
-// I did not put for mass, charge, name it is useless
-
-    // Comparison
-    bool operator == (const Atome & at) const;
-    bool operator != (const Atome & at) const;
-
-
-    // Affichage
-
-    virtual void write(ostream & flux)
-    {
-        if (&flux == &cout)
-            cout << "masse : " << mass << "\t";
-        else
-            flux << mass << "\t";
-        if (&flux == &cout)
-            cout << "charge : " << charge << "\t";
-        else
-            flux << charge << "\t";
-        if (&flux == &cout)
-            cout << "position : " << pos << "\t";
-        else
-            flux << pos << "\t";
-        if (&flux == &cout)
-            cout << "vitesse : " << vel << "\t";
-        else
-            flux << vel<< "\t";
-        if (&flux == &cout)
-            cout << "acceleration : " << acc << "\t";
-        else
-            flux << acc << "\t";
-             if (&flux == &cout)
-            cout << "name : " << name << "\t";
-        else
-            flux << name << "\t";
-    }
-
-    // read des données
-
-    virtual void read(istream & flux)
-    {
-        if (&flux == &cin)
-            cout << "enter mass : ";
+        if (&flux == &std::cin) std::cout << "Enter mass: ";
         flux >> mass;
-        if (&flux == &cin)
-            cout << "enter charge : ";
+
+        if (&flux == &std::cin) std::cout << "Enter charge: ";
         flux >> charge;
-        if (&flux == &cin)
-            cout << "enter position : ";
+
+        if (&flux == &std::cin) std::cout << "Enter position: ";
         flux >> pos;
-        if (&flux == &cin)
-            cout << "enter vitesse : ";
+
+        if (&flux == &std::cin) std::cout << "Enter velocity: ";
         flux >> vel;
-        if (&flux == &cin)
-            cout << "enter acceleration : ";
+
+        if (&flux == &std::cin) std::cout << "Enter acceleration: ";
         flux >> acc;
-           if (&flux == &cin)
-            cout << "enter name : ";
+
+        if (&flux == &std::cin) std::cout << "Enter name: ";
         flux >> name;
     }
 
-
-    // Distance carrée entre deux Atomes
-    inline double dist2(const Atome & at) const;
-
-    // Distance entre deux Atomes
-    inline double dist(const Atome & at) const;
-
-    // Distance carrée entre deux vitesses d'Atomes
-    inline double dist2_vel(const Atome & at) const;
-
-    // Distance entre deux deux vitesses d' Atomes
-    inline double dist_vel(const Atome & at) const;
-
-    inline double cosTheta (const Atome & at) const;
-
-    inline double cos2Theta(const Atome & at) const;
-
-    // cos and cos^2 of the angle between MM2 and axe Oz (axe Oz est theta=0).
-
-    inline double theta(const Atome & at) const;
-
+    // Distances and angles
+    inline double dist2(const Atome& at) const;
+    inline double dist(const Atome& at) const;
+    inline double dist2_vel(const Atome& at) const;
+    inline double dist_vel(const Atome& at) const;
+    inline double cosTheta(const Atome& at) const;
+    inline double cos2Theta(const Atome& at) const;
+    inline double theta(const Atome& at) const;  // Cosine and squared cosine of angles
 };
-
 
 #endif

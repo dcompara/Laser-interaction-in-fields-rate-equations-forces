@@ -1,30 +1,24 @@
 /*
-  Name:  classe « Field »
+  Name: Class "Field"
   Copyright:
   Author: Daniel Comparat
   Date: 15/9/2012
 
 Class Field.
 
-A field F is defined by analytical formula in vector F0 + F1 + F2 + Fn for a given n
-for the electric field we add also the electric_potential
+A field \( F \) is defined by analytical formulas in the vector form \( F = F_0 + F_1 + F_2 + \dots + F_n \) for a given \( n \).
+For the electric field, we also include the electric potential.
 
-Initialisation to zero
+Initialization starts at zero.
 
-Il y a plusieurs type de champ possible donné par type_field_read
+There are several types of possible fields, as defined by `type_field_read`:
 
-0: donné au 2ème ordre: Field selon x,y et z. se décompose par composante: Example selon Ox: F0_x + F1_x x + F2_x x^2 + Fn_x x^n
-1:  Field in Helmoltz coils (so usualy goes with a field that is magnetic)
-2: Field map 3D from 2D cylindrical symmetry: 4 columns r,z, F_r(r,z); F_z(r,z)
-3: Field map 3D from 2D cylindrical symmetry: F_r(r,z); F_z(r,z)+ derivative d/dr; d/dz and d^2/drdz
-4: Field map 3D: 6x,y,z, Bx, By, Bz (TO BE DONE)
-
-
-REMARK: IF cylindrical Symmetry. Only the field on axis is needed
-cf Formula from  "Magnetic field with cylindrical symmetry": http://arxiv.org/pdf/physics/0610178v1.pdf
-
-  */
-
+0: Defined up to the second order: Fields along x, y, and z are decomposed by component. Example for \( F_x \): \( F_0x + F_1x \cdot x + F_2x \cdot x^2 + \dots + F_nx \cdot x^n \).
+1: Fields in Helmholtz coils (typically used with magnetic fields).
+2: 3D field maps derived from 2D cylindrical symmetry: 4 columns (r, z, \( F_r(r, z) \), \( F_z(r, z) \)).
+3: 3D field maps from 2D cylindrical symmetry, including first and second derivatives (\( \frac{\partial F_r}{\partial r} \), \( \frac{\partial F_z}{\partial z} \), and \( \frac{\partial^2}{\partial r \partial z} \)).
+4: 3D field maps with six components: x, y, z, \( F_x \), \( F_y \), \( F_z \). (TO BE IMPLEMENTED)
+*/
 
 #ifndef Field_SEEN
 #define Field_SEEN

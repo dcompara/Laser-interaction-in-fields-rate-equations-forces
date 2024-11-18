@@ -1,24 +1,20 @@
 #include "atome.h"
+
 // ------------
 // Constructors
 // ------------
 
-
-Atome::Atome()                       // Constructeur par défaut
+Atome::Atome()  // Default constructor
 {
-    pos.set(0.,0.,0.);
-    vel.set(0.,0.,0.);
-    acc.set(0.,0.,0.);
+    pos.set(0., 0., 0.);
+    vel.set(0., 0., 0.);
+    acc.set(0., 0., 0.);
     mass = 0.;
     charge = 0.;
-    name ="";
-};
+    name = "";
+}
 
-//Atome::~Atome()
-//{}
-//;                    // Destructeur
-
-Atome::Atome(const Atome & at)               // Constructeur de (re)copie
+Atome::Atome(const Atome &at)  // Copy constructor
 {
     pos = at.pos;
     vel = at.vel;
@@ -26,11 +22,11 @@ Atome::Atome(const Atome & at)               // Constructeur de (re)copie
     mass = at.mass;
     charge = at.charge;
     name = at.name;
-};
+}
 
-Atome & Atome::operator = (const Atome & at)          // Affectation par recopie
+Atome &Atome::operator=(const Atome &at)  // Copy assignment operator
 {
-    if (this != &at) // On vérifie que les objets ne sont pas les mêmes !
+    if (this != &at)  // Check for self-assignment
     {
         pos = at.pos;
         vel = at.vel;
@@ -43,106 +39,99 @@ Atome & Atome::operator = (const Atome & at)          // Affectation par recopie
 }
 
 //--------------------------------------------
-// Surcharge des opérateurs +,-,*,/
-// + (-) = addition (soustraction) membre à membre.
-// * (/) = multiplication (division) membre à membre (et même sous membres à sous membre. pos_x*pos_x
-// On peut aussi le faire avec un réel
+// Overloaded operators
+// + and - = member-wise addition and subtraction.
+// * and / = member-wise multiplication and division.
 //--------------------------------------------
 
-Atome operator +(const Atome at1, const Atome at2)
+Atome operator+(const Atome at1, const Atome at2)
 {
     Atome sum;
 
-    sum.set_pos(at1.get_pos()+at2.get_pos());
-    sum.set_vel(at1.get_vel()+at2.get_vel());
-    sum.set_acc(at1.get_acc()+at2.get_acc());
-    sum.set_mass(at1.get_mass()+at2.get_mass());
-    sum.set_charge(at1.get_charge()+at2.get_charge());
-    sum.set_name(at1.get_name()+at2.get_name());
+    sum.set_pos(at1.get_pos() + at2.get_pos());
+    sum.set_vel(at1.get_vel() + at2.get_vel());
+    sum.set_acc(at1.get_acc() + at2.get_acc());
+    sum.set_mass(at1.get_mass() + at2.get_mass());
+    sum.set_charge(at1.get_charge() + at2.get_charge());
+    sum.set_name(at1.get_name() + at2.get_name());
 
     return sum;
 }
-
-
-
 
 // ----------
 // Comparison
 // ----------
 
-bool Atome::operator == (const Atome & at) const
+bool Atome::operator==(const Atome &at) const
 {
-    return (at.pos==pos && at.vel==vel && at.acc==acc && at.mass==mass && at.charge==charge && at.name == name) ? true : false;
+    return (at.pos == pos && at.vel == vel && at.acc == acc && at.mass == mass && at.charge == charge && at.name == name);
 }
 
-bool Atome::operator != (const Atome & at) const
+bool Atome::operator!=(const Atome &at) const
 {
-    return (at.pos!=pos || at.vel!=vel || at.acc!=acc || at.mass!=mass || at.charge!=charge || at.name != name) ? true : false;
+    return !(at == *this);
 }
 
 //----------------------------------
-// Surdéfinition des entrées sorties
+// Input and Output Overloading
 //----------------------------------
 
-ostream& operator << (ostream &flux,Atome at)
+ostream &operator<<(ostream &flux, Atome at)
 {
     at.write(flux);
-    return(flux);
+    return flux;
 }
 
-istream& operator >> (istream &flux,Atome & at) //at est modifié!
+istream &operator>>(istream &flux, Atome &at)
 {
     at.read(flux);
-    return(flux);
+    return flux;
 }
-//----------
-// Distances, angles
-//----------
 
-// Distance carrée entre deux Atomes
-inline double Atome::dist2(const Atome & at) const
+// ----------
+// Distances and Angles
+// ----------
+
+// Squared distance between two atoms
+inline double Atome::dist2(const Atome &at) const
 {
-    double R2 = (pos - at.get_pos()).mag2();
-    return(R2);
+    return (pos - at.get_pos()).mag2();
 }
 
-// Distance entre deux Atomes
-inline double Atome::dist(const Atome & at) const
+// Distance between two atoms
+inline double Atome::dist(const Atome &at) const
 {
-    return(sqrt(this->dist2(at))); // ou return(sqrt(*this.dist2(at)));
+    return sqrt(this->dist2(at));
 }
 
-// Distance carrée entre deux vitesses d'Atomes
-inline double Atome::dist2_vel(const Atome & at) const
+// Squared distance between velocities of two atoms
+inline double Atome::dist2_vel(const Atome &at) const
 {
-    double R2 = (vel - at.get_vel()).mag2();
-    return(R2);
+    return (vel - at.get_vel()).mag2();
 }
 
-// Distance entre deux deux vitesses d'Atomes
-inline double Atome::dist_vel(const Atome & at) const
+// Distance between velocities of two atoms
+inline double Atome::dist_vel(const Atome &at) const
 {
-    return(sqrt(this->dist2_vel(at)));
+    return sqrt(this->dist2_vel(at));
 }
 
-inline double Atome::cosTheta (const Atome & at) const
+// Cosine of the angle between positions and z-axis
+inline double Atome::cosTheta(const Atome &at) const
 {
-    return((pos-at.get_pos()).Vecteur3D::cosTheta());
+    return (pos - at.get_pos()).Vecteur3D::cosTheta();
 }
-inline double Atome::cos2Theta(const Atome & at) const
+
+// Cosine squared of the angle between positions and z-axis
+inline double Atome::cos2Theta(const Atome &at) const
 {
-    return((pos-at.get_pos()).Vecteur3D::cos2Theta());
+    return (pos - at.get_pos()).Vecteur3D::cos2Theta();
 }
-// cos and cos^2 of the angle between the two points and axe Oz (axe Oz est theta=0).
 
-inline double Atome::theta(const Atome & at) const
+// Angle between positions and z-axis
+inline double Atome::theta(const Atome &at) const
 {
-    return((pos-at.get_pos()).Vecteur3D::theta());
+    return (pos - at.get_pos()).Vecteur3D::theta();
 }
-
-
-// ----------------------------------
-//   FIN DES FONCTIONS EN LIGNES
-// ----------------------------------
 
 
