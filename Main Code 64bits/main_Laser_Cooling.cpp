@@ -1,71 +1,64 @@
 /*
-  Name: Laser cooling of translational degree of freedom of a molecule.
-
+  Name: Laser cooling of the translational degree of freedom of a molecule.
 
   Author: Daniel Comparat
-  Date: 17/12/08 (mise à jour 25/4/2012)
+  Date: 17/12/08 (updated on 25/4/2012)
 
-  Compilateur : Code::Blocks
-  Librairy Math: GSL (GNU)
-  Affichage: OPEN GL + GLUT
+  Compiler: Code::Blocks
+  Math Library: GSL (GNU)
+  Visualization: OPEN GL + GLUT
 
+  Molecules are described using a class called Molecule.
+  Their parameters (number, velocity, etc.) are defined in the file Liste_Param.h
+  (note: this is not a C++ file; the .h extension is used for compatibility with text editors).
 
-les molécules sont décrites par une classe Molecule
-leur paramètres (nb, vitesse, etc.. sont dans le fichier Liste_Param.h) (ce n'est pas un fichier C++ le .h est là juste pour avoir un bon éditeur))
-Les transtions moléculaires niveaux, transitions (Franck-COndon, Hönl London,...) sont lus
-dans Initialisation_programme qui appelle les fichiers dans Transitions_initialisation
+  Molecular transitions (levels, Franck-Condon, Hönl-London, etc.) are initialized
+  in Initialisation_programme, which reads from files defined in Transitions_initialisation.
 
-Les taux de transitions proviennent d'une liste qui souvent vient du programme
-Ainsi les unités sont
-DEBYE^2 pour force de raie (dipole^2) et
-CM^-1 pour énergie
+  Transition rates come from a list, often derived from a specific program.
+  Units used are:
+  - DEBYE^2 for line strength (dipole^2)
+  - CM^-1 for energy.
 
-Elles sont excité par laser (classe Laser)
-qui excite le nuage gaussien  (taille sigma_SAMPLEx,y,z) via plusieurs
-laser eux aussi supposés gaussiens (waist_x,y,z). Voir détail dans chaque .h des classes)
+  Molecules are excited by lasers (Laser class), which interact with the Gaussian-shaped
+  particle cloud (defined by sigma_SAMPLEx, y, z) via several lasers, also assumed Gaussian
+  (waist_x, y, z). For more details, see the .h files of each class.
 
-Il y a un mouvement dans un champ (électrique ou magnétique) décrit par une classe Field
-
-Le programme Transitions_rate_calcul calcul les taux de transition (pas d'équations de Bloch seulement de taux).
-Il est basé sur l'interaction avec un laser de largeur fini.
-La saturation est (un peu) prise en compte.
+  Molecular motion and interactions are calculated...
 
 
-l'évolution temporelle (de l'état interne) est basée sur une équation de taux bien adapté
-à l'évolution cinétique Monte Carlo faite dans le programme Kinetic_Monte_Carlo
+Molecules move in a field (electric or magnetic) described by the Field class.
 
-Plus précisement on calcul un temps dt_KMC pour l'évolution de l'état interne
-il faut évidemment qu'il soit petit devant le temps dt_dyn caractéristique d'une petite évolution des taux
-(par exemple le temps de transit dans le laser qui modifie les taux d'excitation)
-Dans le cas contraire on fait évoluer les positions des particules d'une fraction de dt_dyn
-sous l'effets des forces Zeeman, Stark et dipolaires selon un algorithme "Vélocity Verlet" dans "one_body"
-et on recommence.
+The Transitions_rate_calcul program calculates transition rates (not Bloch equations, only rates).
+It is based on interactions with a laser of finite linewidth.
+Saturation is (partially) taken into account.
 
-La mise à jours des états des molécules et de leur énergie ce fait dans "shift_molecule".
+The temporal evolution of the internal state is based on a rate equation, well-suited
+for the Kinetic Monte Carlo algorithm implemented in the Kinetic_Monte_Carlo program.
 
-La sortie est graphique  dans "Affichage" et dans des fichiers de données dans "sortie_donnees"
+More specifically:
+- A time step `dt_KMC` is calculated for the internal state evolution.
+  This step must be much smaller than `dt_dyn`, the characteristic time for a small change in rates
+  (e.g., transit time in the laser, which modifies excitation rates).
+- If this condition is not met, the particle positions are evolved by a fraction of `dt_dyn`
+  under the effects of Zeeman, Stark, and dipolar forces using a "Velocity Verlet" algorithm
+  implemented in the "one_body" module, and the process repeats.
 
-Des statistiques peuvent être faites sur les vitesses et positions (températures, énergie) dans "Stat_Molecule"
+The states and energies of the molecules are updated ...
 
-Il y a des
-TODO:  là où il faut faire des choses mieux
-DEBUG là où je met des fonctions utilisées pour le débuggage actuel
+/*
+Updates to molecular states and energies are performed in "shift_molecule."
 
+Output:
+- Graphical output is handled in "Affichage."
+- Data files are generated in "sortie_donnees."
+
+Statistics on velocities and positions (e.g., temperatures, energy) are calculated in "Stat_Molecule."
+
+Tags in the code:
+- TODO: Indicates areas requiring improvement.
+- DEBUG: Marks functions used for current debugging.
 */
-
-#include  <iostream>                       // to include cout, cin
-#include  <cmath>                          // to include sqrt(), etc.
-#include  <cstdlib>                        // for atoi() and atof()
-#include  <stdlib.h>
-#include   <stdio.h>
-#include  <unistd.h>                       // for getopt()
-#include  <fstream>                        // to read the data and put them in files
-#include <algorithm>                       // Pour le binary search
-#include <numeric>                         // Pour accumulate
-#include <iomanip>
-#include <list>                            // for list
-#include <Eigen/Eigen>  // POur les matrice du hamiltonien
-using namespace Eigen;
 
 
 
@@ -76,378 +69,296 @@ using namespace Eigen;
 #include <GL/glut.h>
 #endif
 
-#include  <gl/glut.h>                       // GLUT bibliotheque
-#include <GL/glu.h>                         // OPENGL (GLU)
-#include <GL/gl.h>                          // OPENGL
+#include <GL/glut.h>   // GLUT library
+#include <GL/glu.h>    // OpenGL (GLU)
+#include <GL/gl.h>     // OpenGL
 #include <GL/glext.h>
 
-//#include "GltZpr/zpr.h"               //Pour zoomer, translater et tourner avec la souris
-// Ne marche pas actuelement
-//#include "GltZpr/zpr.c"               //Pour zoomer, translater et tourner avec la souris
+// #include "GltZpr/zpr.h"   // For zooming, translating, and rotating with the mouse
+// Currently not working
+// #include "GltZpr/zpr.c"   // For zooming, translating, and rotating with the mouse
 
+#include <gsl/gsl_rng.h>       // For random number generator
+#include <gsl/gsl_randist.h>   // For Gaussian random generator
 
-#include <gsl/gsl_rng.h>                   // for random generator
-#include <gsl/gsl_randist.h>               // for gaussian random generator
+#include "algorithmes.h"       // For binary search and waiting algorithms
+#include "Internal_state.h"    // Internal state class
+#include "constantes_SI.h"     // SI constants
+#include "Kinetic_Monte_Carlo.h" // Kinetic Monte Carlo algorithm
+#include "Laser.h"                   // Laser class
+#include "Molecule.h"                // Molecule class
+#include "Field.h"                   // Field class
+#include "datacards.h"               // For reading the parameter file
+#include "params.h"                  // For varying parameters
 
+#include "Transitions_initialisation.h" // Initialization of transitions
+#include "Initialisation_programme.h"   // General program initialization
+#include "shift_molecule.h"          // For energy shifts (delta)
+#include "diagonalization.h"         // For energy shifts (delta)
+#include "Transition_rate_calcul.h"  // Calculates transition rates
+#include "Stat_Molecule.h"           // For molecule statistics
+#include "Affichage.h"               // Screen display
+#include "Affichage_Mol.h"           // Molecule display
+#include "sortie_donnees.h"          // Data output
 
-#include "algorithmes.h"                       // Pour le binary search et le wait
-#include "Internal_state.h"                       // Classe état interne
-#include "constantes_SI.h"                  // SI Constantes
-#include "Kinetic_Monte_Carlo.h"            // Algorithme MC cinétique
-#include "Laser.h"                       // Classe Laser
-#include "Molecule.h"                       // Classe molecule
-#include "Field.h"                       // Classe molecule
-#include "datacards.h"                      // Pour lire le fichier de paramètres
-#include "params.h"                         // Pour faire varier des paramètres
-
-#include "Transitions_initialisation.h"       // Initialisation du programme
-#include "Initialisation_programme.h"       // Initialisation du programme
-#include  "shift_molecule.h"              // Pour le shift en énergie delta
-#include  "diagonalization.h"              // Pour le shift en énergie delta
-#include "Transition_rate_calcul.h"                     // Sauvegarde des données (+ sortie diverses)
-#include "Stat_Molecule.h"                       // Classe molecule
-#include "Affichage.h"                     // Affichage écran
-#include "Affichage_Mol.h"                     // Affichage des molécules
-#include "sortie_donnees.h"                     // Sauvegarde des données (+ sortie diverses)
-#include "one_body.h"                   // Algorithme pour calculer les déplacements
-#include "scaling_velocities.h"
 
 using namespace std;
 
 
-// fonction appelée en cas de dépassement de mémoire
-void deborde ()
+// Function called in case of memory overflow
+void deborde()
 {
-    cerr << "mémoire insuffisante - arrêt de l'exécution " << endl;
-    exit (1);
+    std::cerr << "Insufficient memory - execution stopped" << std::endl;
+    exit(1);
 }
 
 
 /************************************************************************/
-/************************** Programme Principal *************************/
-/********  main appelle RePaint () dans OPENGL + GLUT *******************/
+/************************** Main Program *******************************/
+/******** main calls RePaint() in OPENGL + GLUT ***********************/
 /************************************************************************/
 
-
-// fonction générale: initialisation + boucle KMC et N-corps
-void RePaint ()
+// General function: initialization + KMC and N-body loop
+void RePaint()
 {
     /*****************************************************************/
-    /** Création des variables utiles (paramètres à scanner ou pas) **/
+    /** Creation of useful variables (parameters to be scanned or not) **/
     /*****************************************************************/
 
-    string nomdat = "Data/Liste_Param.h" ;  // nom du fichier de paramètres
-    DataCards data(nomdat.c_str()); // Lit le fichier et crée les datacards.
+    std::string nomdat = "Data/Liste_Param.h";  // Name of the parameter file
+    DataCards data(nomdat.c_str()); // Reads the file and creates the datacards.
 
-    bool Graphics = (bool) data.IParam("Graphics"); // affichage graphique ou non.
-    const double SIZE_affichage = data.DParam("SIZE_affichage"); // Taille de la zone d'affichage
-    MC_algorithmes Algorithme_MC = (MC_algorithmes) data.IParam("Choix_algorithme_Monte_Carlo"); // Choix de l'algorithme Monté Carlo
-    N_Body_algorithmes Algorithme_N_body = (N_Body_algorithmes) data.IParam("Choix_algorithme_N_corps"); // Choix de l'alogithme N coprs
+    bool Graphics = (bool)data.IParam("Graphics"); // Enable or disable graphical output.
+    const double SIZE_affichage = data.DParam("SIZE_affichage"); // Size of the display area
+    MC_algorithmes Algorithme_MC = (MC_algorithmes)data.IParam("Choix_algorithme_Monte_Carlo"); // Choice of Monte Carlo algorithm
+    N_Body_algorithmes Algorithme_N_body = (N_Body_algorithmes)data.IParam("Choix_algorithme_N_corps"); // Choice of N-body algorithm
 
-    /***  NOM DES FICHIERS ***/
-    string nom_sortie_temp_string, nom_sortie_scal_string, nom_file_Levels_string, nom_file_Lines_string, nom_sortie_donnees_string, nom_sortie_rate_string, nom_fichier_random_gen_string,
-           nom_file_Laser_Spectrum_string, nom_file_Laser_Intensity_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
+    /*** FILE NAMES ***/
+    std::string nom_sortie_temp_string, nom_sortie_scal_string, nom_file_Levels_string, nom_file_Lines_string, nom_sortie_donnees_string, nom_sortie_rate_string, nom_fichier_random_gen_string,
+        nom_file_Laser_Spectrum_string, nom_file_Laser_Intensity_string, nom_file_Magn_Field_3D_string, nom_file_Elec_Field_3D_string;
 
     const char *nom_sortie_temp, *nom_sortie_scal, *nom_file_Levels, *nom_file_Lines, *nom_sortie_donnees, *nom_sortie_rate, *nom_fichier_random_gen,
           *nom_file_Laser_Spectrum, *nom_file_Laser_Intensity, *nom_file_Magn_Field_3D, *nom_file_Elec_Field_3D;
 
-    nom_file_Levels_string =  data.SParam("nom_file_Levels");      // Fichier contenant les Levels (etat, energie, ...)
-    nom_file_Lines_string = data.SParam("nom_file_Lines");         // Fichier contenant les transitions
+    nom_file_Levels_string = data.SParam("nom_file_Levels");      // File containing levels (state, energy, ...)
+    nom_file_Lines_string = data.SParam("nom_file_Lines");        // File containing transitions
     nom_sortie_donnees_string = data.SParam("nom_sortie_donnees");
     nom_sortie_rate_string = data.SParam("nom_sortie_rate");
     nom_fichier_random_gen_string = data.SParam("nom_fichier_random_gen");
-    nom_file_Laser_Spectrum_string = data.SParam("nom_file_Laser_Spectrum");         // Fichier contenant les transitions
-    nom_file_Laser_Intensity_string = data.SParam("nom_file_Laser_Intensity");         // Fichier contenant les transitions
-    nom_file_Magn_Field_3D_string =  data.SParam("nom_file_Magn_Field_3D");
-    nom_file_Elec_Field_3D_string =  data.SParam("nom_file_Elec_Field_3D");
+    nom_file_Laser_Spectrum_string = data.SParam("nom_file_Laser_Spectrum");   // File containing transitions
+    nom_file_Laser_Intensity_string = data.SParam("nom_file_Laser_Intensity"); // File containing transitions
+    nom_file_Magn_Field_3D_string = data.SParam("nom_file_Magn_Field_3D");
+    nom_file_Elec_Field_3D_string = data.SParam("nom_file_Elec_Field_3D");
 
-    nom_file_Levels =  nom_file_Levels_string.c_str();      // Fichier contenant les Levels (etat, energie, ...)
-    nom_file_Lines =  nom_file_Lines_string.c_str();         // Fichier contenant les transitions
+    nom_file_Levels = nom_file_Levels_string.c_str();      // File containing levels (state, energy, ...)
+    nom_file_Lines = nom_file_Lines_string.c_str();        // File containing transitions
     nom_sortie_donnees = nom_sortie_donnees_string.c_str();
     nom_sortie_rate = nom_sortie_rate_string.c_str();
     nom_fichier_random_gen = nom_fichier_random_gen_string.c_str();
-    nom_file_Laser_Spectrum = nom_file_Laser_Spectrum_string.c_str();         // Fichier contenant les transitions
-    nom_file_Laser_Intensity = nom_file_Laser_Intensity_string.c_str();         // Fichier contenant les transitions
-    nom_file_Magn_Field_3D =  nom_file_Magn_Field_3D_string.c_str();
-    nom_file_Elec_Field_3D =  nom_file_Elec_Field_3D_string.c_str();
+    nom_file_Laser_Spectrum = nom_file_Laser_Spectrum_string.c_str();   // File containing transitions
+    nom_file_Laser_Intensity = nom_file_Laser_Intensity_string.c_str(); // File containing transitions
+    nom_file_Magn_Field_3D = nom_file_Magn_Field_3D_string.c_str();
+    nom_file_Elec_Field_3D = nom_file_Elec_Field_3D_string.c_str();
 
-    FitParams params; // this is a vector<Param *>
-    params.read(nomdat); // Lit le ficher des paramètres entre "BEGIN_OF_FITPARAMS" et "END_OF_FITPARAMS".
-    params.init_value(nomdat); // Initialise les paramètres selon la valeur non scannée de la dataCard (cf datacards.h) ou à la valeur min si scannée
-
+    FitParams params; // This is a vector<Param *>
+    params.read(nomdat); // Reads the parameter file between "BEGIN_OF_FITPARAMS" and "END_OF_FITPARAMS".
+    params.init_value(nomdat); // Initializes parameters based on the non-scanned value of the dataCard (cf datacards.h) or to the minimum value if scanned.
 
     /******************************************************************/
-    /** création abstraite des objets (champs, molécules, laser ...) **/
+    /** Abstract creation of objects (fields, molecules, lasers, ...) **/
     /******************************************************************/
 
-    vector <Internal_state> Level; // Level is a list of Internal_state
-    vector <Laser> lasers; //Lasers utilisés pour le refroidissement
+    std::vector<Internal_state> Level; // Level is a list of Internal_state
+    std::vector<Laser> lasers;         // Lasers used for cooling
 
-    Field champB, champE; //champs magnétique et électrique
+    Field champB, champE;              // Magnetic and electric fields
 
-    const int Nb_type_of_Mol =  data.IParam("Nb_type_of_Mol");
+    const int Nb_type_of_Mol = data.IParam("Nb_type_of_Mol");
     int N_Mol[1];
-    N_Mol[0] = (int)  params.LocateParam("N_Mol[0]")->val; // The number of laser cooled molecules
-    vector <Molecule> Mol;
+    N_Mol[0] = (int)params.LocateParam("N_Mol[0]")->val; // The number of laser-cooled molecules
+    std::vector<Molecule> Mol;
 
-    vector <double> rate; // Taux (intégré en temps) des transitions.
-    vector <type_codage_react> reaction_list; // liste des réactions selon le format donné par type_codage_react souvent (n° du système, état final du système)
+    std::vector<double> rate;                   // Rates (time-integrated) of transitions.
+    std::vector<type_codage_react> reaction_list; // List of reactions according to the format given by type_codage_react, often (system number, final system state).
 
-    ofstream file_out(nom_sortie_donnees); // ajouter ", ios::app" si on veux écrire à la fin du fichier. Sinon efface le fichier à la réecriture
-    file_out<< setprecision(8);             // 8 décimales dans les fichiers de sortie
-    ofstream file_rate(nom_sortie_rate);
+    std::ofstream file_out(nom_sortie_donnees); // Add ", ios::app" to write to the end of the file; otherwise, it erases the file on rewrite.
+    file_out << std::setprecision(8);          // 8 decimals in output files
+    std::ofstream file_rate(nom_sortie_rate);
 
-    clock_t t_start,t_end; // Pour mesurer le temps de déroulement du programme
+    clock_t t_start, t_end; // For measuring program runtime
     t_start = clock();
 
+    /******************************************************************/
+    /********************** GSL Initialization ************************/
+    /******************************************************************/
 
-    /*****************************************************************/
-    /********************** Initialisation du GSL ********************/
-    /*****************************************************************/
+    gsl_rng *r; // Random number generator
+    // set_random_generator(r, (int)params.LocateParam("Seed_Init_Random_Number_Generator")->val, nom_fichier_random_gen);  // Initialize the random generator (Mersenne Twister here)
+    // TODO (Daniel#8#): Does not work (file for random generator). But everything is almost done, so it should be easy to fix.
 
-    gsl_rng * r; // Générateur de nb aléatoire
-    // set_random_generator(r, (int) params.LocateParam("Seed_Init_Random_Number_Generator")->val, nom_fichier_random_gen);  // Initialize the random_generator (Mersenne Twister here)
-// TODO (Daniel#8#): DOes not work (file fo rrandom generator). But averything is almost done, so should be easy to fix
-
-    const gsl_rng_type * T;
+    const gsl_rng_type *T;
     gsl_rng_env_setup();
-    T = gsl_rng_default;  // "Mersenne Twister" generator by default. Plus rapide que RANLUX. cf. chapitre 17.12 de gsl_ref.
-    r = gsl_rng_alloc (T);
+    T = gsl_rng_default;  // "Mersenne Twister" generator by default. Faster than RANLUX. See chapter 17.12 of gsl_ref.
+    r = gsl_rng_alloc(T);
 
-    initialisation_trans_mol(nom_file_Levels, nom_file_Lines, Level, params); // Lecture des fichiers de niveaux et de transitions
+    initialisation_trans_mol(nom_file_Levels, nom_file_Lines, Level, params); // Reads level and transition files
 
-    bool  test_fin_boucle_param; // Paramètre de fin de boucle sur les paramètres à scanner
+    bool test_fin_boucle_param; // End-of-loop parameter for scanned parameters
 
     if (data.IParam("is_DataCard_out") == 1)
     {
-        file_out << " Nb card " << data.NbCards() << endl << "DATA " << endl << data << endl;
+        file_out << " Nb card " << data.NbCards() << std::endl << "DATA " << std::endl << data << std::endl;
     }
-    // AU DEBUT SORT TOUTES LES DONNEES du fichier de donnée initiale
+    // At the beginning, output all data from the initial data file
     if (data.IParam("is_DataCard_out") == 2)
     {
-        ofstream file_out_datacard(data.SParam("nom_sortie_donnees_Data").c_str()); // ajouter ", ios::app" si on veux écrire à la fin du fichier. Sinon efface le fichier à la réecriture
-        file_out_datacard << " Nb card " << data.NbCards() << endl << "DATA " << endl << data << endl; // AU DEBUT SORT TOUTES LES DONNEES du fichier de donnée initiale
+        std::ofstream file_out_datacard(data.SParam("nom_sortie_donnees_Data").c_str()); // Add ", ios::app" to write to the end of the file; otherwise, it erases the file on rewrite.
+        file_out_datacard << " Nb card " << data.NbCards() << std::endl << "DATA " << std::endl << data << std::endl; // At the beginning, output all data from the initial data file
         file_out_datacard.close();
     }
 
     /*** Hamiltonian + dipole matrix element ***/
-
-// TODO (Daniel#6#): Use dynamcial size (check fr speed) to avoir this value
-    const int nb_levels=32; //   Level.size();
-    // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
-
     MatrixXcd E0_cm;
     MatrixXcd Zeeman_cm_B;
-    MatrixXcd H;     // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
+    MatrixXcd H;        // Hamiltonian Matrix. It is a Hermitian matrix, so I use complex, not MatrixXd
     MatrixXd d0[3];
     MatrixXcd d[3];
 
-    Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize the Energy, Zeeman and dipoles matrices
-
-
+    Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize energy, Zeeman, and dipole matrices
 
     /*****************************************************************/
-    /** boucle globale (sur les paramètres scannés   *****************/
+    /** Global loop (over scanned parameters) ***********************/
     /*****************************************************************/
-
-
 
     do
     {
-        double t=0.; //temps de début de la simulation en µs
-        double t_mise_a_jour=0.; //temps de faire la mise a jour (potentiels, accélération, N corps ..) de toutes les molécules
-        /** On  ne met à jour les potentiels que de la molécule dont l'état interne à été modifié ou lorsque le pas temporel du N-corps est atteind on les modifie toutes **/
-        double t_dia=0.; //temps de sortie fichier
-        double t_out=0.; //temps d'affichage
-        double t_fin =  params.LocateParam("t_fin")->val; // temps final
-        double dt_KMC; // Temps pour qu'une réaction apparaisse
-        double dt_dyn = 0; // temps dynamique
-        double dt_dia = params.LocateParam("dt_dia")->val; // time interval between diagnostics (in cout) output
-        double dt_out = params.LocateParam("dt_out")->val; // time interval between output of snapshots (draw particles)
+        double t = 0.0;                 // Start time of the simulation in µs
+        double t_mise_a_jour = 0.0;     // Time to update potentials, acceleration, N-body, etc., for all molecules
+        /** Potentials are only updated for the molecule whose internal state was modified, or when the N-body time step is reached, all are updated. **/
+        double t_dia = 0.0;             // Time for file output
+        double t_out = 0.0;             // Time for graphical output
+        double t_fin = params.LocateParam("t_fin")->val; // Final time
+        double dt_KMC;                  // Time for a reaction to occur
+        double dt_dyn = 0.0;            // Dynamic time
+        double dt_dia = params.LocateParam("dt_dia")->val; // Interval between diagnostics output (in `cout`)
+        double dt_out = params.LocateParam("dt_out")->val; // Interval between graphical output snapshots (particle drawing)
 
         /*****************************************************************/
-        /********************** Initialisation du GSL ********************/
+        /********************** Initialization of GSL ********************/
         /*****************************************************************/
-
-        gsl_rng_set(r,(int) params.LocateParam("Seed_Init_Random_Number_Generator")->val);
+        gsl_rng_set(r, (int)params.LocateParam("Seed_Init_Random_Number_Generator")->val);
         save_random_generator(r, nom_fichier_random_gen);
 
         /*****************************************************************/
-        /********************** Initialisation des molécules *************/
+        /******************** Initialization of molecules ***************/
         /*****************************************************************/
 
+        Init_Field(champB, champE, params, nom_file_Magn_Field_3D, nom_file_Elec_Field_3D);  // Initialize fields
+        // Create the list of molecules (vector `Mol`), its size will not be modified later
+        Init_Molecule(r, Mol, champB, champE, Nb_type_of_Mol, params, data); // Position, velocity
+        initialisation_proba(r, Mol, N_Mol[0], Level); // Initialize the populations of molecules at the start based on the desired population
 
-        Init_Field(champB, champE, params, nom_file_Magn_Field_3D, nom_file_Elec_Field_3D);  // Initialise les champs.
-        // Create the list of molecules (create the vector Mol here) its size will not be modified then
-        Init_Molecule(r, Mol, champB, champE, Nb_type_of_Mol, params, data); // Position, vitesse
-        initialisation_proba(r, Mol, N_Mol[0], Level); // Etat des populations de molécules au départ en fonction de la population voulue
+        const int Nb_laser = data.IParam("Nb_laser");  // Number of lasers used (could have more in `Liste_Param`, but this is the number for this run)
 
-        const int Nb_laser = data.IParam("Nb_laser");  // number of used laser (we could have more in the Liste_Param file, but this will be the number used in this run)
+        Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialize lasers
+        // Sortie_laser_spectrum(file_out, lasers, params, 0); // Debug
+        // Sortie_laser_intensity(file_out, lasers, params, 0);
 
-        Init_Laser(lasers,Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers
-        // Sortie_laser_spectrum(file_out, lasers, params,0); // Debug
-        // Sortie_laser_intensity(file_out, lasers, params,0);
-<<<<<<< HEAD
-=======
+        int number_mol = aucune; // Index of the molecule affected by a modification (none at the start, hence value -1)
+        int number_photons = 0;  // Number of photons involved (absorption, spontaneous, or stimulated emission)
 
-        /**
-        on calcul un temps dt_KMC pour l'évolution de l'état interne.
-        Si dt_KMC < temps dt_evol_ext_typ caractéristique de l'évolution des taux (par exemple le temps de transit dans le laser qui modifie les taux d'excitation) on effectue la transition et on bouge les particules
-        Dans le cas contraire on fait évoluer les particules durant dt_dyn qui est d'une fraction de dt_evol_ext_typ et on recommence.
-        **/
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
-
-        int number_mol = aucune;  // numéro de la molécule affectée par une modification (aucune au début d'où la valeur -1)
-        int number_photons = 0;  // nombre de photons en jeu (absorption, emission spontanée ou stimulé ...
-
-
-<<<<<<< HEAD
         /*****************************************************************/
-        /** boucle globale en temps   ************************************/
+        /** Global time loop *********************************************/
         /*****************************************************************/
-cerr << "ATTENTION A ENLEVER dans initialisation_proba test pour Ps " << endl;
 
-
-=======
-        /*** Hamiltonian + dipole matrix element ***/
-
-// TODO (Daniel#6#): Use dynamcial size (check fr speed) to avoir this value
-        const int nb_levels=32; //   Level.size();
-        // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
-
-        MatrixXcd E0_cm(nb_levels,nb_levels);
-        MatrixXcd Zeeman_cm_B(nb_levels,nb_levels);
-
-        MatrixXd d0[3];
-        d0[0] = MatrixXd(nb_levels,nb_levels);
-        d0[1] = MatrixXd(nb_levels,nb_levels);
-        d0[2] = MatrixXd(nb_levels,nb_levels);
-
-        MatrixXcd d[3];
-        d[0] = MatrixXcd(nb_levels,nb_levels);
-        d[1] = MatrixXcd(nb_levels,nb_levels);
-        d[2] = MatrixXcd(nb_levels,nb_levels);
-
-        MatrixXcd H(nb_levels,nb_levels);     // Hamiltonian Matrix. It is an hermitian matrix so I use complex not MatrixXcd
-        SelfAdjointEigenSolver<MatrixXcd> es; // eigenstates and eigenvalues
-
-        Read_Energy_Zeeman_dipole_for_Diagonalization(E0_cm, Zeeman_cm_B, d0); // Initialize the Energy, Zeeman and dipoles matrices
-
-
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
-        while(true) // Infinite loop untill t_end is reached
+        while (true) // Infinite loop until `t_end` is reached
         {
-            // cout << "t = " << t << "   " ;
-            Init_Field(champB, champE, params);  // Re0-Initialise les champs. Important si scan des paramètres car ils ont changés. We do not add the files because we do not modify them
-            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialise les lasers. // On pourait ne pas remetre à jour le fichier des niveaux
-            dt_dyn = (params.LocateParam("dt_dyn_epsilon_param")->val);
+            Init_Field(champB, champE, params); // Re-initialize fields; important if scanning parameters change them
+            Init_Laser(lasers, Nb_laser, params, nom_file_Laser_Spectrum, nom_file_Laser_Intensity); // Initialize lasers; could skip re-reading level files
 
-<<<<<<< HEAD
-            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params,  H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
-=======
-            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params, es, H, E0_cm, Zeeman_cm_B, d0, d); // Calcul les taux de transition de toutes les molécules si numero_mol = aucune. Sinon on ne recalcule que celui de la molécule numero_mol
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
+            dt_dyn = params.LocateParam("dt_dyn_epsilon_param")->val;
+
+            calcul_rates_molecules(Level, Algorithme_MC, reaction_list, rate, Mol, champB, champE, lasers, t, number_mol, N_Mol[0], params, H, E0_cm, Zeeman_cm_B, d0, d); // Compute transition rates for all molecules if `numero_mol == aucune`. Otherwise, recompute only for the molecule `numero_mol`
+
             if (t >= t_dia)
             {
-                /*** Here, or just before if you want to have output all the time, put you output files ***/
-                // I suggest that you look at the  Sortie_rate_example and Sortie_donnee_example in the sortie_donnees.cpp to inspire you for the Sortie_rate and Sortie_donnee or Sortie_donnee_pop_v file or whatever you want to have such as Sortie_laser_spectrum ***/
-
-<<<<<<< HEAD
-                Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-=======
-                // Sortie_rate(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
-                // Sortie_rate_example(file_rate, rate, Level, reaction_list, Mol, champB, champE, lasers, N_Mol[0], t, params);
-                // Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int) Mol.size(),params,  data, number_photons);  // sortie de toutes les données moléculaires
+                /*** Insert output logic here or just before for continuous file output ***/
+                // Suggested examples: `Sortie_rate_example` and `Sortie_donnee_example` in `sortie_donnees.cpp`
+                Sortie_donnee(file_out, Mol, Level, champB, champE, lasers, t, (int)Mol.size(), params, data, number_photons); // Output all molecular data
                 t_dia += dt_dia;
             }
 
-            int n_reac = find_reaction(Algorithme_MC, r, rate,  dt_KMC); // Trouve la réaction KMC
+            int n_reac = find_reaction(Algorithme_MC, r, rate, dt_KMC); // Find the KMC reaction
 
-            /**
-            on calcul un temps dt_KMC pour l'évolution de l'état interne.
-            Si dt_KMC < temps dt_dyn_epsilon_param caractéristique de l'évolution des taux (par exemple le temps de transit dans le laser qui modifie les taux d'excitation) on effectue la transition et on bouge les particules
-            Dans le cas contraire on fait évoluer les particules durant dt_dyn qui est d'une fraction de dt_dyn_epsilon_param et on recommence.
-            **/
-
-            if (dt_KMC < dt_dyn || Algorithme_MC == Fast_Rough_Method) // L'évolution se fera durant un temps dt_KMC or if Fast_Rough_Method in order to be sure to evolve the internal states (because it is not random)
+            if (dt_KMC < dt_dyn || Algorithme_MC == Fast_Rough_Method)
             {
-                evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_KMC, params); // Evolution N corps (avant le changement de vitesse). Cela change aussi le temps;
-                number_mol = do_reaction(Algorithme_MC, r, rate, reaction_list, Mol, n_reac, lasers, dt_KMC, file_rate, true, number_photons, params); // On fait l'évolution de l'état interne
+                evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_KMC, params); // N-body evolution (before velocity update). Also modifies time.
+                number_mol = do_reaction(Algorithme_MC, r, rate, reaction_list, Mol, n_reac, lasers, dt_KMC, file_rate, true, number_photons, params); // Perform the internal state evolution
             }
-            else // L'évolution se fera sans réaction durant un temps dt_dyn
+            else // Evolution will proceed without reaction for `dt_dyn`
             {
-                evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_dyn, params); // Evolution N corps (avant le changement de vitesse)
+                evolve_step(Algorithme_N_body, Mol, champB, champE, lasers, Mol.size(), t, dt_dyn, params); // N-body evolution (before velocity update)
             }
 
-// On peut peut être améliorer. Ne faut'il pas mettre à jour toujours la molécule modifée surtout dans le cas dipolaire ?
-// TODO (Daniel#6#): May be disociate the dt_dyn and the t _mise_a_jour
+// TODO (Daniel#6#): Maybe separate dt_dyn and t_mise_a_jour
+
             if (t >= t_mise_a_jour || Algorithme_MC == Fast_Rough_Method)
             {
-                number_mol = aucune; // Il faudra faire une mise a jour totale (cf calcul rate) donc que toutes les molécules ont été affectées
-                // set_pot_all_mol(Mol, champB, champE, lasers, t, N_Mol[0], params); //Met à jour (pour recalculer les bonnes transitions) de tous les potentiels (gravité, dipolaire, magnétique, electrique, ...) avec la nouvelle position
+                number_mol = aucune; // A complete update is needed (see rate calculation), meaning all molecules will be affected.
+                // set_pot_all_mol(Mol, champB, champE, lasers, t, N_Mol[0], params);
+                // Update all potentials (gravity, dipolar, magnetic, electric, etc.) with the new position to recalculate the correct transitions.
                 t_mise_a_jour += dt_dyn;
             }
-// On pourrait penser accélerer, en faisant évoluer le N_corps jusqu'a dt_KMC sans recalculer dt_KMC à chaque fois. Mais cela est risqué comme on le voit avec un molécule loin d'un waist --> tKMC immense mais qui va diminuer vite et si on ne recalcule pas on va faire une erreur
+
+// One could consider accelerating the process by evolving the N-body system up to dt_KMC without recalculating dt_KMC each time.
+// However, this is risky, as seen with a molecule far from the waist -> tKMC becomes immense but decreases quickly, and if we don't recalculate, we might make an error.
+
 
             if (Graphics && t >= t_out)
             {
-                Draw(Mol, Level,  champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params);       // Affichage des points
+                Draw(Mol, Level, champB, champE, lasers, SIZE_affichage, t, Mol.size(), Nb_type_of_Mol, params); // Display points
                 t_out += dt_out;
-                wait(params.LocateParam("t_wait_affichage")->val);   // Permet de ne pas avoir un affichage trop rapide
+                wait(params.LocateParam("t_wait_affichage")->val); // Prevent excessively fast rendering
             }
 
-            if (t > t_fin) // FIN DE LA BOUCLE
+            if (t > t_fin) // End of loop
             {
-                for (ParamIterator i=params.begin(); i != params.end(); ++i)
+                for (ParamIterator i = params.begin(); i != params.end(); ++i)
                 {
                     Param &p = **i;
-                    if( p.is_scanned == true )
-                        cout << " " << p.val_t0  ;
+                    if (p.is_scanned == true)
+                        std::cout << " " << p.val_t0;
                 }
-                cout << endl;
+                std::cout << std::endl;
                 break;
             }
 
-            Modif_Param(t, params); // On modifie en dynamique la longueur d'onde le waist etc... des lasers en fonction du temps
+            Modif_Param(t, params); // Dynamically modify laser wavelength, waist, etc., based on time
         }
 
-
         if (data.SParam("is_Scan_Random") == "true")
-            test_fin_boucle_param = params.Scan_Param_aleatoire(r); // Modification des paramètres
+            test_fin_boucle_param = params.Scan_Param_aleatoire(r); // Modify parameters randomly
         else
             test_fin_boucle_param = params.Scan_Param();
     }
-
-    while (!test_fin_boucle_param); // test de fin des boucles sur les paramètres
+    while (!test_fin_boucle_param);   // End-of-loop check for parameters
 
     file_out.close();
     file_rate.close();
     t_end = clock();
 
-//    H.resize(0,0);
-//    d0[0].resize(0,0);
-//    d0[1].resize(0,0);
-//    d0[2].resize(0,0);
-
-    cout << "durée du programme (s) = " << (t_end - t_start)/double(CLOCKS_PER_SEC) << endl;
-
-
-// FIN du programme
-
+    std::cout << "Execution time (s): " << (t_end - t_start) / double(CLOCKS_PER_SEC) << std::endl;
+    std::cout << "Have you checked the to-do list, SMALL_NUMBER_RATE, and other parameters?" << std::endl;
 
     exit(1);
     system("PAUSE");
     return;
-
 }
 
 
 
-
-// fonction main appellant RePaint ().
-// C'est ainsi que fonctionne OPENGL + GLUT
+// fonction main call RePaint ().
+// This is how it works in OPENGL + GLUT
 int main(int argc, char** argv)
 {
 
@@ -458,14 +369,21 @@ int main(int argc, char** argv)
 
     if (Graphics)
     {
-        const int size_screen =600;
-        glutInit(&argc, argv);                            //Initialisation de la GLUT
-        glutInitDisplayMode(GLUT_DEPTH|                   //On active la profondeur
-                            GLUT_DOUBLE|                  //Un seul tampon d'affichage
-                            GLUT_RGBA);                   //Couleurs au format RGBA
-        glutInitWindowPosition(200, 200);                 // coordonnées de la fenêtre
-        glutInitWindowSize(size_screen, size_screen);                     //taille Fenêtre
-        glutCreateWindow("Cooling");   //Création de la fenêtre
+        const int size_screen = 600;
+        glutInit(&argc, argv);                            // Initialisation de la GLUT
+        glutInitDisplayMode(GLUT_DEPTH |                 // Active la profondeur
+                            GLUT_DOUBLE |                // Double buffering
+                            GLUT_RGBA);                  // Couleurs au format RGBA
+        glutInitWindowPosition(0, 0);                    // Coordonnées de la fenêtre
+        glutInitWindowSize(size_screen, size_screen);    // Taille de la fenêtre
+
+        int windowID = glutCreateWindow("Cooling");      // Création de la fenêtre
+        if (windowID == 0)
+        {
+            std::cerr << "Error: Unable to create window!" << std::endl;
+            return -1;
+        }
+
         // zprInit();                          //Pour zoomer, translater et tourner avec la souris. NE marche pas
 
         glutDisplayFunc(RePaint);                      //On lui dit d'appeler la fonction renderFunc pour afficher

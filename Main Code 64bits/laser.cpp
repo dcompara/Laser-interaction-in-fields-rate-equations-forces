@@ -212,9 +212,19 @@ void Laser::write_Spectrum(ostream & flux)
 // intensité au waist
 double  Laser::intensity()  const
 {
-    double intensity = 2.*Power/(pi*(waist.x())*(waist.y()));
-    // I=2P/(pi*w^2) lorsque w=wX=wY
-    // Rappel w.Z=0;
+    double intensity;
+
+    if (type_laser == pseudo_collimated_top_hat)     // collimated_rectangular_super_10_gaussian_beam_spectral_gaussien = 10  // For the top-hat beam (we could also have used https://en.wikipedia.org/wiki/Smoothstep)
+    {
+
+        // A 1D super Gaussian laser beam is Sqrt(Power)/(Sqrt[2] w Gamma[1 + 1/(2 p)]) (E^-((2 x^2)/w^2)^p). For large p values it edges at |x|~w/sqrt(2)  and at x=0 it goes to 1/(Sqrt[2] w)
+        int p=10;
+        intensity = Power/(2.*waist.x()*tgamma(1.+1./(2.*p))*waist.y()*tgamma(1.+1./(2.*p)));
+    }
+    else // Normal TEM00 gausian beam
+    {
+        intensity = 2.*Power/(pi*(waist.x())*(waist.y())); // I=2P/(pi*w^2) lorsque w=wX=wY (Rappel w.Z=0;)
+    }
 
     return intensity;
 
@@ -271,20 +281,7 @@ double  Laser::transmission_spectrum(const double energie_trans_cm)  const
 }
 
 
-
-
-// Zone de Rayleigh Vecteur3D
-// ZRZ est la zone de Railieh moyenne
-Vecteur3D  Laser::Rayleigh_range()  const
-{
-
-    double ZRX=pi*waist.x()*waist.x()/lambda;
-    double ZRY=pi*waist.y()*waist.y()/lambda; //ZR = pi wo^2/lambda
-    double ZRZ=sqrt(ZRX*ZRX+ZRY*ZRY);
-    return Vecteur3D(ZRX,ZRY,ZRZ);
-}
-
-// waist au point (X,Y,Z)
+// waist au point (X,Y,Z). For drawing so not perfect for top-hat super gaussian
 Vecteur3D  Laser::waist_size(const Vecteur3D& point)  const
 {
 
@@ -301,13 +298,28 @@ Vecteur3D  Laser::waist_size(const Vecteur3D& point)  const
 // intensité au point (X,Y,Z) dans le repère laser centré sur le waist
 double  Laser::intensity_repere_sur_waist(const Vecteur3D& point)  const
 {
-    double wX = (this->waist_size(point)).x();
-    double wY = (this->waist_size(point)).y();
-    double I0 = (this->intensity())*waist.x()*waist.y()/(wX*wY);
+    double wX, wY ;
+    double intensity;
+    double x = point.x();
+    double y = point.y();
 
+    if (type_laser == pseudo_collimated_top_hat)
+    {
+        wX=waist.x();  // We assume that it is perfectly collimated. No change of waist during propagation
+        wY=waist.y();
+        int p=10;
+        intensity = Power*exp(-pow(2.*x*x/(wX*wX),p))*exp(-pow(2.*y*y/(wY*wY),p))/(2.*wX*tgamma(1.+1./(2.*p))*wY*tgamma(1.+1./(2.*p)));
+    }
+    else // Normal TEM00 gausian beam
+    {
+        wX = (this->waist_size(point)).x();
+        wY = (this->waist_size(point)).y();
+        double I0 = (this->intensity())*waist.x()*waist.y()/(wX*wY);
 
-    return I0*exp (-2*point.x()*point.x()/(wX*wX)) * exp (-2*point.y()*point.y()/(wY*wY)); // I=I0 exp(-2r^2/w^2)
-    // Plus généralement I= P * exp(-2 (x^2/wx^2))/(sqrt(2pi(wx/2)^2) *  exp(-2 (y^2/wy^2))/(sqrt(2pi(wy/2)^2)
+        intensity = I0*exp (-2*x*x/(wX*wX)) * exp (-2*y*y/(wY*wY)); // I= P * exp(-2 (x^2/wx^2))/(sqrt(2pi(wx/2)^2) *  exp(-2 (y^2/wy^2))/(sqrt(2pi(wy/2)^2)
+    }
+
+    return intensity;
 }
 
 

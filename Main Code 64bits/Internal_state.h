@@ -1,46 +1,34 @@
 /*
-  Name:  classe « internal_state »
-  Copyright:
+  Class: Internal_state
   Author: Daniel Comparat
   Date: 15/10/06 11:01
 
+  Description:
+  This class represents the internal state of a molecule or particle, characterized by:
+    - Electronic level (manifold): exc
+    - Total angular momentum (J or F)
+    - Projection of angular momentum (M)
+    - Additional variables such as vibrational levels (v)
+    - Bound state (1 for bound, 0 for unbound)
+    - Degeneracy index to lift level degeneracies
+    - Lifetime and energy shifts
+    - Population and transition coefficients
 
+  Key Features:
+    - Initialization of all parameters to zero (except bound level and degeneracy set to 1).
+    - Ability to write and read data to/from streams (e.g., files, console).
+    - Handles energy shifts under external fields (electric and magnetic).
+    - Supports transitions to other states and manages their properties.
 
-Contient:
-Level electronique: exc (excitation de la molecule, par exemple niveau électronique)
-moment total J (ou F)
-projection du moment total J (ou F) sur un axe supposé connu: M
-other variable (such as vibration, etc...): v
-bound level:  +1  (or 0 for unbound states)
-# = nombre pour lever la dégénérescence
-1/durée de vie (A Einstein du niveau)
-shift en énergie > 0 si le niveau initial gagne de l'énergie (se rapproche des états excité vers la ionisation)
-population: La population (non normalisée)
+  Units:
+    - Dipole moments: DEBYE
+    - Energy: cm^-1
 
-Coefficient pour un fit en champ F via formule: Energy (en cm^-1) + signe(Linear)*(-Delta/2+sqrt((Delta/2)^2+(Linear F)^2)). Ici l'unité n'est pas spécifiée mais souvent nous utiliserons comme unité d'énergie le cm^-1.
-Liste des raies = la liste des transitions vers d'autres états
-
- * Tout initialisée à 0. (sauf bound level et dégénérescence +1)
-
- * write et read permettent d'écrire et de lire dans un flux (cout (pas cerr ou clog) ou fichier)
- * write_list_raie écrit la liste des raies
-
-
- unités DEBYE pour dipole et CM^-1 pour énergie
-* Levels
-* Liste des raies = la liste des transitions vers d'autres états
-
-
-La comparaison des niveaux se fait uniquement sur
-Level electronique (Manifold), M, bound_level  et nombre pour lever la dégénérescence
+  Quantum Numbers:
+    - Quantum numbers (e.g., M) are typically stored as integers multiplied by 2 for precision.
+      For example, M = 1/2 is stored as 1, hence the term `two_M`.
 
   */
-
-/***
-SOUVENT LES NOMBRES QUANTIQUES SONT EN FAIT *2
-Ainsi M=1/2 est stocké en 1 d'ou le nom de  two_M.
-***/
-
 
 #ifndef Internal_state_SEEN
 #define Internal_state_SEEN
@@ -48,113 +36,82 @@ Ainsi M=1/2 est stocké en 1 d'ou le nom de  two_M.
 #include "Vecteur3D.h"
 #include "constantes_SI.h"
 #include <vector>
-
 #include <iostream>
 using namespace std;
 
-
-
-class Internal_state
-{
+class Internal_state {
 public:
-<<<<<<< HEAD
-    int exc;                 // manifold
-=======
-    int exc;                 // état excité ou non (0 est l'état fondamental)
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
-    int bound_level;                  // Parity
-    int two_J;  // 2J
-    int two_M;  // 2M
-    int v;  // Other variable (such a vibrational number)
-    int deg_number;           // nombre de dégénérescence
-    double Energy0_cm, Delta_FieldB, Linear_FieldB, Delta_FieldE, Linear_FieldE; // Energie en cm^-1. Coefficient pour un fit de l'énergie en champ B ou E via formule: E0 + signe(C)*(-Delta/2+sqrt((Delta/2)^2+(C F)^2))
-    double one_over_lifetime; // 1/(durée de vie en seconde)
-    double Energy_cm, population; //  Energie réelle due au shift en énergie et population initiale de l'état
+    // State properties
+    int exc;                       // Electronic level (manifold)
+    int bound_level;               // Bound state indicator (1 = bound, 0 = unbound)
+    int two_J;                     // 2 * Total angular momentum (J or F)
+    int two_M;                     // 2 * Projection of total angular momentum
+    int v;                         // Additional variable (e.g., vibrational number)
+    int deg_number;                // Degeneracy index
+    double Energy0_cm;             // Base energy in cm^-1
+    double Delta_FieldB;           // Coefficient for magnetic field energy shift
+    double Linear_FieldB;          // Linear term for magnetic field shift
+    double Delta_FieldE;           // Coefficient for electric field energy shift
+    double Linear_FieldE;          // Linear term for electric field shift
+    double one_over_lifetime;      // Inverse of lifetime (Einstein A coefficient)
+    double Energy_cm;              // Actual energy considering field shifts
+    double population;             // Initial population of the state
 
-    typedef pair<Internal_state *,double> transition; // Une transition est vers un (pointeur vers) un état final (INTERNAL STATE) avec un dipole de transition (un double)
+    // Transition structure: Pair of target state pointer and dipole strength
+    typedef pair<Internal_state*, double> transition;
+    vector<transition> liste_raies; // List of possible transitions (target states and strengths)
 
-    vector < transition > liste_raies; //La liste des raies possibles est: vecteur donnant la liste des états finaux et de la force de transition
+    // Constructors and destructors
+    Internal_state();                             // Default constructor
+    Internal_state(const Internal_state& Intern); // Copy constructor
+    ~Internal_state();                            // Destructor
+    Internal_state& operator=(const Internal_state& Intern); // Assignment operator
 
-public:
-    Internal_state();         // constructeurs autres que par recopie
-    Internal_state(const Internal_state & Intern);   // constructeur de recopie
-    ~Internal_state();           // destructeur
-    Internal_state & operator = (const Internal_state & Intern);  // opérateur d'affectation
+    // Input/Output Methods
+    void write(ostream& flux);                    // Outputs state information
+    void read(istream& flux);                     // Reads state information
+    void write_liste_raie(ostream& flux);         // Writes the list of transitions
 
-// Affichage (on ne met pas la liste des raies!)
-    void write(ostream & flux);
+    // State Comparison
+    bool is_equal(const Internal_state& w) const; // Compares states (based on key properties)
 
-    // read des données (sans la liste des raies)
-    void read(istream & flux);
+    //----------------------------------
+    // File I/O for Levels
+    //----------------------------------
+    void write_Level_B(ostream& flux);           // Writes state to stream in level format
+    void read_Level__B(istream& flux);           // Reads level information for magnetic fields
+    void read_Level__E(istream& flux);           // Reads level information for electric fields
 
-    // Ecrit la liste des raies
-    void write_liste_raie(ostream & flux);
+    //----------------------------------
+    // Field Shift Calculations
+    //----------------------------------
+    double Energy_Shift_B_cm(const double B) const;  // Energy shift in magnetic field
+    double Energy_Shift_E_cm(const double E) const;  // Energy shift in electric field
+    Vecteur3D Grad_Energy_Shift_B(const double B, const Vecteur3D gradient_B2); // Gradient (SI units)
+    Vecteur3D Grad_Energy_Shift_E(const double E, const Vecteur3D gradient_E2); // Gradient (SI units)
+    double Field_Shift_B_cm(const double Eshift);    // Field strength for magnetic shift
+    double Field_Shift_E_cm(const double Eshift);    // Field strength for electric shift
 
-
-// True si l'état est = à w, false sinon
-// On ne teste que l'état électronique, v, M, bound_level  et numéro.
-    bool is_equal (const Internal_state & w) const;
-
-
-//----------------------------------
-// Lecture des fichiers  de niveaux
-//----------------------------------
-
-// Les fichiers contiennent
-// Manifold,  M, bound_level, #, J, N, Omega, Energy0, Delta, C
-
-
-// Ecriture dans le flux du niveau avec le format souhaité
-    void write_Level_B(ostream & flux);
-
-// Si variation en B ou E
-    void read_Level__B(istream & flux);
-    void read_Level__E(istream & flux);
-
-// Calcul du shift en champ: via E0 + signe(C)*(-Delta/2+sqrt((Delta/2)^2+(C F)^2))
-    double   Energy_Shift_B_cm(const double B) const;
-    double   Energy_Shift_E_cm(const double E) const;
-
-// Calcul du gradient du shift (en unité SI pas cm^-1) en champ
-// Grad(F.F) *  signe(C)*/[2*sqrt((Delta/2)^2+(C F)^2))]
-    Vecteur3D  Grad_Energy_Shift_B(const double B, const Vecteur3D gradient_B2);
-    Vecteur3D  Grad_Energy_Shift_E(const double E, const Vecteur3D gradient_E2);
-
-// Calcul du champ F correspondant au shift E_cm: via E0 + signe(C)*(-Delta/2+sqrt((Delta/2)^2+(C F)^2)) = E_cm
-    double   Field_Shift_B_cm(const double Eshift);
-    double   Field_Shift_E_cm(const double Eshift);
-
-//----------------------------------
-// Etudes des raies
-//----------------------------------
-
-// ajoute la transition -->v et la force de raie à la liste
-    void add_transition (Internal_state  *v,const double strenght);
-
-// Somme les taux de desexcitation
-    double Einstein_desex_rate();
-
-
+    //----------------------------------
+    // Transition Management
+    //----------------------------------
+    void add_transition(Internal_state* v, const double strength); // Adds a transition
+    double Einstein_desex_rate();                                  // Computes de-excitation rates
 };
 
+//----------------------------------
+// Global Functions for Transitions
+//----------------------------------
+void read_Line(istream& flux, Internal_state& Upper_state, Internal_state& Lower_state,
+               double& Dipole_Debye);                              // Reads transition from stream
 
-
-// Lecture des fichier  qui contiennent
-// UpperManifold	M'	bound_level'	#'	LowerManifold	M"	bound_level"	#"	Eupper	Elower	Dipole_Debye
-void read_Line(istream & flux, Internal_state & Upper_state,Internal_state & Lower_state,
-                       double & Dipole_Debye);
-
-// Ecriture dans le flux la transition (ligne) avec le format souhaité
-void write_Line(ostream & flux, Internal_state & Upper_state, Internal_state & Lower_state, const double  Dipole_Debye);
-
+void write_Line(ostream& flux, Internal_state& Upper_state, Internal_state& Lower_state,
+                const double Dipole_Debye);                        // Writes transition to stream
 
 //----------------------------------
-// Surdéfinition des entrées sorties (sans la liste des raies)
+// Overloaded Input/Output Operators
 //----------------------------------
+ostream& operator<<(ostream& flux, Internal_state Intern);         // Output operator
+istream& operator>>(istream& flux, Internal_state& Intern);        // Input operator
 
-ostream & operator << (ostream & flux, Internal_state Intern);
-
-istream& operator >> (istream &flux, Internal_state & Intern);
-
-
-#endif
+#endif  // Internal_state_SEEN

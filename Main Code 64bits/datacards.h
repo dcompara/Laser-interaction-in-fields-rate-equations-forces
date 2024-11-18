@@ -1,15 +1,15 @@
-// PERMET DE LIRE DES DATA A PARTIR D'UN FICHIER.
-// Ecrit par:
-// Eric Aubourg, Decembre 95 // DAPNIA/SPP (Saclay) / CEA    LAL - IN2P3/CNRS  (Orsay)
-// Reza Ansari, Aout 96
-// Daniel Comparat Sept 2012
 
+// ENABLES READING DATA FROM A FILE.
+// Written by:
+// Eric Aubourg, December 1995 // DAPNIA/SPP (Saclay) / CEA LAL - IN2P3/CNRS (Orsay)
+// Reza Ansari, August 1996
+// Daniel Comparat, September 2012
 
-//   	Cette classe permet la gestion des parametres d'un programme a partir
-//   	de mot-cle (lecture d'un fichier par exemple)
+// This class manages program parameters using keywords (e.g., reading from a file).
 
+// "Cards" refer to variables, which are the names at the beginning of a line starting with @,
+// followed by a list of values separated by spaces (or tabs) until the end of the line.
 
-// Les "card" sont les variables, ce sont les noms en début de ligne commençant par @  suivit ensuite une liste de valeurs séparées par des blancs (ou tab) et ceux jusqu'a un saut de ligne
 
 /*** Example de fichier datacard **********
 
@@ -21,28 +21,27 @@
 
 *************************/
 
-// La 1ère valeur peut être int (appelée par: data.IParam("nom_de_la_variable")) ou double (de même avec D) où string (S);
-// De même si on veux la troisième valeur data.IParam("nom_de_la_variable",2)
-// Toute autre mot ou ligne est ignorée
+// The first value can be an integer (accessed via: `data.IParam("variable_name")`),
+// a double (accessed via `data.DParam`), or a string (`data.SParam`).
+// To access the third value, for example: `data.IParam("variable_name", 2)`.
+// Any other word or line is ignored.
 
-
-// int   NbCards()
-//	Renvoie le nombre de cartes data
-// bool	 HasKey(string const& key)
-//	Indique l'existence d'une carte avec la cle "key"
-// int   NbParam(string const& key)
-//	Indique le nombre de parametres (separes par des espaces) pour la cle "key"
-
+// int NbCards()
+//    Returns the number of data cards.
+// bool HasKey(string const& key)
+//    Indicates whether a card with the given key exists.
+// int NbParam(string const& key)
+//
 
 
 /******************  Exemple Utilisation datacard ******************
 
 
-string nomdat = "ma_data_card" ;
-DataCards data(nomdat.c_str());
-double prctage =  data.DParam("SEEING_PRCTAGE") ;
-int itruc = data.IParam("TRUC_ENTIER") ;
-string struc = data.SParam("TRUC_STRING") ;
+string datacard_file = "my_data_card";
+DataCards data(datacard_file.c_str());
+double percentage = data.DParam("SEEING_PRCTAGE");
+int integer_value = data.IParam("TRUC_ENTIER");
+string string_value = data.SParam("TRUC_STRING");
 
 
 ***************************/

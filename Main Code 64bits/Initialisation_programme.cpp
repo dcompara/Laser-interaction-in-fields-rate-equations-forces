@@ -13,7 +13,7 @@ int   initialisation_trans_mol(const char *nom_file_Levels, const char *nom_file
     int nb_Levels = Level_List(nom_file_Levels, Level, params);
     cout << "Nb de niveaux = " << nb_Levels << endl << endl;
 
-    cout << " Only Zeeman effect no Stark effect " << endl;
+    cout << " Only Zeeman effect no Stark effect (if no diagonalization) " << endl;
     int nb_raies =  Line_List(nom_file_Lines, Level, params);
     cout << "Nb de raies  (en absorption) = " << nb_raies  << endl << endl;
 
@@ -91,6 +91,11 @@ void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB
             double masse_mol=MCs; // Default
             double charge = 0.;
 // List of molecules (a map could be better!)
+            if (Nom_Mol == "n")
+            {
+                Mol_i.set_name("n");
+                masse_mol = Mn;
+            }
             if (Nom_Mol == "H")
             {
                 Mol_i.set_name("H");
@@ -199,6 +204,8 @@ void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB
             Vecteur3D sigmav(vitesse_therm_x,vitesse_therm_y,vitesse_therm_z);
             velocity.gaussian_initialisation (r,sigmav);
 
+            double vx,vy,vz;
+
             for (int j=0; j<=2; j++)  // 3 axes: x, y ou z
             {
 // Exemple Taille de l'échantillion dans le potentiel U(x,y,z) = U(0) + Zeeman_x |x| + Zeeman_y |y| + Zeeman_z z^2
@@ -259,14 +266,40 @@ void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB
                     break;
                 }
 
-                case 5: // 5 effusive beam. Meaning as in case 0 but we keep only the positive velocities
+                case 5: // 5 effusive beam. Only one component j has this value 5, it gives the orientation. Below we assume along z and the beam defined after.
+                {
+                    /** we use the inverse transform sampling for  proba proportional to  $v^3 e^{-\frac{ m v^2}{2 k_B T}}     dv       cos(theta)     sin(theta) d theta d phi **/
+                    double u= gsl_ran_flat (r, 0, 1);
+                    double W = gsl_sf_lambert_Wm1((u-1)/exp(1.)); // gsl_sf_lambert_Wm1(x) is the solution of the equation W(x) exp(W(x)) = x  where W < −1 for x < 0.
+                    double v = sqrt(2.) * sigmav.get(j)  * sqrt(-1.-W);
+
+                    u= gsl_ran_flat (r, 0, 1);
+                    double theta= asin(sqrt(u));
+
+                    double phi= gsl_ran_flat (r, 0, 2.*pi);
+
+                    vz = v * cos(theta) ; // For an effusive beam along z so for j=2
+                    vy = v * sin(theta) * sin(phi);
+                    vx = v * sin(theta) * cos(phi);
+
+                    // velocity.set(j,  vj);
+                    pos.set(j, gsl_ran_gaussian (r,sigma_pos.get(j)));
+                    break;
+                }
+
+                 case 6: // 6 collimated effusive beam. Only one component j has this value 6, it gives the orientation. The other have typically other temperature -given by case 0 for instance)
                 {
                     double vj;
-                    do
-                    {
-                        vj =  gsl_ran_gaussian (r,sigmav.get(j));
-                    }
-                    while(vj<0);
+
+                    double u= gsl_ran_flat (r, 0, 1);
+                    double W = gsl_sf_lambert_Wm1((u-1)/exp(1.)); // gsl_sf_lambert_Wm1(x) is the solution of the equation W(x) exp(W(x)) = x  where W < −1 for x < 0.
+                    double v = sqrt(2.) * sigmav.get(j)  * sqrt(-1.-W);
+
+                    u= gsl_ran_flat (r, 0, 1);
+                    double theta= asin(sqrt(u));
+
+
+                    vj = v * cos(theta) ;
                     velocity.set(j,  vj);
                     pos.set(j, gsl_ran_gaussian (r,sigma_pos.get(j)));
                     break;
@@ -274,6 +307,13 @@ void Init_Molecule(const gsl_rng * r, vector <Molecule> &Mol, const Field fieldB
 
                 }
             }
+            if (proc[0]==5){velocity = Vecteur3D(vz,vx,vy);} // effusive beam along x
+            if (proc[1]==5){velocity = Vecteur3D(vx,vz,vy);} // effusive beam along y
+            if (proc[2]==5){velocity = Vecteur3D(vx,vy,vz);} // effusive beam along z
+
+//            if (proc[0]==6){velocity = Vecteur3D(velocity.get(2),velocity.get(0),velocity.get(1));} // collimated effusive beam along x
+//            if (proc[1]==6){velocity = Vecteur3D(velocity.get(0),velocity.get(2),velocity.get(1));}// collimated effusive beam along y
+//            if (proc[2]==6){velocity = Vecteur3D(velocity.get(0),velocity.get(1),velocity.get(2));}// collimated effusive beam along z;
 
             velocity = velocity + v0;
             pos = pos + const_pos_initial;  // Initial velocity and position added to the random one

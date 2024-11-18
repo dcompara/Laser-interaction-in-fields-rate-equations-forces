@@ -1,140 +1,171 @@
 /*
   Name:
-  Copyright:
   Author:
   Date: 23/10/06 10:01
-  Description: Affichage de particules
+  Description: Displaying particles using OpenGL.
 
+  The N particles are stored as Vecteur3D objects within a general Body class
+  (to allow flexibility). For instance, bod[i] represents the i-th particle.
+  The Body class must implement the following functions:
 
-Les N particules sont des Vecteur3D et sont regroupées dans une
-  classe Body quelconque (pour plus de flexibilité) (bod[i] est la particule i).
-      La classe Body qui doit contenir les fonctions:
+      - bod.get_pos: to retrieve the position.
+      - couleur_bod[N]: provides the color.
 
-         bod.get_pos  pour avoir la position
-         couleur_bod[N] donne la couleur
+This uses OPEN_GL.
+Here is my understanding of OpenGL, see additional references in readMe_graphique.txt:
 
+- glMatrixMode(GL_MODELVIEW): Selects the transformation stack for the "point of view".
+- glLoadIdentity(): Initializes the transformation to avoid additive effects
+  from previous rotations, translations, etc.
+- glRotate, glTranslatef, etc.: Creates 4x4 matrices that apply transformations
+  and stack them within the "point of view" stack.
+- Drawing functions (Vertex, sphere, etc.): Draw shapes and apply transformations.
 
-Utilise OPEN_GL
-Voici ce que j'ai compris d'OPENGL voir les autres références dans readMe_graphique.txt
+If you want to exclude a transformation from subsequent drawings:
+- Use `glPushMatrix()` before the excluded drawing and `glPopMatrix()` after.
 
-glMatrixMode(GL_MODELVIEW); //la pile des transformations "point de vue" est selectionnee
-glLoadIdentity(); // initialisation de la transformation. Evite que les rotations, translations, .. s’ajoutent à la transformation courante.
-glRotate, glTranslatef, ... // Crée chaque fois une matrice 4*4 qui tient compte de chaque transformation et qui s'empile dans la pile de "point de vue"
-fonction de dessin1 Vertex, sphère etc...
-fonction de dessin2 Vertex, sphère etc...
- // Effectue les dessins, puis effectue l'ensemble des matrices puis la projection
+For perspective projection:
+- glMatrixMode(GL_PROJECTION);
+- glLoadIdentity();
+- glFrustum(left, right, bottom, top, near, far);
 
-Si on veut dépiller par exemple que dessin 2 soit sans la dernière translation. Il faut faire
-glPushMatrix();
- fonction de dessin2 Vertex, sphère etc...
-glPopMatrix();
-fonction de dessin1 Vertex, sphère etc...
-
-Pour la spécification d’une projection perspective :
-glMatrixMode(GL_PROJECTION);
-glLoadIdentity();
-glFrustum(left, right, bas, haut, proche, loin);
-
-L'unité de base est donc SIZE_real = SIZE_affichage
+The base unit is defined as SIZE_real = SIZE_display.
 */
 
-
-
-
-
-
-#ifndef Affichage_SEEN
-#define Affichage_SEEN
-
-
+#ifndef AFFICHAGE_SEEN
+#define AFFICHAGE_SEEN
 
 #include <iostream>
-
-
-#include <time.h>                // For clock()
-
+#include <ctime>                // For clock()
 #include <windows.h>
+
 #ifdef __APPLE__
 #include <GL/glut.h>
 #else
 #include <GL/glut.h>
 #endif
 
-#include <GL/gl.h>                          // OPENGL
-#include <GL/glu.h>                         // OPENGL (GLU)
-#include <gl/glut.h>                       // glut bibliotheque
+#include <GL/gl.h>              // OPENGL
+#include <GL/glu.h>             // OPENGL (GLU)
+#include <GL/glut.h>            // GLUT library
 #include <GL/glext.h>
 
 #include "Vecteur3D.h"
-#include "Laser.h"                       // Classe Laser
+#include "Laser.h"              // Laser class
 
 using namespace std;
 
-const double SIZE_SCREEN =  2.; //  L'écran est en X -1,1 en Y -1,1 et en Z -1,-3 donc SIZE_SCREEN = 2
-const double Z0 = 2.; // dans OPEN_GL il faut Z >0 donc je translate de Z0;
-
+// Constants for the screen and z-axis offset in OpenGL
+const double SIZE_SCREEN = 2.0; // The screen ranges in X and Y between -1 and 1, and in Z between -1 and -3.
+const double Z0 = 2.0;          // OpenGL requires Z > 0, so a Z offset is applied.
 
 /************************************************************************/
-/************************** Programme *************************/
+/************************** Program Functions ***************************/
 /************************************************************************/
 
+/**
+ * Draws a coordinate system centered on the object’s reference frame.
+ * Axes are represented as:
+ * - Red arrow along the x-axis.
+ * - Green arrow along the y-axis.
+ * - Blue arrow along the z-axis.
+ *
+ * @param length Length of each axis.
+ */
+void traceRepere(float length);
 
-// Cette fonction trace un repère de taille longueur,
-// centré sur le repère objet avec
-// une flêche rouge le long de l'axe des x,
-// une flêche verte le long de l'axe des y
-// et une flêche bleue le long de l'axe des z.
+/**
+ * Rescales the display when it first appears or when resized by the user.
+ *
+ * @param w New width of the window.
+ * @param h New height of the window.
+ */
+void reshape(int w, int h);
 
-// http://www.irit.fr/~Loic.Barthe/Enseignements/TPs_OpenGL/M1_IO5/TP8/tp8.html
-void traceRepere (float longueur);
+/**
+ * Displays text using GLUT at the given x, y coordinates.
+ *
+ * @param x X-coordinate for the text.
+ * @param y Y-coordinate for the text.
+ * @param string Text to display.
+ * @param font Font to use for rendering.
+ */
+void bitmap_output(int x, int y, char *string, void *font);
 
-// Fonction pour recadrer l'image lors de sa première apparition ou si on la bouge avec la souris
-void reshape(int w,int h);
+/**
+ * Simplifies displaying text output by combining numeric values and a string.
+ *
+ * @param number Number to display.
+ * @param text_string Text to prepend to the number.
+ * @param x X-coordinate for the text.
+ * @param y Y-coordinate for the text.
+ */
+void texte_output(const double number, string text_string, const int x, const int y);
 
-//  Permet d'afficher du texte avec glut en x,y
-// essayer  ModuleFont.h
-//  http://raphaello.univ-fcomte.fr/IG/Modules/Modules.htm
-void bitmap_output(int x,int y,char *string,void *font);
+/**
+ * Displays an ellipse with a given radius, color, and number of polygons.
+ *
+ * @param Radius3D Radius of the ellipse in 3D space.
+ * @param color Color of the ellipse (default is white).
+ * @param nb_polygone Number of polygons to approximate the ellipse (default: 20).
+ * @param SIZE_real Scaling factor for the size.
+ */
+void affichage_ellipse(const Vecteur3D Radius3D, const Vecteur3D color = Vecteur3D(1.0, 1.0, 1.0), const int nb_polygone = 20, const double SIZE_real = 0.005);
 
-// Procedure simplifiant l'écriture
-void texte_output(const double nombre, string text_string,const int x, const int y);
-
-// Affiche une ellipse de taille Radius3D
-// couleur par défault blanc
-// nb de polygônes 20 par défault pour simuler la sphère
-void affichage_ellipse(const Vecteur3D Radius3D, const Vecteur3D color=Vecteur3D(1.,0.,1.), const int nb_polygone=20, const double SIZE_real = 0.005);
-
-/************
-// TODO (Daniel#9#): To be done (ellisoid for lasers)
-// Pour pouvoir afficher des faisceaux lasers comme des hyperboloides de révolution
-// D'après http://www-math.edu.kagoshima-u.ac.jp/~fractaro/AnschaulicheGeometrie/Hyperboloid.c
-**************/
-
-//
-//int mode = 0;
-//int sign = 1;
-//
-//GLfloat blue[4], cyan[4], orange[4], yellow[4];
-
-double length(double v[]);
-void exterior(double v1[], double v2[], double v3[]);
-void cylinder(double a[], double b[], double r, int slices, GLfloat color[]);
-
-// Affiche un hyperboloide de révolution
-// D'après http://www-math.edu.kagoshima-u.ac.jp/~fractaro/AnschaulicheGeometrie/Hyperboloid.c
-// hyperboloid of one sheet is expressed by an equation
-// x^2/a^2 + y^2/b^2 − z^2/c^2 = 1. I.E. taille a selon x, b selon y et c selon z
-// n = nb de ligne le formant
-// h = ?
-// r = rayon des cylindre le formant
+/**
+ * TODO: Improve handling of the hyperboloid geometry and its parameters.
+ * Displays a hyperboloid of revolution.
+ * Equation: x^2/a^2 + y^2/b^2 − z^2/c^2 = 1.
+ *
+ * @param a Radius along x-axis.
+ * @param b Radius along y-axis.
+ * @param c Radius along z-axis.
+ * @param n Number of lines forming the hyperboloid.
+ * @param h Height of the hyperboloid.
+ * @param r Radius of the cylinders forming the hyperboloid.
+ */
 void Hyperboloid(double a, double b, double c, int n, double h, double r);
 
-// Affichage des lasers
+/**
+ * Calculates the length (Euclidean norm) of a 3D vector.
+ *
+ * @param v 3D vector as an array.
+ * @return Length of the vector.
+ */
+double length(double v[]);
+
+/**
+ * Computes the cross product of two 3D vectors.
+ *
+ * @param v1 First vector.
+ * @param v2 Second vector.
+ * @param v3 Resulting vector (cross product of v1 and v2).
+ */
+void exterior(double v1[], double v2[], double v3[]);
+
+/**
+ * Draws a cylinder between two points with a given radius and color.
+ *
+ * @param a Starting point.
+ * @param b Ending point.
+ * @param r Radius of the cylinder.
+ * @param slices Number of divisions for the cylinder's surface.
+ * @param color Color of the cylinder.
+ */
+void cylinder(double a[], double b[], double r, int slices, GLfloat color[]);
+
+/**
+ * TODO: Implement better representation for laser visualization.
+ * Displays laser beams.
+ *
+ * @param my_laser Laser object to display.
+ * @param SIZE_real Scaling factor for size.
+ * @param n Number of lines forming the display (optional).
+ * @param h Height of the display (optional).
+ * @param r Radius of the display (optional).
+ */
 void affichage_laser(const Laser my_laser, const double SIZE_real, int n, double h, double r);
 
-
 #endif
-
-
 
 

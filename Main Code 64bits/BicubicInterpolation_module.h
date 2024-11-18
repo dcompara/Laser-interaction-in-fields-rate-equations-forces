@@ -1,22 +1,26 @@
 /**
-Program for interpolating data points on a two dimensional regular grid.
+Program for interpolating data points on a two-dimensional regular grid.
 http://en.wikipedia.org/wiki/Bicubic_interpolation
 
-coming from
+Originally written by:
 Andrea Demetrio <andrea.demetrio@cern.ch>
-and modified by Daniel Comparat (and change double **matrix, by vector<vector<double> > &matrix)
-change dynamical allocation by vectors
 
-Here noted x,y but used as r,z in the program
+Modified by:
+Daniel Comparat (changes include replacing `double** matrix` with `std::vector<std::vector<double>> &matrix`).
+Replaced dynamic allocation with `std::vector`.
 
-The initial program was based on matrix m[x][y] that was  matrix[m_xindex][m_yindex]
-I have modified it for matrix_field[j] (j design a column with a given field such as Br, Bz, Bx, By or else)
-which is a  column containing m[x,y] so with index m_index*m_ydimension + m_yindex
-For this the old matrix[m_x][m_y] is transformed in matrix_field[j][m_x*m_ydimension + my].
+In this program, the axes are referred to as x and y, but they are used as r and z.
 
-I also add some const declaration and put  m_xindex, m_yindex as non member because they are non const and are more local variable that something that shoudl be memenr of the class
-Similarly local variable such as m_coefficients, m_nonzero_indices,  m_nonzero_counter are now local variable not member of the class (this was easy to have some functions that are  const, even if such parameters are modified)
-Finally I put all array as vectors because the dynamical array causes problems when constructed and destructed many times
+The original program was based on a matrix `m[x][y]` (i.e., `matrix[m_xindex][m_yindex]`).
+It was modified to work with `matrix_field[j]`, where `j` denotes a column corresponding to a given field (e.g., Br, Bz, Bx, By, or others).
+Each column contains the values from `m[x][y]` using the index `m_index * m_ydimension + m_yindex`.
+Thus, the old `matrix[m_x][m_y]` is transformed into `matrix_field[j][m_x * m_ydimension + m_y]`.
+
+Additional changes:
+- Declared some variables as `const`.
+- Removed `m_xindex`, `m_yindex` from being class members because they are non-constant and more suitable as local variables.
+- Local variables like `m_coefficients`, `m_nonzero_indices`, and `m_nonzero_counter` are no longer class members, making it easier to have functions marked `const` (even when these parameters are modified internally).
+- All arrays were replaced with `std::vector` to avoid issues caused by frequent construction and destruction of dynamically allocated arrays.
 **/
 
 

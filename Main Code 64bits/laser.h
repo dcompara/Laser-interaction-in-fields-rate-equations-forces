@@ -1,292 +1,267 @@
 /*
-  Name:  classe « Laser »
-  Copyright:
+ Name: Laser Class
   Author: Daniel Comparat
   Date: 15/12/08
+
   Description:
+  Represents a Gaussian laser characterized by:
+    - Waist position in 3D space (`waist_pos`).
+    - Direction vector (`direction`).
+    - Waist dimensions (`waist`) in the x, y, and z directions.
+    - Wavelength (`lambda`) in meters (vacuum wavelength).
+    - Spectral width (`Gamma_Laser`) in s^-1 (FWHM).
+    - Power (`Power`).
+    - Polarization vector (`polarisation`), encoding circular and linear components.
+    - Polarization angle (`polar_angle_degree`) relative to the x-axis.
+    - Laser type (`type_laser`), such as CW, femto, Gaussian, etc.
+    - Coherence with other lasers (`coherent_avec_laser_num`).
 
- Classe Laser
- Laser supposé gaussien
- contenant
-waist_pos : vecteur3D position du waist dans le repère fixe du labo,
-direction :  du vecteur d'onde, non nécessairement normalisé,
-waist :  Le waist est w_kx, w_ky, w_kz où kz est l'axe selon k.
-lambda : longueur d'onde lambda moyenne (en SI, i.e. en metre)  DANS LE VIDE.
-Gamma_Laser : largeur spectrale FWHM  en s^-1.
-Power : puissance,
-Polarisation est un vecteur normé qui contient epsilon^-1 (codé sur x), espilon^0 (sur y) et epsilon^+1 (sur z)
-où -1 (pour sigma- =  circulaire right car l'axe de quanti est k),0 (pour pi), 1 (pour sigma+ =  circulaire left car l'axe de quanti est k)
-polar_angle_degree gives the polarization angle (cf User Guide)
-type_laser : le type (CW, pulsé femto, gaussien, lorentzien, comb, black body...)
-coherent_avec_laser_num: pour les interférences  est le numéro du premier laser avec lequel il est cohérent.
+  The class includes:
+    - Spectrum handling (energy attenuation and temporal intensity).
+    - Calculations for irradiance (intensity) at specific points in space.
+    - Euler angles for coordinate transformations.
+    - Initialization and manipulation of laser parameters.
 
-
-On met aussi (surtout pour le cas façonné) un spectre en énergie spectrale (cm^-1) du laser.
-C'est un tableau Energie_cm, I_attenuation (1= non atténué, 0= éteind).
-L'intensité sera donc celle du laser multiplié par I_attenuation à l'énergie (immédiatement supérieure) de la transition (1 par défaut).
-Il y a aussi une atténuation temporelle possible tableau Intensity: time (in nanosecond), I_attenuation
-
-
-Il y a aussi les fonctions donnant (ATTENTION LES X,Y,Z réfèrent au repère lié au laser !)
-Donc pas dans le repère du labo!
-
-Mais il y a une fonction qui donne les angles d'Euler:  Euler_angles
-
-intensité (irradiance) au waist: intensity()
-Zone de Rayleigh: Rayleigh_range()
-waist au point (X,Y,Z): waist_size(point)
-intensité (irradiance) au point (X,Y,Z):  intensity(point)
-wave_vector:  wave_vector()
-
-RAPPEL: E =h\nu = \hbar \omega= h c / \lambda_{\rm vide} = h c \sigma(m-1) = \hbar c k = 100 h c sigma(cm^-1)
-
- * Les éléments de la classe sont initialisée à 0. Sauf le waist, direction, lambda, Gamma_Laser à (1,1,0); (0,0,1), 1, 1 pour éviter des divisions par zéros
- * On peut leur mettre des valeurs par (exemple) my_laser.set_waist_pos(new_pos)
- * On peut lire les valeurs par (exemple) my_laser.get_waist_pos()
- * == et != sont surdéfinis ATTENTION ILS COMPARENT PARFOIS DES DOUBLES (avec les erreurs d'arrondis cela doit être faux)
- * write et read permettent d'écrire et de lire dans un flux (cout (pas cerr ou clog) ou fichier)
-
-
+  Notes:
+    - Energy and dipole values are in SI units (e.g., cm^-1 for energy, Debye for dipole).
+    - Default initialization avoids division by zero for critical parameters.
 
   */
-
 
 
 
 #ifndef my_laser_SEEN
 #define my_laser_SEEN
 
-#include <map>          // Pour le spectre du laser Energy, Intensité relative
+#include <map>          // For the laser spectrum (energy and relative intensity)
 #include <iostream>
 #include <complex>
+#include "Vecteur3D.h"
+#include "constantes_SI.h" // SI constants (e.g., pi, cm, MHz)
+
 using namespace std;
 
-#include "Vecteur3D.h"
-#include "constantes_SI.h"                  // SI Constantes pour pi, cm, MHz ou autre
-
-/*
-Forme canonique d'une classe T (Claude Delannoy, Programmer en C++)
-
-class T
+// Laser types enumeration
+enum LaserType
 {
-      public:
-             T(...);         // constructeur de T, autres que par recopie
-             T(const T &);   // constructeur de recopie de T
-             ~T();           // destructeur
-             T & T::operator = (const T &);  // opérateur d'affectation
-             .....
+    spon_emission = -1, // No laser (spontaneous emission)
+    CW = 0,             // Continuous wave
+    femto = 1,          // Femtosecond pulse
+    multi_mode = 2,     // Multimode laser
+    pulse = 3,          // Pulsed laser
+    gaussien = 5,       // Gaussian profile
+    lorentzien = 6,     // Lorentzian profile
+    comb = 7,           // Frequency comb
+    pseudo_BBR = 8,     // Pseudo black body radiation
+    field_ionization = 9, // Field ionization
+    pseudo_collimated_top_hat = 10 // Top-hat beam (flat-topped profile)
 };
-*/
-
-
-enum // Différents types de lasers
-{
-    spon_emission = -1, //  no_laser
-    CW = 0,
-    femto =1,
-    multi_mode=2,
-    pulse=3,
-    faconne = 4, // Obsolete car il y a le spectre maintenant
-    gaussien = 5,
-    lorentzien = 6,
-    comb = 7,
-    pseudo_BBR =8,
-    field_ionization =9
-};
-
 
 
 class Laser
 {
 protected:
-    Vecteur3D waist_pos;              // (X,Y,Z) position
-    Vecteur3D direction;        // (X,Y,Z) direction du vecteur d'onde k
-    Vecteur3D waist;            // Le waist est w_kx, w_ky, w_kz où kz est l'axe selon k.
-    double lambda;              // longueur d'onde lambda moyenne (en SI, i.e. en metre), DANS LE VIDE
-    double Gamma_Laser;            // largeur spectrale (Delta lambda)
-    double Power;                // puissance,
-    Vecteur3D polarisation;           // Polarisation -1,0,+1: sigma-,pi,sigma+
-    double  polar_angle_degree;     // angle of the polarizaiton vector versus X axis
-    int type_laser; // CW, faconne , femto, pulsé , ...
-    int coherent_avec_laser_num; // numéro du premier laser avec lequel il est cohérent -1 ou lui même si pas cohérent
+    // Laser parameters
+    Vecteur3D waist_pos;            // Position of the waist (X, Y, Z)
+    Vecteur3D direction;            // Direction of the wave vector
+    Vecteur3D waist;                // Waist dimensions in the X, Y, and Z directions
+    double lambda;                  // Wavelength in meters (vacuum wavelength)
+    double Gamma_Laser;             // Spectral width (FWHM)
+    double Power;                   // Power in Watts
+    Vecteur3D polarisation;         // Polarization vector (-1, 0, +1 for sigma-, pi, sigma+)
+    double polar_angle_degree;      // Polarization angle relative to the x-axis
+    int type_laser;                 // Laser type (e.g., CW, femto)
+    int coherent_avec_laser_num;    // Coherent laser index (-1 if none)
 
 public:
-    map < double, double > spectre_Ecm_attenuation ; //La liste du spectre laser atténué
-    // C'est un tableau Energie_cm, I_attenuation (1= non atténué, 0= éteind).
-    map < double, double > Intensity_time_attenuation; // list of intensity versus time (in nanosecond)
+    // Laser spectrum and temporal attenuation
+    map<double, double> spectre_Ecm_attenuation;  // Energy attenuation spectrum (energy in cm^-1, attenuation factor)
+    map<double, double> Intensity_time_attenuation; // Intensity vs time (time in nanoseconds)
 
+// Canonical class form
+    Laser();                                 // Constructor
+    Laser(const Laser&);                     // Copy constructor
+    Laser& operator=(const Laser&);          // Assignment operator
+    virtual ~Laser();                        // Destructor
 
-
-public:                // Forme canonique d'une classe
-    Laser();                        //constructeur
-    Laser(const Laser&);            // Constructeur de copie
-    Laser& operator = (const Laser&);       // Affectation par recopie
-    virtual ~Laser();                       // Destructeur par defaut
-
-    // Get components
-    Vecteur3D  get_waist_pos()  const
+// Getters
+    Vecteur3D get_waist_pos() const
     {
         return waist_pos;
     }
-    Vecteur3D  get_direction()  const
+    Vecteur3D get_direction() const
     {
-        return direction.unit(); // vecteur directeur normalisé
+        return direction.unit();    // Normalized direction vector
     }
-    Vecteur3D  get_waist()  const
+    Vecteur3D get_waist() const
     {
         return waist;
     }
-    double get_lambda()  const
+    double get_lambda() const
     {
         return lambda;
     }
-    double get_omega()  const // Pulsation
+    double get_omega() const
     {
-        return 2*pi*C/lambda;
+        return 2 * pi * C / lambda;    // Angular frequency
     }
-    double get_Gamma_Laser()  const
+    double get_Gamma_Laser() const
     {
         return Gamma_Laser;
     }
-    double get_Power()  const
+    double get_Power() const
     {
         return Power;
     }
-    Vecteur3D get_polarisation()  const
+    Vecteur3D get_polarisation() const
     {
         return polarisation;
     }
-    double get_polar_angle_degree()  const
+    double get_polar_angle_degree() const
     {
         return polar_angle_degree;
     }
-    int get_type_laser()  const
+    int get_type_laser() const
     {
         return type_laser;
     }
-    int get_coherent_avec_laser_num()  const
+    int get_coherent_avec_laser_num() const
     {
         return coherent_avec_laser_num;
     }
 
-
-
-    // Set components
-    void  set_waist_pos(const Vecteur3D& new_pos)
+// Setters
+    void set_waist_pos(const Vecteur3D& new_pos)
     {
         waist_pos = new_pos;
     }
-    void  set_direction(const Vecteur3D& new_dir)
+    void set_direction(const Vecteur3D& new_dir)
     {
         direction = new_dir;
     }
-    void  set_waist(const Vecteur3D& new_waist)
+    void set_waist(const Vecteur3D& new_waist)
     {
         waist = new_waist;
     }
-    void  set_lambda(const double& new_lambda)
+    void set_lambda(const double& new_lambda)
     {
         lambda = new_lambda;
     }
-    void  set_energy_cm(const double& new_energy_cm)
+    void set_energy_cm(const double& new_energy_cm)
     {
-        lambda = 1./(100.*new_energy_cm);
+        lambda = 1. / (100. * new_energy_cm);
     }
-    void  set_Gamma_Laser(const double& new_Gamma_Laser)
+    void set_Gamma_Laser(const double& new_Gamma_Laser)
     {
         Gamma_Laser = new_Gamma_Laser;
     }
-    void  set_Gamma_Laser_MHz(const double& new_Gamma_Laser_MHz)
+    void set_Gamma_Laser_MHz(const double& new_Gamma_Laser_MHz)
     {
-        Gamma_Laser = 2*pi*new_Gamma_Laser_MHz*1e6;
+        Gamma_Laser = 2 * pi * new_Gamma_Laser_MHz * 1e6;
     }
-    void  set_Power(const double& new_Power)
+    void set_Power(const double& new_Power)
     {
         Power = new_Power;
     }
-    void  set_polarisation(const Vecteur3D& new_pol)
+    void set_polarisation(const Vecteur3D& new_pol)
     {
         polarisation = new_pol;
     }
-
-    void  set_polar_angle(const double& new_polar_angle_degree)
+    void set_polar_angle(const double& new_angle)
     {
-        polar_angle_degree = new_polar_angle_degree;
+        polar_angle_degree = new_angle;
     }
-
     void set_type_laser(const int& new_type)
     {
         type_laser = new_type;
     }
-    void set_coherent_avec_laser_num(const int& new_type)
+    void set_coherent_avec_laser_num(const int& num)
     {
-        coherent_avec_laser_num = new_type;
+        coherent_avec_laser_num = num;
     }
 
 
-// Read intensity versus time
-    void read_Intensity(istream & flux);
+// Spectrum and intensity management
 
-    int read_Intensity(const char *nom_file);
+    /**
+     * Reads intensity versus time from a stream.
+     * @param flux Input stream containing intensity data.
+     */
+    void read_Intensity(istream& flux);
+
+    /**
+     * Reads intensity versus time from a file.
+     * @param filename Path to the file containing intensity data.
+     * @return 0 on success, non-zero on failure.
+     */
+    int read_Intensity(const char* filename);
+
+    /**
+     * Reads the laser spectrum (energy and attenuation) from a stream.
+     * @param flux Input stream containing spectrum data.
+     */
+    void read_Spectrum(istream& flux);
+
+    /**
+     * Reads the laser spectrum (energy and attenuation) from a file.
+     * @param filename Path to the file containing spectrum data.
+     * @return 0 on success, non-zero on failure.
+     */
+    int read_Spectrum(const char* filename);
+
+    /**
+     * Writes the laser spectrum to a stream.
+     * @param flux Output stream for spectrum data.
+     */
+    void write_Spectrum(ostream& flux);
 
 
-// Lit les fichiers Energy_cm atténuation
-// Si le fichier est inconnu cela ne rajoute rien à la liste
-    void read_Spectrum(istream & flux);
-
-    int read_Spectrum(const char *nom_file);
-
-// Ecrit le spectre
-    void write_Spectrum(ostream & flux);
-
-    // Clear components
-    void  clear_waist_pos()
+// Utility methods for clearing attributes
+    void clear_waist_pos()
     {
-        waist_pos = Vecteur3D(0.,0.,0.);
+        waist_pos = Vecteur3D(0., 0., 0.);
     }
-    void  clear_direction()
+    void clear_direction()
     {
-        direction = Vecteur3D(0.,0.,1.);
+        direction = Vecteur3D(0., 0., 1.);
     }
-    void  clear_waist()
+    void clear_waist()
     {
-        waist = Vecteur3D(1.,1.,0.);
+        waist = Vecteur3D(1., 1., 0.);
     }
-    void  clear_lambda()
+    void clear_lambda()
     {
         lambda = 1.;
     }
-    void  clear_Gamma_Laser()
+    void clear_Gamma_Laser()
     {
         Gamma_Laser = 1.;
     }
-    void  clear_Power()
+    void clear_Power()
     {
         Power = 0.;
     }
-    void  clear_polarisation()
+    void clear_polarisation()
     {
-        polarisation =  Vecteur3D(0.,0.,0.);
+        polarisation = Vecteur3D(0., 0., 0.);
     }
-    void  clear_polar_angle()
+    void clear_polar_angle()
     {
         polar_angle_degree = 0.;
     }
-
-    void  clear_type_laser()
+    void clear_type_laser()
     {
         type_laser = CW;
     }
-    void  clear_coherent_avec_laser_num()
+    void clear_coherent_avec_laser_num()
     {
         coherent_avec_laser_num = -1;
     }
 
 
-
-    // Comparison
-    bool operator == (const Laser & Laser) const;
-    bool operator != (const Laser & Laser) const;
+// Comparison operators
+    bool operator==(const Laser& other) const;
+    bool operator!=(const Laser& other) const;
 
 
     // Affichage
@@ -379,8 +354,6 @@ public:                // Forme canonique d'une classe
 //   FONCTIONS EN LIGNES
 // ----------------------------------
 
-// intensité au waist
-    double  intensity()  const;
 
     // Intensity at time t. Linear Interpolated between the time given in the laser_intensity file. For time longer than the last time in the file the attenuation keep the last value
     double  intensity_t_nanosecond(const double t_nanosecond)  const;
@@ -388,29 +361,45 @@ public:                // Forme canonique d'une classe
     // transmission (1 = 100%, 0 = 0) prenant en compte le spectre à l'énergie de la transition
     double transmission_spectrum(const double energie_trans_cm)  const;
 
-// Zone de Rayleigh Vecteur3D
-// ZRZ est la zone de Railieh moyenne
-    Vecteur3D  Rayleigh_range()  const;
 
-// waist au point (X,Y,Z)
+// waist au point (X,Y,Z). Used only for plot (so we did not improved it for top-hat:super gaussian)
     Vecteur3D  waist_size(const Vecteur3D& point)  const;
 
-// intensité au point (X,Y,Z) dans le repère laser centré sur le waist
-    double  intensity_repere_sur_waist(const Vecteur3D& point)  const;
+    /**
+     * Calculates the irradiance at the laser waist.
+     * @return Irradiance (intensity) at the waist.
+     */
+    double intensity() const;
+
+    /**
+     * Calculates the irradiance at a given point in the lab coordinate system.
+     * @param point Point in the lab system where intensity is calculated.
+     * @return Irradiance (intensity) at the specified point.
+     */
+    double intensity_lab_axis(const Vecteur3D& point) const;
 
 
-// intensité au point (x,y,z)
-// I.E. lié au repère du labo
-    double  intensity_lab_axis(const Vecteur3D& point)  const;
+
+// Inline functions for intensity calculations
+    /**
+     * Calculates the intensity at the waist in the laser coordinate system.
+     * @return Intensity at the laser waist.
+     */
+    double intensity_repere_sur_waist(const Vecteur3D& point) const;
+
+    /**
+     * Computes the wave vector of the laser.
+     * @return Wave vector as a Vecteur3D.
+     */
+    Vecteur3D wave_vector() const;
+
+    /**
+     * Computes the energy of the laser transition in cm^-1.
+     * @return Energy in cm^-1.
+     */
+    double Energy_transition_laser_cm() const;
 
 
-// wave_vector k
-// h c / \lambda = h c \sigma(m-1) = \hbar c k
-    Vecteur3D wave_vector()  const;
-
-
-    // Energie de la transition laser en cm^-1
-    double Energy_transition_laser_cm()  const;
 
 
 // ----------------------------------
@@ -420,31 +409,6 @@ public:                // Forme canonique d'une classe
 }
 ;
 
-
-
-//----------------------------------
-// AUTRES fonctions
-//--------------------------------
-
-// I = ε0 c E^2 /2.
-double champ_E(const double irradiance);
-
-
-// (absolute value of the)  effectif dipole d.e_laser = sum_p d_p epsilon^p
-// where the dipole transition vector d= sum_p d_p e^p is given in the local quantification axis
-// and the polarisation vector e_laser= sum_p' epsilon^p' e_p'  is given in the laser axis
-double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& axe_quant,  const Laser& my_laser);
-
-
-
-// Polynomial approximating arctangent on the range -1,1.
-// Max error (0.21 degrees)
-float ApproxAtan(float z);
-
-
-// Approximation of atan2 that is a function that is called a lot of time and take 10% of the full computational time!!
-// cf https://www.dsprelated.com/showarticle/1052.php
-float atan2_approximation(float y, float x);
 
 
 /***
@@ -463,18 +427,67 @@ http://en.wikipedia.org/wiki/Euler_angles qui note (alpha,beta,gamma)
 
 ***/
 
-// Calcul des angles d'EULER. Pour un repère donné uniquement par son vecteur OZ=direction
-// Il reste donc un arbitraire pour  choisir l'angle de rotation autour de cet axe pour son repère
-// Nous choissons les angles tel que le repère soit le repère polaire dont OZ est la direction et OX selon le méridien
-Vecteur3D  Euler_angles( Vecteur3D direction);
+// Euler angles and coordinate transformations
 
-// Passage des coordonnées point(x,y,z) (labo) à (X,Y,Z): donné par les angles d'Euler alpha beta et gamma (qui font passer de e_x,e_y,e_z à e_X e_Y e_Z)
-// cf http://mathworld.wolfram.com/EulerAngles.html
-//Laser coordinates where point=(x,y,z) is lab coordinate
-Vecteur3D  rotation_lab_axis(const Vecteur3D& point, double alpha, double beta, double gamma=0.);
+/**
+ * Calculates the Euler angles for a given direction.
+ * @param direction Direction vector for the laser.
+ * @return Euler angles (alpha, beta, gamma) as a Vecteur3D.
+ */
+Vecteur3D Euler_angles(Vecteur3D direction);
 
-// Passage des coordonnées point (X,Y,Z) donné dans le REPERE à labo (x,y,z) (repère labo).
-// Le repère XYZ est donnée donné par les angles d'Euler alpha beta et gamma par rapport à xyz
-Vecteur3D  rotation_axis_lab(const Vecteur3D& point, double alpha, double beta, double gamma=0.);
+/**
+ * Transforms coordinates from the lab frame to the laser frame.
+ * @param point Point in lab coordinates.
+ * @param alpha First Euler angle (rotation about z-axis).
+ * @param beta Second Euler angle (rotation about x-axis).
+ * @param gamma Third Euler angle (rotation about z'-axis, default 0).
+ * @return Point in the laser frame.
+ */
+Vecteur3D rotation_lab_axis(const Vecteur3D& point, double alpha, double beta, double gamma = 0);
+
+/**
+ * Transforms coordinates from the laser frame to the lab frame.
+ * @param point Point in laser coordinates.
+ * @param alpha First Euler angle (rotation about z-axis).
+ * @param beta Second Euler angle (rotation about x-axis).
+ * @param gamma Third Euler angle (rotation about z'-axis, default 0).
+ * @return Point in the lab frame.
+ */
+Vecteur3D rotation_axis_lab(const Vecteur3D& point, double alpha, double beta, double gamma = 0);
+
+
+
+
+// Additional mathematical utilities
+
+
+// I = ε0 c E^2 /2.
+double champ_E(const double irradiance);
+
+
+// (absolute value of the)  effectif dipole d.e_laser = sum_p d_p epsilon^p
+// where the dipole transition vector d= sum_p d_p e^p is given in the local quantification axis
+// and the polarisation vector e_laser= sum_p' epsilon^p' e_p'  is given in the laser axis
+double effectif_dipole_local(const complex<double> dipole[3], const Vecteur3D& axe_quant,  const Laser& my_laser);
+
+
+
+/**
+ * Approximates the arctangent on the range [-1, 1].
+ * @param z Input value.
+ * @return Approximated arctangent.
+ */
+float ApproxAtan(float z);
+
+/**
+ * Fast approximation of atan2 for efficiency in repeated calculations.
+ * @param y Y-coordinate.
+ * @param x X-coordinate.
+ * @return Approximated atan2 value.
+ */
+float atan2_approximation(float y, float x);
+
+
 
 #endif

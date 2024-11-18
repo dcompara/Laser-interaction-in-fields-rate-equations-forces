@@ -146,16 +146,17 @@ Cela semble correct pour des spectres avec peu de trous, mais si on a des peigne
 // Is calculated in the sur la fonction rates_molecule
 double delta_dipolaire(vector <Molecule> &Mol, const int n_mol, const Field &fieldB, const Field &fieldE, const vector <Laser> &laser, const double t, FitParams &params)
 {
-
-
     double delta_pot_dipolaire =0.;
     vector <double> rate_local;
     vector <type_codage_react> reaction_list_local;
-
     vector <Internal_state> Level; // Require to call the function
-// TODO (dc#5#): To be modified if we want to have the correct dipolar force in diagonalized case
 
-    //  rates_molecule(Level, reaction_list_local, rate_local, Mol, n_mol, fieldB, fieldE, laser, t,  delta_pot_dipolaire,  params, false);
+// TODO (dc#5#): To be modified if we want to have the correct dipolar force in diagonalized case. Here just OK for non diagonalized case so I put fake d0 and d matrix
+
+    MatrixXcd H,E0_cm, Zeeman_cm_B, d[3];
+    MatrixXd d0[3];
+
+    rates_molecule(Level, reaction_list_local, rate_local, Mol, n_mol, fieldB, fieldE, laser, t,  delta_pot_dipolaire,  params, H,E0_cm, Zeeman_cm_B, d0, d, false);
 
     return delta_pot_dipolaire;
 }

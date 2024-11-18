@@ -1,6 +1,5 @@
 #include "diagonalization.h"
 #include "laser.h"                          // for the Euler_angles
-<<<<<<< HEAD
 #include  <iostream>                       // to include cout, cin
 
 
@@ -10,11 +9,6 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
 {
     const int nb_levels=32; //   Level.size();
     // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
-=======
-
-#include  <iostream>                       // to include cout, cin
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
 //    d[0].resize(nb_levels,nb_levels);
 //    d[1].resize(nb_levels,nb_levels);
@@ -26,16 +20,7 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
     d[2] = MatrixXcd::Zero(nb_levels,nb_levels);
     H.resize(nb_levels,nb_levels);
 
-<<<<<<< HEAD
     MatrixXcd Eigen_vectors = MatrixXcd::Identity(nb_levels,nb_levels);
-=======
-// diagonalized the Hamiltionian for the current molecule its field etc.. and give the eigenvectors and eigenvalues and dipoles (in Debye) update all Level[n].Energy_cm.
-void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, const Field &fieldB, const Field &fieldE,
-                     FitParams &params,  SelfAdjointEigenSolver<MatrixXcd> &es, MatrixXcd &H, MatrixXcd &E0_cm, MatrixXcd &Zeeman_cm_B, MatrixXd d0[], MatrixXcd d[])
-{
-    const int nb_levels=32; //   Level.size();
-    // I tried a dynamical size (or vector) but may be not enough and was not easily compatible with the matrix and speed. But should be tried again
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
     const int nb_incoherent_low_levels=5; //  These are the "dead" levels number 0, 1, ... nb_incoherent_low_levels-1  for annihilation so for incoherent dipole sum
     const int nb_incoherent_high_levels=7; //  These are the "continuum" levels number nb_levels-nb_incoherent_high_levels, nb_levels-2, nb_levels-1  for photoionization so for incoherent dipole sum
@@ -56,10 +41,7 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
             dip_ij = Vecteur3D(d0[0](i,j),d0[1](i,j),d0[2](i,j))*Debye/(100.*hPlanck*C); // (to have the dipole such that d.F in cm^-1)
             dipole_dot_Electric_Ffield(dip_ij, B, F, d_dot_F); // Hamiltonian Stark = - d.F = +e r.F
             H(i,j) = E0_cm(i,j) + B.mag()*Zeeman_cm_B(i,j) + d_dot_F; // H_ij = 0_<i | H | j>_0 = 0_<j | H | i>_0  (cf Eq (3) of Dermer PRA 40, 5526 (1989)
-//           cout << " i,j " << i <<  " " << j << "   " << E0_cm[i][j] << " " << Zeeman_cm_B[i][j] << "  "  << Stark_cm_Bv[i][j] << endl;
         }
-
-<<<<<<< HEAD
 
 
     /***
@@ -75,20 +57,24 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
     ****/
 // TODO (Daniel#1#): For speed. We can think of computing the Eigenvectors and Eigenvalues using the small dt step and not recalculating all the matrix. We can also combine the Hamiltonina with a first order (no diagonalization) to make a univeral simpified code. The cost of the computation is about $ 9n^3 $ if the eigenvectors are required and $ 4n^3/3 $ if they are not required.
 
-    // I tested and JacobiSVD<MatrixXcd> svd(-H, ComputeThinU | ComputeThinV) takes 6.7s and BDCSVD takes 9s (or 8.5 if setSwitchSize(4))  where compute() in SelfAdjointEigenSolver takes 5.6s with SelfAdjointEigenSolver;
+// I tested and JacobiSVD<MatrixXcd> svd(-H, ComputeThinU | ComputeThinV) takes 6.7s and BDCSVD takes 9s (or 8.5 if setSwitchSize(4))    where compute() in SelfAdjointEigenSolver takes 5.6s with SelfAdjointEigenSolver;
 //    BDCSVD<MatrixXcd> svd;
 //    svd.setSwitchSize(4); // NUt the main problem is that our blocks hae very different sizes
 //    svd.compute(-H, ComputeThinU | ComputeThinV); // Singular values  sorted in decreasing order (so I use -H) and A = U S V^* (compare to the Eigenvalues in increasing order  A = V D V^{-1} in
 
+
     SelfAdjointEigenSolver<MatrixXcd> es; // To calculate eigenstates and eigenvalues
+    // JacobiSVD<MatrixXcd> svd(1e5*MatrixXcd::Identity(nb_levels,nb_levels)-H, ComputeThinU | ComputeThinV); // Trick to odered by increasing order (JAcobi orderd by deccresing absolute values)
 
     if ( params.LocateParam("is_Levels_Lines_Diagonalized")->val == 1 )  /*****  Full diagonalization ***/
     {
         es.compute(H);  // calculate the new eigenvectors |i> (i start from 0)  and new eingen_Energies
         Eigen_vectors = es.eigenvectors(); // E_i = es.eigenvalues()(i) (in increasing order). Eigen_vectors(i,j) = 0<i | j>  gives (i=line, j = column index) the new (column) vector |j> in function of the old |i>_0
+        // Eigen_vectors = svd.matrixU();
         for( int n = 0; n < nb_levels; n++ )
         {
             Level[n].Energy_cm = es.eigenvalues()(n); // Level[n].Energy_cm = -svd.singularValues()(n); if JACOBI Or BDCSVD it was -H that I diagonalize
+            // Level[n].Energy_cm = 1e5-svd.singularValues()(n);
         }
     }
     else /*****  1st order perturbation theory.  We restrict to block matrix within the manifold to diagonalize ***/
@@ -97,28 +83,6 @@ void Diagonalization(vector <Internal_state> &Level, const Molecule &my_mol, con
         int n=0;        // loop on levels;
         int lenght=0;   // length of the block
         int init=0;     // initial index of the block
-=======
-    /*** diagonalization: gives new eigen energies (in Level[n].Energy_cm) and eigen vectors  ***/
-// TODO (Daniel#1#): For speed. We can think of computing the Eigenvectors and Eigenvalues using the small dt step and not recalculating all the matrix. The cost of the computation is about $ 9n^3 $ if the eigenvectors are required and $ 4n^3/3 $ if they are not required.
-   es.compute(H);  // calculate the new eigenvectors |i> (i start from 0)  and new eingen_Energies
-    // E_i = es.eigenvalues()(i) (in increasing order)
-    // es.eigenvectors()(i,j) = 0<i | j>  gives (i=line, j = column index) the new (column) vector |j> in function of the old |i>_0
-
-//
-//    for( int j0 = 0; j0 < nb_levels; j0++ ) // Ligne
-//    {
-//        for( int j = 0; j < nb_levels; j++ )
-//        {
-//            // cout <<  es.eigenvectors()(j0,j).real() << " "; // 0<j0 | j>
-//
-//            cout <<  (round(100.* es.eigenvectors()(j0,j).real()))/100  << "+i" << (round(100.* es.eigenvectors()(j0,j).imag()))/100 << "   ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl << endl;
-
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
         while (n<nb_levels) // We finish if we reach the end (nb_of level)
         {
@@ -132,27 +96,22 @@ end_loop_manifold: // We have reached the end of a manifold
             {
                 init= n-lenght; // We can treat the block of size length that start at index init
 
-<<<<<<< HEAD
                 MatrixXcd H_reduce(lenght,lenght);
                 for (int i=0; i<lenght; i++) // I do by hand   because I do not succeed to mange the fact that lenght is not const in     H_reduce = H.block<lenght,lenght>(init,init);
                     for (int j=0; j<lenght; j++)
                         H_reduce(i,j) = H(i+init,j+init);
 
                 es.compute(H_reduce); // We diagonalize H restrict at the block
-=======
-    for( int n = 0; n < nb_levels; n++ )
-    {
-        Level[n].Energy_cm = es.eigenvalues()(n);
-    }
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
+                // JacobiSVD<MatrixXcd> svd(1e5*MatrixXcd::Identity(lenght,lenght)-H_reduce, ComputeThinU | ComputeThinV);
 
                 for (int i=0; i<lenght; i++) // I do by hand   because I do not succeed to mange the fact that lenght is not const in     H_reduce = H.block<lenght,lenght>(init,init);
                     for (int j=0; j<lenght; j++)
                         Eigen_vectors(i+init,j+init) = es.eigenvectors()(i,j) ; // Same Eigen_vectors.block<lenght,lenght>(init,init) = es.eigenvectors();  should have been done Using matrix.block<p,q>(i,j) = Block of size (p,q), starting at (i,j)
+                // Eigen_vectors(i+init,j+init) = svd.matrixU()(i,j) ;
 
-<<<<<<< HEAD
                 for( int i = 0; i < lenght; i++ )
                     Level[i+init].Energy_cm = es.eigenvalues()(i);
+                // Level[n].Energy_cm = 1e5-svd.singularValues()(i);
             }
 
             lenght=0; // We start a new count for a new manifold
@@ -167,25 +126,12 @@ end_loop_manifold: // We have reached the end of a manifold
     d0[q+1]_i0 j0 = 0_<i0 | d_q | j0>_0 . So d[q+1]_ij = <i | d_q | j> = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j> =  Sum i0,j0  evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)
 
     IN CONCLUSION: the new dipole are given by d[polar] = evec^dag.d0[polar].evec =  <i | d_q | j> with evec_j = |j> = sum_|j>_0   0_<j| j>.
-=======
-    /**** calcul of the new dipoles (in Debye) in d[q]
-
-    evec = es.eigenvectors() verifie evec(j0,j) = 0<j0 | j>  gives (j0=line, j = column index) the new (column) vector |j> in function of the old |j0>_0
-    d0[q+1]_i0 j0 = 0_<i0 | d_q | j0>_0 . So d[q+1]_ij = <i | d_q | j> = Sum i0,j0   <i |i0>0 0<i0| d_q | j0>0 0<j0|j> =  Sum i0,j0  evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)
-
-    IN CONCLUSION: the new dipole are given by d[polar] = evec^dag.d0[polar].evec =  <i | d_q | j> with evec_j = |j> = sum_|j>_0   0_<j| j>.
-
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
     But for some transition (low to dead levels and high to continuum we use an incoherent sum. To do this we use the Hadamar product A°B = (A.cwiseProduct(B)) defined by (A°B)__ij = A_ij B_ij
     d_incoh[q+1]_ij^2 = <i | d_incoh_q | j> = Sum i0,j0   | <i |i0>0 0<i0| d_q | j0>0 0<j0|j> |^2 =  Sum i0,j0  |evec^dag (i,i0)  d_q(i0,j0)  evec(j0,j)|^2 = Sum i0,j0  evec^dag (i,i0) evec^dag(i,i0)^*   d_q(i0,j0) d_q(i0,j0)^*  evec(j0,j) evec(j0,j)^*
     d_incoh[q+1]_ij^2 = Sum i0,j0  evec^dag°evec^dag* (i,i0)    d_q°d_q* (i0,j0)  evec°evec* (j0,j)  =  (evec^dag°evec^dag* .   d_q°d_q* .  evec°evec*)_ij
     with for such state typically the |j> levels does not change so |j>=|j0>_0 and the last sum is Sum i0  |<i |i0>0 0<i0| d_q | j=j0>0 |^2
-<<<<<<< HEAD
     But we keep the full sum in case of order changing in the levels files (or Eigenvectors phase modification which occurs) ...
-=======
-    But we keep in case of order changing in the levels files ...
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 
     IN CONCLUSION dSQUARE_incoh = evec^dag°evec^dag* .   d_q°d_q* .  evec°evec*
     ***/
@@ -195,13 +141,9 @@ end_loop_manifold: // We have reached the end of a manifold
         // We first calculate all dipoles as incoherent sum and then we replace the central part with the proper coherent dipoles. Remark: We do twice the work (so it is slower, but what is long is probably the diagonalization) but is is very simple to write
 
         // incoherent sum for all dipoles
-<<<<<<< HEAD
         d[n_polar+1] = ( ( Eigen_vectors.adjoint()).cwiseProduct(Eigen_vectors.adjoint().conjugate()) ) * ( d0[n_polar+1].cwiseProduct(d0[n_polar+1].conjugate()) ) * ( (Eigen_vectors).cwiseProduct(Eigen_vectors.conjugate()) );
         // d[n_polar+1] = ( ( svd.matrixU().adjoint()).cwiseProduct(svd.matrixV().adjoint().conjugate()) ) * ( d0[n_polar+1].cwiseProduct(d0[n_polar+1].conjugate()) ) * ( (svd.matrixU()).cwiseProduct(svd.matrixV().conjugate()) );  // For Jacobi Or BDCSVD
 
-=======
-        d[n_polar+1] = ( ( es.eigenvectors().adjoint()).cwiseProduct(es.eigenvectors().adjoint().conjugate()) ) * ( d0[n_polar+1].cwiseProduct(d0[n_polar+1].conjugate()) ) * ( (es.eigenvectors()).cwiseProduct(es.eigenvectors().conjugate()) );
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
         // this is not yet the matrix of the dipole but the one of dipole squared d_incoh[q+1]_ij^2
         for (int i=0; i<nb_levels; i++)
             for (int j=0; j<nb_levels; j++)
@@ -210,7 +152,6 @@ end_loop_manifold: // We have reached the end of a manifold
         // We replace the central part with the proper block matrix of coherent dipole. Using matrix.block<p,q>(i,j) = Block of size (p,q), starting at (i,j)
         const int i = nb_incoherent_low_levels;
         const int p = nb_levels - nb_incoherent_high_levels - nb_incoherent_low_levels;  // size of coherent block
-<<<<<<< HEAD
         d[n_polar+1].block<p,p>(i,i) = ( (Eigen_vectors.adjoint())*d0[n_polar+1]*(Eigen_vectors) ).block<p,p>(i,i);
         // d[n_polar+1].block<p,p>(i,i) = ( (svd.matrixU().adjoint())*d0[n_polar+1]*(svd.matrixV()) ).block<p,p>(i,i);  // For Jacobi Or BDCSVD
     }
@@ -218,12 +159,33 @@ end_loop_manifold: // We have reached the end of a manifold
 
     /*** PRINT OF RESULTS ***/
 
+//
+//
+//    ofstream file_out("Data/sortie.dat");
+//
+//    for (int i=0; i<nb_levels; i++)
+//        for (int j=0; j<nb_levels; j++)
+//        {
+//            dip_ij = Vecteur3D(d0[0](i,j),d0[1](i,j),d0[2](i,j))*Debye/(100.*hPlanck*C); // (to have the dipole such that d.F in cm^-1)
+//            dipole_dot_Electric_Ffield(dip_ij, B, F, d_dot_F); // Hamiltonian Stark = - d.F = +e r.F
+//
+//            cout << " i,j " << i <<  " " << j << "   " << H(i,j) << " " << E0_cm(i,j) << " " << Zeeman_cm_B(i,j) << "  "  << d_dot_F << endl;
+//            file_out << " i,j " << i <<  " " << j << "   " << H(i,j) << " " << E0_cm(i,j) << " " << Zeeman_cm_B(i,j) << "  "  << d_dot_F << endl;
+//        }
+//    file_out << endl << endl;
+//
+//
+//
+//
+//
 //    for( int n = 0; n < nb_levels; n++ )
 //    {
+//        file_out.precision(10);
 //        cout <<   Level[n].Energy_cm   << endl;
+//        file_out  <<   Level[n].Energy_cm   << endl;
 //    }
 //    cout << endl << endl;
-//
+//    file_out << endl << endl;
 //
 //    for( int i = 0; i < nb_levels; i++ ) // Ligne
 //    {
@@ -231,11 +193,19 @@ end_loop_manifold: // We have reached the end of a manifold
 //        {
 //            cout.width(5);
 //            cout << round(100.* abs(Eigen_vectors(i,j)) )/100. << " ";
-//             cout <<  (round(100.* Eigen_vectors(i,j).real()))/100  << "+i" << (round(100.* Eigen_vectors(i,j).imag()))/100 << "   ";
+//            cout <<  (round(100.* Eigen_vectors(i,j).real()))/100  << "+i" << (round(100.* Eigen_vectors(i,j).imag()))/100 << "   ";
+//
+//            file_out.width(5);
+//            file_out << round(100.* abs(Eigen_vectors(i,j)) )/100. << " ";
+//            // file_out <<  (round(100.* Eigen_vectors(i,j).real()))/100  << "+i" << (round(100.* Eigen_vectors(i,j).imag()))/100 << "   ";
+//
+//
 //        }
 //        cout << endl;
+//        file_out << endl;
 //    }
 //    cout << endl << endl;
+//    file_out  << endl << endl;
 //
 //
 //    for(int n_polar = -1; n_polar <= 1; n_polar++)
@@ -253,11 +223,11 @@ end_loop_manifold: // We have reached the end of a manifold
 //        }
 //        cout << endl ;
 //    }
+//
+//    file_out.close();
+//
+//
 
-=======
-        d[n_polar+1].block<p,p>(i,i) = ( (es.eigenvectors().adjoint())*d0[n_polar+1]*(es.eigenvectors()) ).block<p,p>(i,i);
-    }
->>>>>>> f1d67ca6be17196db0b5ab5615163dc80d1182e6
 }
 
 
