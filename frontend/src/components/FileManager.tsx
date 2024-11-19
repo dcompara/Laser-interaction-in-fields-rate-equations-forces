@@ -1,11 +1,13 @@
 import React from 'react';
-import { Download, Upload } from 'lucide-react';
+import { Download, Upload, FileText } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import { useParticleStore } from '../store/useParticleStore';
 import { useLaserStore } from '../store/useLaserStore';
 import { useFieldStore } from '../store/useFieldStore';
 import { useAlgorithmStore } from '../store/useAlgorithmStore';
 import { useOutputStore } from '../store/useOutputStore';
+import { useDataStore } from '../store/useDataStore';
+import { parseLevelsFile, parseTransitionsFile } from '../utils/fileHandlers';
 import {
   generateHeader,
   generateParticleSection,
@@ -15,7 +17,64 @@ import {
   generateAlgorithmSection,
   generateScanSection,
 } from '../utils/parameterFileGenerator';
-import { parseParameters } from '../utils/parameterFileParser';
+
+interface FileConfig {
+  name: string;
+  description: string;
+  path: string;
+  type: 'input' | 'output';
+}
+
+const fileConfigs: FileConfig[] = [
+  {
+    name: 'Energy Levels',
+    description: 'Contains energy level data',
+    path: 'Data/n/n_levels.dat',
+    type: 'input'
+  },
+  {
+    name: 'Transition Lines',
+    description: 'Contains transition line data',
+    path: 'Data/n/n_lines.dat',
+    type: 'input'
+  },
+  {
+    name: 'Laser Spectrum',
+    description: 'Laser spectrum data',
+    path: 'Data/n/Laser_Spectrum.dat',
+    type: 'input'
+  },
+  {
+    name: 'Laser Intensity',
+    description: 'Laser timing data',
+    path: 'Data/n/Laser_Intensity.dat',
+    type: 'input'
+  },
+  {
+    name: 'Molecule Data',
+    description: 'Output file for molecule data',
+    path: 'Data/donnee_Mol.dat',
+    type: 'output'
+  },
+  {
+    name: 'Rate Data',
+    description: 'Output file for rate data',
+    path: 'Data/sortie_rate.dat',
+    type: 'output'
+  },
+  {
+    name: 'Data Card',
+    description: 'Output file for data card',
+    path: 'Data/data_card.dat',
+    type: 'output'
+  },
+  {
+    name: 'Random Generator State',
+    description: 'Random number generator state',
+    path: 'Data/random_gen.txt',
+    type: 'output'
+  }
+];
 
 export function FileManager() {
   const { particles, updateParticle } = useParticleStore();
@@ -23,6 +82,7 @@ export function FileManager() {
   const { fields, updateFields } = useFieldStore();
   const { settings: algorithmSettings, updateSettings: updateAlgorithmSettings } = useAlgorithmStore();
   const { settings: outputSettings, updateSettings: updateOutputSettings } = useOutputStore();
+  const { setLevels, setTransitions } = useDataStore();
 
   const generateListeParamH = () => {
     let content = generateHeader();
@@ -39,70 +99,132 @@ export function FileManager() {
     return content;
   };
 
-  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, fileConfig: FileConfig) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
-      const {
-        particles,
-        lasers,
-        fields,
-        algorithm,
-        output,
-        laserGlobalSettings,
-      } = parseParameters(content);
-
-      // Update all stores with the parsed data
-      particles.forEach((particle, index) => {
-        updateParticle(index, particle);
-      });
-
-      lasers.forEach((laser, index) => {
-        updateLaser(index, laser);
-      });
-
-      updateGlobalSettings(laserGlobalSettings);
-      updateFields(fields);
-      updateAlgorithmSettings(algorithm);
-      updateOutputSettings(output);
+      
+      try {
+        switch (fileConfig.name) {
+          case 'Energy Levels':
+            const levels = parseLevelsFile(content);
+            setLevels(levels);
+            break;
+          case 'Transition Lines':
+            const transitions = parseTransitionsFile(content);
+            setTransitions(transitions);
+            break;
+          case 'Liste_Param.h':
+            // Parse parameter file and update stores
+            break;
+          default:
+            console.log(`Handler for ${fileConfig.name} not implemented yet`);
+        }
+      } catch (error) {
+        console.error(`Error parsing ${fileConfig.name}:`, error);
+        // Here you could add user feedback for parsing errors
+      }
     };
     reader.readAsText(file);
   };
 
-  const handleDownload = () => {
-    const content = generateListeParamH();
+  const handleDownload = (fileConfig: FileConfig) => {
+    let content = '';
+    switch (fileConfig.name) {
+      case 'Liste_Param.h':
+        content = generateListeParamH();
+        break;
+      // Add handlers for other file types
+      default:
+        content = ''; // Default empty content for now
+    }
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'Liste_Param.h');
+    saveAs(blob, fileConfig.path.split('/').pop() || fileConfig.name);
   };
 
   return (
     <div className="space-y-6 p-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Parameter File Management</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-lg font-semibold">File Management</h2>
       </div>
 
-      <div className="flex gap-4">
-        <label className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer">
-          <Upload className="w-4 h-4 mr-2" />
-          Upload Liste_Param.h
-          <input
-            type="file"
-            className="hidden"
-            accept=".h"
-            onChange={handleUpload}
-          />
-        </label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <h3 className="text-md font-medium">Parameter File</h3>
+          <div className="flex gap-4">
+            <label className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer">
+              <Upload className="w-4 h-4 mr-2" />
+              Upload Liste_Param.h
+              <input
+                type="file"
+                className="hidden"
+                accept=".h"
+                onChange={(e) => handleFileUpload(e, { name: 'Liste_Param.h', description: 'Parameter file', path: 'Liste_Param.h', type: 'input' })}
+              />
+            </label>
+            <button
+              onClick={() => handleDownload({ name: 'Liste_Param.h', description: 'Parameter file', path: 'Liste_Param.h', type: 'input' })}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Liste_Param.h
+            </button>
+          </div>
+        </div>
 
-        <button
-          onClick={handleDownload}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Download Liste_Param.h
-        </button>
+        <div className="space-y-4">
+          <h3 className="text-md font-medium">Input Files</h3>
+          <div className="space-y-2">
+            {fileConfigs.filter(f => f.type === 'input').map((fileConfig) => (
+              <div key={fileConfig.path} className="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                <div className="flex items-center">
+                  <FileText className="w-5 h-5 text-gray-400 mr-2" />
+                  <div>
+                    <p className="text-sm font-medium">{fileConfig.name}</p>
+                    <p className="text-xs text-gray-500">{fileConfig.path}</p>
+                  </div>
+                </div>
+                <label className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 cursor-pointer">
+                  <Upload className="w-4 h-4 mr-1" />
+                  Upload
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".dat,.txt"
+                    onChange={(e) => handleFileUpload(e, fileConfig)}
+                  />
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-md font-medium">Output Files</h3>
+          <div className="space-y-2">
+            {fileConfigs.filter(f => f.type === 'output').map((fileConfig) => (
+              <div key={fileConfig.path} className="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                <div className="flex items-center">
+                  <FileText className="w-5 h-5 text-gray-400 mr-2" />
+                  <div>
+                    <p className="text-sm font-medium">{fileConfig.name}</p>
+                    <p className="text-xs text-gray-500">{fileConfig.path}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDownload(fileConfig)}
+                  className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  Download
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
