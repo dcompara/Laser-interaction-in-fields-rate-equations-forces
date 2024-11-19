@@ -1,5 +1,5 @@
-import React from 'react';
-import { Download, Upload, FileText } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, Upload, FileText, Play } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import { useParticleStore } from '../store/useParticleStore';
 import { useLaserStore } from '../store/useLaserStore';
@@ -83,6 +83,7 @@ export function FileManager() {
   const { settings: algorithmSettings, updateSettings: updateAlgorithmSettings } = useAlgorithmStore();
   const { settings: outputSettings, updateSettings: updateOutputSettings } = useOutputStore();
   const { setLevels, setTransitions } = useDataStore();
+  const [executablePath, setExecutablePath] = useState<string>('');
 
   const generateListeParamH = () => {
     let content = generateHeader();
@@ -125,10 +126,29 @@ export function FileManager() {
         }
       } catch (error) {
         console.error(`Error parsing ${fileConfig.name}:`, error);
-        // Here you could add user feedback for parsing errors
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleExecutableSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setExecutablePath(file.path);
+    }
+  };
+
+  const handleRunSimulation = () => {
+    if (!executablePath) {
+      alert('Please select the simulation executable first.');
+      return;
+    }
+    // In a real application, you would use a backend API to:
+    // 1. Save the parameter file
+    // 2. Execute the simulation with the selected executable
+    // 3. Monitor the simulation progress
+    // 4. Load results when complete
+    console.log('Running simulation with executable:', executablePath);
   };
 
   const handleDownload = (fileConfig: FileConfig) => {
@@ -137,9 +157,8 @@ export function FileManager() {
       case 'Liste_Param.h':
         content = generateListeParamH();
         break;
-      // Add handlers for other file types
       default:
-        content = ''; // Default empty content for now
+        content = '';
     }
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, fileConfig.path.split('/').pop() || fileConfig.name);
@@ -149,6 +168,36 @@ export function FileManager() {
     <div className="space-y-6 p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-semibold">File Management</h2>
+      </div>
+
+      <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+        <h3 className="text-md font-medium mb-4">Simulation Executable</h3>
+        <div className="flex items-center gap-4">
+          <label className="flex-1">
+            <div className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 cursor-pointer">
+              <Upload className="w-4 h-4 mr-2" />
+              {executablePath ? 'Selected: ' + executablePath : 'Select Executable'}
+              <input
+                type="file"
+                className="hidden"
+                accept=".exe"
+                onChange={handleExecutableSelect}
+              />
+            </div>
+          </label>
+          <button
+            onClick={handleRunSimulation}
+            disabled={!executablePath}
+            className={`flex items-center px-4 py-2 rounded-md ${
+              executablePath 
+                ? 'bg-green-600 text-white hover:bg-green-700' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            <Play className="w-4 h-4 mr-2" />
+            Run Simulation
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
