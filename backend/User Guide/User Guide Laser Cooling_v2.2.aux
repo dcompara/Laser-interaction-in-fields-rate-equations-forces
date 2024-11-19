@@ -1,0 +1,96 @@
+\relax 
+\citation{comparat2014molecular}
+\newlabel{FirstPage}{{}{1}{}{}{}}
+\@writefile{toc}{\contentsline {title}{USER GUIDE For the simulation of Laser cooling of particles}{1}{}}
+\@writefile{toc}{\contentsline {abstract}{Abstract}{1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}}
+\citation{Note1}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Example of possible installation. To put either in the Settings/Compiler directory, either in the Project/Build options one.}}{2}{}}
+\newlabel{fig:linker}{{1}{2}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Code::blocks Installation}{2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}64bits}{2}{}}
+\citation{Note2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Just run the code}{3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1}Codeblocks configuration}{3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2}speed consideration}{3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Schematic of the structure and some basics functions used by the code. The blocks are the different files (.cpp or .h) present with their names in bold and an quick explanation of what they do.}}{4}{}}
+\newlabel{fig:Class}{{2}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Comment on 32 bits codeblocks version.}{4}{}}
+\newlabel{32bits}{{II\,C}{4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Short overview}{4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Overview of the Program}{4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Schematics of how the code evolve its time. The blocks are the different files (.cpp or .h) present with their names in bold and an quick explanation of what they do. Usually the rate of the molecules are all updated every t\_dyn (dt\_dyn\_epsilon\_param in Liste\_Param.h). Only one molecule has is internal state modified every t\_KMC except if algorithm Fast\_Rough\_Method is used where $N/10$ are updated every t\_KMC=0.1/max(rate)}}{5}{}}
+\newlabel{fig:Program_evolution}{{3}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}graphics}{5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Output: Export data in files}{5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Snapshot (screen capture) of the code.}}{6}{}}
+\newlabel{fig:picture}{{4}{6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Input files}{6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Definition of the differents frame: laser axis (for the polarization basis), field axis (that is the quantization because we assume adiabatic following of the states) and lab fixed frame. To go from the lab fix frame to the laser axis one a first rotation is by an angle $\phi $ about the $z$-axis then a second rotation is by an angle $\theta $ about the new $y$-axis }}{7}{}}
+\newlabel{fig:laseraxispolarization}{{5}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Liste\_Param}{7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Levels}{8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Lines}{9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D}LASER\_SPECTRUM}{9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E}LASER\_INTENSITY}{9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Troubleshooting}{9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Shaping examples. Left shaping for the laser intensity versus time: the code (solid black line) interpolate linearly between (red) points, if the point is before or after the points we kept the nearest value. Right: shaping for the laser spectrum: the value of the interpolation is the lower one in the file (no interpolation between red points). The example illustrate a gaussian laser, 100 GHz broad. In Red is the final (relative) intensity.}}{10}{}}
+\newlabel{fig:shaping}{{6}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}CodeBlocks problems}{10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Schematics of the Energy level due to recoil momentum. The diagonalization thus works only if the energy levels before and after spontaneous emission have the same order in energy. No other dynamical evolution is taken into account, we assume constant velocity during motion (in the excited states).}}{11}{}}
+\newlabel{fig:diagonalization}{{7}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Common tests}{11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Algorithm used in the code to calculate the evolution and the rates}{11}{}}
+\newlabel{section_algorithm}{{VI}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Diagonalization}{11}{}}
+\newlabel{diagonalization}{{VI\,A}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Overview external versus internal dynamics}{12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Calcul (internal) rates molecules}{12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D}Calcul (external) motion}{12}{}}
+\citation{Note3}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E}Comments}{13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F}Levels Lines Diagonalized }{13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Performance test}{13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Nb of molecules}{13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Kinetic Monte Carlo algorithm}{13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Motion algorithm}{14}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Futur}{14}{}}
+\citation{comparat2014molecular}
+\citation{chaneliere2018phase}
+\citation{manual_Steck,varshalovich1988quantum}
+\citation{comparat2014molecular}
+\citation{varshalovich1988quantum}
+\citation{varshalovich1988quantum}
+\@writefile{toc}{\appendix }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Detail of laser interaction}{15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1}Spherical and helicity vectors }{15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2}Lasers using complex notations}{15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3}Transition dipole moment}{15}{}}
+\citation{chaneliere2018phase}
+\citation{comparat2014molecular,chaneliere2018phase}
+\citation{Note4}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4}Absorption, stimulated or spontaneous emission}{16}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Ordered energy levels and rotating wave approximation}{16}{}}
+\newlabel{hamiltonianRWA}{{A\,4\,a}{16}{}{}{}}
+\newlabel{eq_base_at}{{A\,4\,a}{16}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Absorption, Stimulated or spontaneous emission}{16}{}}
+\newlabel{Rabi_frequancy}{{A2}{16}{}{}{}}
+\citation{varshalovich1988quantum}
+\citation{varshalovich1988quantum}
+\citation{varshalovich1988quantum}
+\citation{varshalovich1988quantum}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5}Rotation matrices}{17}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Euler angles}{17}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Polarization vectors}{17}{}}
+\newlabel{pol_vector}{{A\,5\,b}{17}{}{}{}}
+\citation{manual_Steck}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Stark effect}{18}{}}
+\newlabel{Stark}{{A\,5\,c}{18}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6}Angular distribution of spontaneous emission: recoil}{18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7}Diagonalization of the states}{18}{}}
+\bibdata{"User Guide Laser Cooling_v2.2"Notes,bibli_user_guide}
+\bibstyle{unsrt}
+\@writefile{toc}{\contentsline {section}{\numberline {}References}{19}{}}
+\newlabel{LastBibItem}{{0}{19}{}{}{}}
+\newlabel{LastPage}{{}{19}{}{}{}}
+\gdef \@abspage@last{19}

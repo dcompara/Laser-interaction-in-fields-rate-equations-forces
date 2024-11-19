@@ -1,2 +1,0 @@
-2024/11/18 (v3.0)
-Use IA (chatGPT + bolt) to improve the code and deploy an app.

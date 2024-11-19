@@ -1,0 +1,140 @@
+<<<<<<< HEAD
+2024/11/18 (v3.0)
+Use IA (chatGPT + bolt) to improve the code and deploy an app.
+=======
+2024/18/11 (v3.0
+Trasnlate the .h in English (with GPT4-o) and start to deply the laser_param.h as an App (cf Bolt.new)
+
+2021/01/10 (v2.4)
+Debug intereference for non diagonalized levels + comment on Jacobi diagonalization
+Better effusive beam (real one!)
+
+
+2020/11/15
+Add a first order block diagonalization for faster manifold study
+Correct a bug in polarization photon in spontaneous emission.
+
+2020/11/08
+For an continuum transition (so if Sym, now called bound_level, is 0) we go back to put also an effective dipole_debye. And for such
+transition we use incoherent summation.
+
+Try to imrove speed by going to float (does not work for 64 bits). Puting Diagonlization in Initialisation. 
+This creates more global variable (Hamiltonina etc..) but may be more flexible for the futur (to read external file). And is slighly faster
+
+10% of the total computational time was taken by atan2!!! So I use an approximation.
+
+
+2020/10/18
+Add a timing dependance for the lasers using Laser_Intensity[#Laser] files. So I remove the switching
+
+The levels and lines files have been simplify (no 2N, 2J, 2Omega neither DE and GAmma of the transition).
+The Lines are now given by their dipole not dipole^2/3 as before
+
+2020/09/13
+Modify real dipoles by complex ones. The eigenvectors phases are "random" (probably depend on the convergence of the diagonaization)
+
+2020/08/15
+V1.3 New diagonalizaiton with Stark effect -d.E given by the dipole matrix. So the Hamiltonian is complex now (hermitian). In addition in case of positronium 
+Improve user guide for this part in appendix. 
+
+
+
+2020/08/10
+V1.2 Put on github the new version. 
+Simplify (a bit) the code. Removing  Sisyphus forced repumping, Franck_Condon part and the velocity scalling part
+Put new ToDo list
+Comment a bit more the List_Param and sortie_donnee with examples
+
+2020/08/10
+V1.0.2 Put on github the new version. 
+Imporve the diagonalization to be more general in the futur
+
+2020/08/07
+Full 64bit compilation using msys2 mingw64 and package manager. All installation of gsl, Eigen and freeflut is simpler.
+The code is modified to accomodate for this (freeglut especially)
+
+2020/08/05
+For 64bits compilation. Modify some stream and char comparaison (that are not supported aymore). 
+
+2020/05/23
+Modification of the definition of the dipole and laser parameters. Clarification of all notation in a new user Guide
+
+2020/05/11
+Some C++ part of the code are compilor dependant (Ask Pauline Yzombard)
+
+2020/05/11
+Test Ps diagonalization and put correct new levels, lines and matrix files 
+
+
+2019/06/26
+Imporved spontaneous emission in diagonalizaiton (using the proper photon energy k_spon)
+
+
+2019/06/04
+
+   Body &my_bod = bod[i]; in one_body (if not the position are not really apply to bod!)
+   
+   
+   
+   
+   2019/01/04
+
+test diagonalizaiton and polarization seems OK. Small modification and todo added
+
+
+2018/11/11
+ADD linear polarization adn new angle (psi) in the Laser definition. 
+Thus more general laser deal or emission angle with (almost because still real numbers) arbitrary polarization is possible.
+So in the case of Diagonalization fo  the hamiltonian the spontaneous emission is correct even for non pure circular emission
+
+
+
+2018/09/17
+In compiler -Wl,--allow-multiple-definition is required (for glut.h that is probably called multiple times ?)
+The Eigen (better than GSL) library still create bugs !
+
+
+2018/08/16
+Adding possibility of diagonalization of the Energy of the states (so adding so matrix in Internal_State)
+Big modification of the User Guide
+SMALL_NUMBER_RATE_EXCITATION ~ 1 is added to control the rates that shall not be considered
+
+2018/04/28
+Add Hydrogen
+Add anti-Helmholtz coils
+ERREUR 3/2en 3 on brhosurrho= ERROR IN GRADIENT (when z goes to zeor the gradient (accceleartion) change signe)
+
+2018/04/24
+Add option Procedure_init_y (4) : perfect ordered gaussian in velocity (random in position)
+
+
+2018/04/03
+Add sigmaSB in Siconstantes
+Add cross section
+
+2017/08/28
+Pseudo_BBR calcul of intensity = energy density/c
+
+2017/08/21
+Modify the factor 3 in E_tot=3 kB T for the Affichage_Mol
+
+
+2017/07/08
+Modify Draw Molecules for color and size (taille) to allow for Manifold >3 (100 max)
+
+
+2017/06/30
+Add a pseudo BBR laser.
+The Power is like the integrated power (Stefan-Boltzmann's law sigma T^4 per surface: 1W/m^2 at 65K) emmited by a real BBR of a circular surface of diameter waist
+The central energy has no meaning in this case even if the Wien's displacement law  states that the max frequency scales with temperature (Emax_cm-1 ~2 T).
+So for simplicity 
+
+2017/06/26
+Possibility to initialise the thermal position in a harmonic trap for charged particles
+
+2017/06/14
+Verif Pgopher S Spol and A and (minor) correction in UserGuide
+
+2016/07/23
+Put the correct recoil (probability distrbution for the spontaneous emission depending on the polarization of the transition) 
+>>>>>>> 8a5eff06c2dff7ab9c152968cca57c83445d78f7
