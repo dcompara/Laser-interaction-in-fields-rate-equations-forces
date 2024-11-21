@@ -1,13 +1,12 @@
 import React from 'react';
-import { Upload, Play } from 'lucide-react';
+import { Upload } from 'lucide-react';
 
 interface ExecutableSelectorProps {
   executablePath: string;
   onExecutableSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onRunSimulation: () => void;
 }
 
-export function ExecutableSelector({ executablePath, onExecutableSelect, onRunSimulation }: ExecutableSelectorProps) {
+export function ExecutableSelector({ executablePath, onExecutableSelect }: ExecutableSelectorProps) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
       <h3 className="text-md font-medium mb-4">Simulation Executable</h3>
@@ -24,19 +23,10 @@ export function ExecutableSelector({ executablePath, onExecutableSelect, onRunSi
             />
           </div>
         </label>
-        <button
-          onClick={onRunSimulation}
-          disabled={!executablePath}
-          className={`flex items-center px-4 py-2 rounded-md ${
-            executablePath 
-              ? 'bg-green-600 text-white hover:bg-green-700' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          <Play className="w-4 h-4 mr-2" />
-          Run Simulation
-        </button>
       </div>
+      <p className="mt-2 text-sm text-gray-500">
+        Select the simulation executable from your local computer. The simulation will be run locally when you click the "Run Simulation" button in the header.
+      </p>
     </div>
   );
 }

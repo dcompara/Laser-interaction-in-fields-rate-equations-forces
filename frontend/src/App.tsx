@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import { Atom, Settings, Zap, Play, Database, FileText, BarChart, Clock } from 'lucide-react';
 import { Overview } from './components/Overview';
@@ -12,6 +12,17 @@ import { FileManager } from './components/FileManager';
 import { ScanConfig } from './components/ScanConfig';
 
 function App() {
+  const [executablePath, setExecutablePath] = useState<string>('');
+
+  const handleRunSimulation = () => {
+    if (!executablePath) {
+      alert('Please select a simulation executable in the File Management panel first.');
+      return;
+    }
+    
+    alert('Note: The simulation executable must be run locally on your computer. Web browsers cannot execute local programs directly for security reasons. Please use the desktop version of the application to run simulations.');
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm">
@@ -22,7 +33,10 @@ function App() {
               <h1 className="text-2xl font-bold text-gray-900">Laser Cooling Simulation</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center">
+              <button 
+                onClick={handleRunSimulation}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
+              >
                 <Play className="w-4 h-4 mr-2" />
                 Run Simulation
               </button>
@@ -53,7 +67,7 @@ function App() {
           <TabPanel><EnergyLevelsVisualizer /></TabPanel>
           <TabPanel><GraphicsOutput /></TabPanel>
           <TabPanel><ScanConfig /></TabPanel>
-          <TabPanel><FileManager /></TabPanel>
+          <TabPanel><FileManager executablePath={executablePath} setExecutablePath={setExecutablePath} /></TabPanel>
         </Tabs>
       </main>
     </div>

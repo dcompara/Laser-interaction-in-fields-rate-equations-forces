@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { saveAs } from 'file-saver';
 import { useParticleStore } from '../../store/useParticleStore';
 import { useLaserStore } from '../../store/useLaserStore';
@@ -13,14 +13,18 @@ import { ParameterFile } from './ParameterFile';
 import { FileList } from './FileList';
 import { FileConfig, fileConfigs } from './types';
 
-export function FileManager() {
-  const { particles, updateParticle } = useParticleStore();
-  const { lasers, globalSettings: laserSettings, updateLaser, updateGlobalSettings } = useLaserStore();
-  const { fields, updateFields } = useFieldStore();
-  const { settings: algorithmSettings, updateSettings: updateAlgorithmSettings } = useAlgorithmStore();
-  const { settings: outputSettings, updateSettings: updateOutputSettings } = useOutputStore();
+interface FileManagerProps {
+  executablePath: string;
+  setExecutablePath: (path: string) => void;
+}
+
+export function FileManager({ executablePath, setExecutablePath }: FileManagerProps) {
+  const { particles } = useParticleStore();
+  const { lasers, globalSettings: laserSettings } = useLaserStore();
+  const { fields } = useFieldStore();
+  const { settings: algorithmSettings } = useAlgorithmStore();
+  const { settings: outputSettings } = useOutputStore();
   const { setLevels, setTransitions } = useDataStore();
-  const [executablePath, setExecutablePath] = useState<string>('');
 
   const generateListeParamH = () => {
     let content = generateHeader();
@@ -55,9 +59,6 @@ export function FileManager() {
             const transitions = parseTransitionsFile(content);
             setTransitions(transitions);
             break;
-          case 'Liste_Param.h':
-            // Parse parameter file and update stores
-            break;
           default:
             console.log(`Handler for ${fileConfig.name} not implemented yet`);
         }
@@ -73,14 +74,6 @@ export function FileManager() {
     if (file) {
       setExecutablePath(file.path);
     }
-  };
-
-  const handleRunSimulation = () => {
-    if (!executablePath) {
-      alert('Please select the simulation executable first.');
-      return;
-    }
-    console.log('Running simulation with executable:', executablePath);
   };
 
   const handleDownload = (fileConfig: FileConfig) => {
@@ -108,7 +101,6 @@ export function FileManager() {
       <ExecutableSelector
         executablePath={executablePath}
         onExecutableSelect={handleExecutableSelect}
-        onRunSimulation={handleRunSimulation}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
